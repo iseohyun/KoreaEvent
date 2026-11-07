@@ -9,7 +9,8 @@ interface HeaderBarProps {
   detectedFormat: 'JSON' | 'XML';
   loading: boolean;
   totalPortalCount: number;
-  totalMunicipalCount: number;
+  totalFirestoreCount: number;
+  firestoreCloudSynced: boolean;
   onFormatModeChange: (mode: ResponseFormatMode) => void;
   onRefresh: () => void;
   onOpenMunicipalModal: () => void;
@@ -21,7 +22,8 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
   detectedFormat,
   loading,
   totalPortalCount,
-  totalMunicipalCount,
+  totalFirestoreCount,
+  firestoreCloudSynced,
   onFormatModeChange,
   onRefresh,
   onOpenMunicipalModal,
@@ -42,7 +44,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
               </span>
             </div>
             <p className={styles.subtitle}>
-              공공데이터포털(KorService2) + 전국 1·2단계 267개 지자체 홍보DB 주최기관 매칭·요약 시스템
+              공공데이터포털(KorService2) + Firebase(`koreaeventlist`) 7대 스키마·2대 연결키 실시간 조합 시스템
             </p>
           </div>
         </div>
@@ -50,12 +52,13 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
         <div className={styles.controls}>
           <div
             className={styles.apiStatusPill}
-            title="End Point: https://apis.data.go.kr/B551011/KorService2"
+            title="KorService2 API + Firebase Firestore (projectId: koreaeventlist) 실시간 조합"
           >
             <span className={styles.statusDot} />
             <Database size={14} />
             <span>
-              포털 {totalPortalCount}건 · 지자체 {totalMunicipalCount}건 ({detectedFormat} 파싱됨)
+              포털 {totalPortalCount}건 · 🔥Firestore {totalFirestoreCount}건 (
+              {firestoreCloudSynced ? 'Cloud 동기화' : '로컬캐시'} · {detectedFormat})
             </span>
           </div>
 
@@ -99,7 +102,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
             className={styles.actionBtn}
             onClick={onRefresh}
             disabled={loading}
-            title="공공데이터포털 실시간 재조회"
+            title="공공데이터포털 및 Firebase Firestore 실시간 재조회"
           >
             <RefreshCw size={15} className={loading ? 'spin' : ''} />
             <span>{loading ? '동기화 중...' : '새로고침'}</span>
@@ -111,7 +114,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
             onClick={onOpenMunicipalModal}
           >
             <PlusCircle size={15} />
-            <span>지자체 행사 추가</span>
+            <span>🔥 Firestore 행사 등록</span>
           </button>
         </div>
       </div>

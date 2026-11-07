@@ -87,7 +87,8 @@ function summarizeHtmlContent(html: string, url: string) {
   };
 }
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/KoreaEventList/' : '/',
   plugins: [
     react(),
     {
@@ -140,4 +141,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));

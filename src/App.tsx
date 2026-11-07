@@ -1,20 +1,22 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { REGION_BY_ID } from './constants/regions';
 import {
+  buildInitialSeedFirestoreDocs,
+  composeEventsWithFirestore,
+  syncAndLoadFirestoreEvents,
+  upsertFirestoreEventDoc,
+} from './services/firebase';
+import {
   fetchPortalFestivals,
   fetchSigunguCodes,
 } from './services/korService2Api';
-import {
-  addCustomMunicipalEvent,
-  getMunicipalEvents,
-  MunicipalRawFeedItem,
-} from './services/municipalEventAdapter';
 import {
   AdminPromoRegistryData,
   loadAdminPromoRegistry,
 } from './services/promoEnrichmentService';
 import {
   EventFilterState,
+  FirestoreEventDoc,
   ResponseFormatMode,
   SigunguItem,
   UnifiedEventItem,
@@ -44,9 +46,14 @@ export const App: React.FC = () => {
   });
 
   const [portalEvents, setPortalEvents] = useState<UnifiedEventItem[]>([]);
-  const [municipalEvents, setMunicipalEvents] = useState<UnifiedEventItem[]>(() =>
-    getMunicipalEvents()
+  const [firestoreDocs, setFirestoreDocs] = useState<FirestoreEventDoc[]>(() =>
+    buildInitialSeedFirestoreDocs()
   );
+  const [firestoreCloudSynced, setFirestoreCloudSynced] = useState(false);
+  const [firestoreStatusMsg, setFirestoreStatusMsg] = useState(
+    'Firebase Firestore (koreaeventlist) 초기화 중...'
+  );
+
   const [promoRegistry, setPromoRegistry] = useState<AdminPromoRegistryData | null>(null);
   const [sigunguList, setSigunguList] = useState<SigunguItem[]>([]);
   const [sigunguLoading, setSigunguLoading] = useState(false);
@@ -59,16 +66,28 @@ export const App: React.FC = () => {
   );
   const [apiTotalCount, setApiTotalCount] = useState<number>(0);
 
-  const [selectedEvent, setSelectedEvent] = useState<UnifiedEventItem | null>(null);
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [municipalModalOpen, setMunicipalModalOpen] = useState(false);
   const [registryModalOpen, setRegistryModalOpen] = useState(false);
 
-  // 1·2단계 267개 지자체 행정·홍보 페이지 마스터 DB 로드
+  // 1) 1·2단계 267개 지자체 행정·홍보 페이지 마스터 DB 로드
   useEffect(() => {
     loadAdminPromoRegistry()
       .then((data) => setPromoRegistry(data))
       .catch((err) => console.error('Failed to load promo registry:', err));
   }, []);
+
+  // 2) Firebase Firestore (`koreaeventlist` 프로젝트 `events` 컬렉션) 동기화
+  const loadFirestoreData = useCallback(async () => {
+    const res = await syncAndLoadFirestoreEvents();
+    setFirestoreDocs(res.docs);
+    setFirestoreCloudSynced(res.syncedWithCloud);
+    setFirestoreStatusMsg(res.statusMessage);
+  }, []);
+
+  useEffect(() => {
+    loadFirestoreData();
+  }, [loadFirestoreData]);
 
   const updateFilter = useCallback(
     <K extends keyof EventFilterState>(key: K, value: EventFilterState[K]) => {
@@ -77,7 +96,7 @@ export const App: React.FC = () => {
     []
   );
 
-  // 공공데이터포털 KorService2 행사 데이터 조회 (전국 + 선택 행정구역 보강 조회)
+  // 3) 공공데이터포털 KorService2 행사 데이터 실시간 조회
   const loadPortalData = useCallback(async () => {
     setLoading(true);
     setErrorMsg(null);
@@ -166,15 +185,28 @@ export const App: React.FC = () => {
     }));
   }, []);
 
-  const handleAddMunicipalEvent = useCallback((rawItem: MunicipalRawFeedItem) => {
-    const updated = addCustomMunicipalEvent(rawItem);
-    setMunicipalEvents(updated);
+  // Firestore 문서 추가/수정 핸들러 (실시간 조합 즉시 갱신)
+  const handleSaveFirestoreDoc = useCallback(async (docData: FirestoreEventDoc) => {
+    const { savedDoc, syncedWithCloud } = await upsertFirestoreEventDoc(docData);
+    setFirestoreDocs((prev) => {
+      const map = new Map<string, FirestoreEventDoc>();
+      prev.forEach((d) => map.set(d.id, d));
+      map.set(savedDoc.id, savedDoc);
+      return Array.from(map.values());
+    });
+    setFirestoreCloudSynced(syncedWithCloud);
+    return syncedWithCloud;
   }, []);
 
-  // 전체 통합 이벤트 목록 (지도 집계용)
+  // [핵심] 공공데이터포털 실시간 조회 데이터 + Firebase Firestore 문서 실시간 조합(Composition)
   const allCombinedEvents = useMemo(() => {
-    return [...portalEvents, ...municipalEvents];
-  }, [portalEvents, municipalEvents]);
+    return composeEventsWithFirestore(portalEvents, firestoreDocs);
+  }, [portalEvents, firestoreDocs]);
+
+  const selectedEvent = useMemo(() => {
+    if (!selectedEventId) return null;
+    return allCombinedEvents.find((e) => e.id === selectedEventId) || null;
+  }, [allCombinedEvents, selectedEventId]);
 
   // 현재 선택된 행정구역(시도/시군구) 기준 출처별 건수
   const regionalSourceCounts = useMemo(() => {
@@ -228,12 +260,17 @@ export const App: React.FC = () => {
       }
       if (kw) {
         const hay =
-          `${ev.title} ${ev.addr1} ${ev.regionName} ${ev.sigunguName} ${ev.lclsSystm3Name} ${ev.sourceLabel}`.toLowerCase();
+          `${ev.title} ${ev.addr1} ${ev.regionName} ${ev.sigunguName} ${ev.lclsSystm3Name} ${ev.sourceLabel} ${ev.invitation || ''} ${ev.organizer || ''}`.toLowerCase();
         if (!hay.includes(kw)) return false;
       }
       return true;
     });
   }, [allCombinedEvents, filters]);
+
+  const handleRefreshAll = useCallback(() => {
+    loadPortalData();
+    loadFirestoreData();
+  }, [loadPortalData, loadFirestoreData]);
 
   return (
     <div className={styles.appShell}>
@@ -242,15 +279,16 @@ export const App: React.FC = () => {
         detectedFormat={detectedFormat}
         loading={loading}
         totalPortalCount={portalEvents.length}
-        totalMunicipalCount={municipalEvents.length}
+        totalFirestoreCount={firestoreDocs.length}
+        firestoreCloudSynced={firestoreCloudSynced}
         onFormatModeChange={handleFormatModeChange}
-        onRefresh={loadPortalData}
+        onRefresh={handleRefreshAll}
         onOpenMunicipalModal={() => setMunicipalModalOpen(true)}
         onOpenRegistryModal={() => setRegistryModalOpen(true)}
       />
 
       <main className={styles.mainContainer}>
-        {/* 좌측: 대한민국 17개 시·도 행정지도 + 250개 시·군·구 정식 확대지도 + API 인스펙터 */}
+        {/* 좌측: 대한민국 17개 시·도 행정지도 + 250개 시·군·구 정식 확대지도 + API & Firestore 인스펙터 */}
         <aside className={styles.leftColumn}>
           <KoreaAdminMap
             selectedRegionId={filters.regionId}
@@ -261,19 +299,21 @@ export const App: React.FC = () => {
             filteredEvents={filteredEvents}
             onSelectRegion={handleSelectRegion}
             onSelectSigungu={handleSelectSigungu}
-            onSelectEvent={setSelectedEvent}
+            onSelectEvent={(ev) => setSelectedEventId(ev.id)}
           />
 
           <div className={styles.apiInspectorCard}>
             <div className={styles.inspectorTitle}>
-              <span>🔌 공공데이터포털 KorService2 실시간 연동 상태</span>
+              <span>🔌 KorService2 + 🔥 Firebase (`koreaeventlist`) 조합 상태</span>
               <span>
-                매칭 총건수: <strong>{apiTotalCount.toLocaleString()}건</strong>
+                포털 총건수: <strong>{apiTotalCount.toLocaleString()}건</strong>
               </span>
             </div>
+            <span>· {firestoreStatusMsg}</span>
             <span>
-              · 응답 파서 모드: <strong>{detectedFormat}</strong> · 지자체 홍보DB:{' '}
-              <strong>1단계 17개 + 2단계 250개 로드됨</strong>
+              · 필수 연결키: <strong>portalContentId</strong> +{' '}
+              <strong>lDongRegnCd/lDongSignguCd</strong> · 응답포맷:{' '}
+              <strong>{detectedFormat}</strong>
             </span>
             <code className={styles.endpointCode}>{lastRequestUrl}</code>
           </div>
@@ -294,7 +334,7 @@ export const App: React.FC = () => {
             selectedRegionId={filters.regionId}
             selectedSigunguCode={filters.sigunguCode}
             loading={loading}
-            onSelectEvent={setSelectedEvent}
+            onSelectEvent={(ev) => setSelectedEventId(ev.id)}
           />
         </div>
       </main>
@@ -303,14 +343,15 @@ export const App: React.FC = () => {
         event={selectedEvent}
         registry={promoRegistry}
         formatMode={filters.formatMode}
-        onClose={() => setSelectedEvent(null)}
+        onClose={() => setSelectedEventId(null)}
+        onSaveFirestoreDoc={handleSaveFirestoreDoc}
       />
 
       <MunicipalAdapterModal
         open={municipalModalOpen}
         defaultRegionId={filters.regionId}
         onClose={() => setMunicipalModalOpen(false)}
-        onAddEvent={handleAddMunicipalEvent}
+        onAddFirestoreDoc={handleSaveFirestoreDoc}
       />
 
       <PromoRegistryModal

@@ -154,7 +154,8 @@ let cachedRegistry: AdminPromoRegistryData | null = null;
 
 export async function loadAdminPromoRegistry(): Promise<AdminPromoRegistryData> {
   if (cachedRegistry) return cachedRegistry;
-  const res = await fetch('/geo/admin-promo-registry.json');
+  const baseUrl = import.meta.env.BASE_URL || '/';
+  const res = await fetch(`${baseUrl}geo/admin-promo-registry.json`);
   const data = (await res.json()) as AdminPromoRegistryData;
   cachedRegistry = data;
   return data;

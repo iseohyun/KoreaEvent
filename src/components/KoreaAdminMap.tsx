@@ -69,9 +69,10 @@ export const KoreaAdminMap: React.FC<KoreaAdminMapProps> = ({
 
   // 정식 행정경계 GeoJSON 로드 (시·도 17개 + 시·군·구 250개)
   useEffect(() => {
+    const baseUrl = import.meta.env.BASE_URL || '/';
     Promise.all([
-      fetch('/geo/skorea-provinces-geo.json').then((r) => r.json()),
-      fetch('/geo/skorea-municipalities-geo.json').then((r) => r.json()),
+      fetch(`${baseUrl}geo/skorea-provinces-geo.json`).then((r) => r.json()),
+      fetch(`${baseUrl}geo/skorea-municipalities-geo.json`).then((r) => r.json()),
     ])
       .then(([provData, muniData]) => {
         setProvincesGeo(provData);

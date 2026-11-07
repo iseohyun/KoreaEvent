@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Calendar, Landmark, MapPin, Phone } from 'lucide-react';
+import { Calendar, Clock, Landmark, Link2, MapPin, Phone } from 'lucide-react';
 import { REGION_BY_ID } from '../constants/regions';
 import { findDeepPromoMatch } from '../services/promoEnrichmentService';
 import { UnifiedEventItem } from '../types/event';
@@ -90,8 +90,12 @@ export const EventCardGrid: React.FC<EventCardGridProps> = ({
 
       {loading && events.length === 0 ? (
         <div className={styles.emptyBox}>
-          <strong>공공데이터포털 KorService2 및 지자체 행사 데이터를 불러오는 중입니다...</strong>
-          <span>법정동 코드 및 신분류체계(EV01~EV03) 기준으로 자동 분류합니다.</span>
+          <strong>
+            공공데이터포털 KorService2 및 Firebase Firestore 행사 데이터를 불러오는 중입니다...
+          </strong>
+          <span>
+            필수 연결 키 2종(portalContentId · 법정동 코드) 기준으로 실시간 조합합니다.
+          </span>
         </div>
       ) : events.length === 0 ? (
         <div className={styles.emptyBox}>
@@ -104,6 +108,9 @@ export const EventCardGrid: React.FC<EventCardGridProps> = ({
             const statusInfo = getStatusInfo(ev.status);
             const isPortal = ev.source === 'PUBLIC_PORTAL';
             const deepMatch = findDeepPromoMatch(ev.contentId, ev.title);
+            const hasFirestore = Boolean(ev.firestoreDoc);
+            const linkCount = ev.links?.length || 0;
+
             return (
               <article
                 key={ev.id}
@@ -134,7 +141,7 @@ export const EventCardGrid: React.FC<EventCardGridProps> = ({
                         isPortal ? styles.sourceBadgePortal : styles.sourceBadgeLocal
                       }
                     >
-                      {isPortal ? '공공데이터포털' : '행정홈페이지'}
+                      {isPortal ? '공공데이터포털' : '행정홈페이지·DB'}
                     </span>
                     <span className={`${styles.statusBadge} ${statusInfo.cls}`}>
                       {statusInfo.label}
@@ -150,19 +157,28 @@ export const EventCardGrid: React.FC<EventCardGridProps> = ({
                     <span className={`${styles.categoryTag} ${getCategoryClass(ev.lclsSystm2)}`}>
                       {ev.lclsSystm2Name} · {ev.lclsSystm3Name}
                     </span>
-                    {deepMatch && (
+                    {(hasFirestore || deepMatch) && (
                       <span className={styles.promoMatchedTag}>
-                        ✨ 지자체 홍보 상세연동
+                        🔥 Firestore 조합 · 1:N 링크({linkCount || 3})
                       </span>
                     )}
                   </div>
 
                   <h3 className={styles.cardTitle}>{ev.title}</h3>
 
-                  {deepMatch && (
+                  {ev.invitation ? (
                     <div className={styles.promoPreviewBanner}>
-                      🏛️ <strong>{deepMatch.promoPortalName}</strong> 매칭 요약 및 별도 링크 결합됨
+                      💌 <strong>초댓말:</strong>{' '}
+                      {ev.invitation.length > 84
+                        ? `${ev.invitation.slice(0, 84)}...`
+                        : ev.invitation}
                     </div>
+                  ) : (
+                    deepMatch && (
+                      <div className={styles.promoPreviewBanner}>
+                        🏛️ <strong>{deepMatch.promoPortalName}</strong> 매칭 요약 및 별도 링크 결합됨
+                      </div>
+                    )
                   )}
 
                   <div className={styles.infoList}>
@@ -172,22 +188,37 @@ export const EventCardGrid: React.FC<EventCardGridProps> = ({
                         {formatDateStr(ev.startDate)} ~ {formatDateStr(ev.endDate)}
                       </span>
                     </div>
+                    {ev.eventTime && (
+                      <div className={styles.infoRow}>
+                        <Clock size={13} />
+                        <span className={styles.infoText}>{ev.eventTime}</span>
+                      </div>
+                    )}
                     <div className={styles.infoRow}>
                       <MapPin size={13} />
                       <span className={styles.infoText}>{ev.addr1 || ev.regionName}</span>
                     </div>
-                    {ev.tel && (
+                    {linkCount > 0 ? (
                       <div className={styles.infoRow}>
-                        <Phone size={13} />
-                        <span className={styles.infoText}>{ev.tel}</span>
+                        <Link2 size={13} />
+                        <span className={styles.infoText}>
+                          1:N 홍보링크 {linkCount}건 ({ev.links?.[0]?.label})
+                        </span>
                       </div>
+                    ) : (
+                      ev.tel && (
+                        <div className={styles.infoRow}>
+                          <Phone size={13} />
+                          <span className={styles.infoText}>{ev.tel}</span>
+                        </div>
+                      )
                     )}
                   </div>
                 </div>
 
                 <div className={styles.cardFooter}>
-                  <span>{ev.sourceLabel}</span>
-                  <span className={styles.detailTrigger}>상세정보 보기 →</span>
+                  <span>{ev.organizer || ev.sourceLabel}</span>
+                  <span className={styles.detailTrigger}>상세·초댓말 보기 →</span>
                 </div>
               </article>
             );
