@@ -1,4 +1,4 @@
-import { MajorCategoryCode } from '../types/event';
+import { MajorCategoryCode, SpecialPromoSport, UnifiedEventItem } from '../types/event';
 
 export interface SubCategoryDef {
   code: string;
@@ -70,4 +70,264 @@ export function getMajorCategoryName(code: string): string {
 
 export function getSubCategoryName(code: string): string {
   return SUB_CATEGORIES[code]?.name || '일반행사';
+}
+
+export interface SpecialPromoFormatDef {
+  code: string;
+  label: string;
+  shortLabel: string;
+}
+
+/**
+ * 특별 홍보관 4대 종목별(수영 · 러닝 · 자전거 · 철인) 전용 행사 형태 분류 체계
+ */
+export const SPECIAL_PROMO_EVENT_FORMATS: Record<
+  SpecialPromoSport,
+  SpecialPromoFormatDef[]
+> = {
+  SWIMMING: [
+    { code: 'SWIM_MASTERS', label: '마스터즈 · 생활체육', shortLabel: '마스터즈' },
+    { code: 'SWIM_OPENWATER', label: '오픈워터 · 바다수영', shortLabel: '오픈워터' },
+    {
+      code: 'SWIM_YOUTH',
+      label: '청소년 (학생·꿈나무·소년)',
+      shortLabel: '청소년(학생·꿈나무·소년)',
+    },
+    { code: 'SWIM_DIVING', label: '다이빙', shortLabel: '다이빙' },
+    { code: 'SWIM_WATERPOLO', label: '수구', shortLabel: '수구' },
+    {
+      code: 'SWIM_ELITE_OTHER',
+      label: '경영 선수권 · 아티스틱 · 기타',
+      shortLabel: '경영·아티스틱·기타',
+    },
+  ],
+  RUNNING: [
+    { code: 'RUN_FULL', label: '풀코스 (Full · 42.195km)', shortLabel: '풀코스(Full)' },
+    { code: 'RUN_HALF', label: '하프마라톤 (Half · 21.1km)', shortLabel: '하프(Half)' },
+    {
+      code: 'RUN_10K_SHORT',
+      label: '10km · 단축 (5K/10K/건강달리기)',
+      shortLabel: '10km·단축(5K/10K)',
+    },
+    {
+      code: 'RUN_TRAIL_ULTRA',
+      label: '트레일러닝 · 울트라 · 산악/임도런',
+      shortLabel: '트레일러닝·울트라',
+    },
+    {
+      code: 'RUN_RELAY_FEST',
+      label: '릴레이 · 이색 · 러닝페스티벌',
+      shortLabel: '릴레이·이색·페스티벌',
+    },
+  ],
+  CYCLING: [
+    {
+      code: 'CYC_GRANFONDO',
+      label: '그란폰도 · 메디오폰도 · 랠리',
+      shortLabel: '그란폰도·메디오폰도',
+    },
+    {
+      code: 'CYC_ROAD_CRIT',
+      label: '도로사이클 · 크리테리움 · 힐클라임',
+      shortLabel: '도로사이클·크리테리움',
+    },
+    { code: 'CYC_MTB', label: 'MTB · 산악자전거 · 그래블', shortLabel: 'MTB·산악자전거' },
+    {
+      code: 'CYC_PARADE_FEST',
+      label: '시민 자전거 대행진 · 바이크 페스티벌',
+      shortLabel: '시민 대행진·페스티벌',
+    },
+  ],
+  TRIATHLON: [
+    {
+      code: 'TRI_IRONMAN_HALF',
+      label: '아이언맨 · 장거리 (Full / 70.3 / 하프)',
+      shortLabel: '아이언맨·장거리',
+    },
+    {
+      code: 'TRI_STANDARD_SPRINT',
+      label: '스탠다드 (올림픽) · 스프린트',
+      shortLabel: '스탠다드·스프린트',
+    },
+    {
+      code: 'TRI_AQUATHLON',
+      label: '아쿠아슬론 (수영+달리기)',
+      shortLabel: '아쿠아슬론',
+    },
+    {
+      code: 'TRI_DUATHLON',
+      label: '듀애슬론 (달리기+자전거)',
+      shortLabel: '듀애슬론',
+    },
+    {
+      code: 'TRI_EDUCATION',
+      label: '심판 · 대회규정 교육 · 세미나',
+      shortLabel: '심판·규정교육',
+    },
+  ],
+};
+
+/**
+ * 특별 홍보관 종목별 행사의 세부 행사형태(1개 이상) 판별
+ */
+export function classifySpecialPromoEventFormats(
+  sport: SpecialPromoSport,
+  ev: Pick<UnifiedEventItem, 'title' | 'invitation' | 'scheduleNote' | 'organizer'>
+): string[] {
+  const txt = [ev.title, ev.invitation, ev.scheduleNote, ev.organizer]
+    .filter(Boolean)
+    .join(' ');
+  const out: string[] = [];
+
+  if (sport === 'SWIMMING') {
+    if (/마스터즈|생활체육|동호인|대축전|시민수영|구민수영|클럽대항/i.test(txt)) {
+      out.push('SWIM_MASTERS');
+    }
+    if (
+      /오픈\s*워터|바다\s*수영|해수욕장|펭귄|한강\s*건너기|횡단|OWS|Water\s*Swimming/i.test(
+        txt
+      )
+    ) {
+      out.push('SWIM_OPENWATER');
+    }
+    if (
+      /청소년|학생|꿈나무|소년|초\s*[·.,]?\s*중|유소년|어린이|교육감|교보생명컵/i.test(
+        txt
+      )
+    ) {
+      out.push('SWIM_YOUTH');
+    }
+    if (/다이빙/i.test(txt)) {
+      out.push('SWIM_DIVING');
+    }
+    if (/수구/i.test(txt)) {
+      out.push('SWIM_WATERPOLO');
+    }
+    if (
+      /아티스틱|선수권|대통령배|동아수영|회장배|국가대표|전국체육대회|등급제|심판|강습회/i.test(
+        txt
+      ) ||
+      out.length === 0
+    ) {
+      out.push('SWIM_ELITE_OTHER');
+    }
+  } else if (sport === 'RUNNING') {
+    if (/풀코스|FULL|4Full|풀\s*[,/]|마라톤\s*대회/i.test(txt)) {
+      out.push('RUN_FULL');
+    }
+    if (/하프|HALF/i.test(txt)) {
+      out.push('RUN_HALF');
+    }
+    if (
+      /10\s*km|10\s*K|5\s*km|5\s*K|7\s*km|3\s*km|단축|건강\s*달리기|구보/i.test(
+        txt
+      )
+    ) {
+      out.push('RUN_10K_SHORT');
+    }
+    if (/트레일|임도런|산악|울트라|100K|50K|35K|32km/i.test(txt)) {
+      out.push('RUN_TRAIL_ULTRA');
+    }
+    if (
+      /릴레이|페스티벌|FESTA|알몸|나이트|빵빵|댕댕|어스|기부|윷놀이|팀마라톤|클럽대항|휠체어|인라인/i.test(
+        txt
+      ) ||
+      out.length === 0
+    ) {
+      out.push('RUN_RELAY_FEST');
+    }
+  } else if (sport === 'CYCLING') {
+    if (
+      /그란폰도|메디오폰도|GRANFONDO|Gran\s*Fondo|Medio\s*Fondo|랠리/i.test(txt)
+    ) {
+      out.push('CYC_GRANFONDO');
+    }
+    if (
+      /크리테리움|힐클라임|투르\s*드|Tour\s*de|도로\s*사이클|전국자전거대회/i.test(
+        txt
+      )
+    ) {
+      out.push('CYC_ROAD_CRIT');
+    }
+    if (/MTB|산악\s*자전거|왕방산/i.test(txt)) {
+      out.push('CYC_MTB');
+    }
+    if (/대행진|페스타|페스티벌|대축전|시민|밸런스/i.test(txt) || out.length === 0) {
+      out.push('CYC_PARADE_FEST');
+    }
+  } else if (sport === 'TRIATHLON') {
+    const isEdu = /규정\s*정기교육|심판|보수교육|강습회|워크숍|세미나/i.test(txt);
+    if (isEdu) {
+      out.push('TRI_EDUCATION');
+    } else {
+      if (/아이언맨|IRONMAN|70\.3|하프코스|챌린지\s*군산/i.test(txt)) {
+        out.push('TRI_IRONMAN_HALF');
+      }
+      if (/아쿠아슬론|AQUATHLON/i.test(txt)) {
+        out.push('TRI_AQUATHLON');
+      }
+      if (/듀애슬론|DUATHLON/i.test(txt)) {
+        out.push('TRI_DUATHLON');
+      }
+      if (
+        /트라이애슬론|철인\s*3종|해양스포츠제전|전국체육대회|스탠다드|스프린트/i.test(
+          txt
+        ) ||
+        out.length === 0
+      ) {
+        out.push('TRI_STANDARD_SPRINT');
+      }
+    }
+  }
+
+  return out;
+}
+
+export function isSpecialPromoFormatCode(code: string): boolean {
+  return /^(?:SWIM_|RUN_|CYC_|TRI_)/.test(String(code || ''));
+}
+
+export function matchesSpecialPromoEventFormat(
+  sport: SpecialPromoSport,
+  ev: Pick<UnifiedEventItem, 'title' | 'invitation' | 'scheduleNote' | 'organizer'>,
+  formatCode: string
+): boolean {
+  if (!formatCode || formatCode === 'ALL') return true;
+  const codes = classifySpecialPromoEventFormats(sport, ev);
+  return codes.includes(formatCode);
+}
+
+export function getSpecialPromoFormatShortLabels(
+  sport: SpecialPromoSport,
+  ev: Pick<UnifiedEventItem, 'title' | 'invitation' | 'scheduleNote' | 'organizer'>
+): string[] {
+  const defs = SPECIAL_PROMO_EVENT_FORMATS[sport] || [];
+  const codes = classifySpecialPromoEventFormats(sport, ev);
+  return defs.filter((d) => codes.includes(d.code)).map((d) => d.shortLabel);
+}
+
+/**
+ * 특별 홍보관 4대 종목의 모든 행사 형태를 기본적으로 선택(true) 상태로 초기화
+ */
+export function buildDefaultSpecialPromoFormats(): Record<string, boolean> {
+  const map: Record<string, boolean> = {};
+  (Object.keys(SPECIAL_PROMO_EVENT_FORMATS) as SpecialPromoSport[]).forEach((sport) => {
+    SPECIAL_PROMO_EVENT_FORMATS[sport].forEach((fmt) => {
+      map[fmt.code] = true;
+    });
+  });
+  return map;
+}
+
+/**
+ * 복수 선택된 행사 형태 맵 기준으로 해당 대회가 1개 이상의 선택된 형태에 속하는지 검사
+ */
+export function matchesSpecialPromoMultiFormats(
+  sport: SpecialPromoSport,
+  ev: Pick<UnifiedEventItem, 'title' | 'invitation' | 'scheduleNote' | 'organizer'>,
+  selectedMap?: Record<string, boolean>
+): boolean {
+  if (!selectedMap) return true;
+  const codes = classifySpecialPromoEventFormats(sport, ev);
+  return codes.some((code) => selectedMap[code] !== false);
 }

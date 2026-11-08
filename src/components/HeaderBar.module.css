@@ -63,6 +63,56 @@
   white-space: nowrap;
 }
 
+/* DB 상단 메뉴바: 크롤링 사이트 종목별 좌우 스크롤 탭 */
+.dbCrawlTabsScroll {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding: 2px 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.dbCrawlTabsScroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.dbCrawlTabsScroll::-webkit-scrollbar-thumb {
+  background: #93c5fd;
+  border-radius: 999px;
+}
+
+.dbCrawlTabBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid #93c5fd;
+  background: rgba(255, 255, 255, 0.82);
+  color: #1e3a8a;
+  font-size: 0.78rem;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.14s ease;
+}
+
+.dbCrawlTabBtn:hover {
+  background: #ffffff;
+  border-color: #2563eb;
+}
+
+.dbCrawlTabBtnActive {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.22);
+}
+
 .toolbarSection {
   display: flex;
   align-items: center;
@@ -322,6 +372,27 @@
   border-color: #ffffff;
   background: #ffffff;
   color: #2563eb;
+}
+
+.toggleCountBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.7rem;
+  font-weight: 800;
+  line-height: 1;
+  transition: all 0.15s ease;
+}
+
+.scopeToggleBtnChecked .toggleCountBadge {
+  background: rgba(255, 255, 255, 0.24);
+  color: #ffffff;
 }
 
 .detailSelect {

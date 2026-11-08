@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "crawl": "node scripts/crawl-municipal-events.mjs && node scripts/crawl-swimming-federations.mjs && node scripts/crawl-sports-all.mjs && node scripts/normalize-events.mjs",
+    "crawl": "node scripts/crawl-municipal-events.mjs && node scripts/crawl-swimming-federations.mjs && node scripts/crawl-sports-all.mjs && node scripts/normalize-events.mjs && node scripts/crawl-checkpoint-manager.mjs",
+    "crawl:full": "node scripts/crawl-municipal-events.mjs --full && node scripts/crawl-swimming-federations.mjs --full && node scripts/crawl-sports-all.mjs --full && node scripts/normalize-events.mjs && node scripts/crawl-checkpoint-manager.mjs",
+    "crawl:checkpoints": "node scripts/crawl-checkpoint-manager.mjs",
     "normalize-data": "node scripts/normalize-events.mjs"
   },
   "dependencies": {

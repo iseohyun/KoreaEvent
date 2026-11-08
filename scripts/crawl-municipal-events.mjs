@@ -34,6 +34,7 @@ import {
 } from 'firebase/firestore';
 import { computePromoLevel, isSportsEvent, isSwimEvent } from '../src/shared/promoPolicy.js';
 import { linkEventSeries } from '../src/shared/seriesLinker.js';
+import { bootstrapCheckpointsFromExistingEvents } from './crawl-checkpoint-manager.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1213,6 +1214,26 @@ async function runDailyCrawler() {
   );
 
   const crawledDocsMap = new Map();
+  let preservedPortalCount = 0;
+  try {
+    const prevRaw = await fs.readFile(OUTPUT_JSON_PATH, 'utf-8');
+    const prevJson = JSON.parse(prevRaw);
+    if (Array.isArray(prevJson.events)) {
+      for (const ev of prevJson.events) {
+        if (ev && ev.id) {
+          crawledDocsMap.set(ev.id, ev);
+          if (String(ev.id).startsWith('portal-')) {
+            preservedPortalCount++;
+          }
+        }
+      }
+      console.log(
+        `[Step 2-0] 기존 스냅샷(${crawledDocsMap.size}건, 공공포털 ${preservedPortalCount}건) 로드 완료 — 증분 병합 준비`
+      );
+    }
+  } catch {
+    // 최초 실행 시 빈 맵에서 시작
+  }
 
   // 2-A) 267개 지자체 사이트에서 직접 추출된 홍보 게시글 등록
   extractedMunicipalPosts.forEach((post, idx) => {
@@ -1602,7 +1623,7 @@ async function runDailyCrawler() {
           url: s.usedUrl || s.url,
           snippets: s.swimSnippets,
         })),
-        portalTotalScanned,
+        portalTotalScanned: portalTotalScanned || preservedPortalCount,
         portalSwimMatchesCount: portalSwimMatches.length,
         portalSwimMatches: portalSwimMatches.map((m) => ({
           contentid: m.contentid,
@@ -1610,6 +1631,21 @@ async function runDailyCrawler() {
           addr1: m.addr1,
           eventstartdate: m.eventstartdate,
           eventenddate: m.eventenddate,
+        })),
+        municipalSiteScanRecords: siteScanResults.map((s) => ({
+          key: s.key,
+          tier: s.tier,
+          name: s.name,
+          lDongRegnCd: s.lDongRegnCd,
+          lDongSignguCd: s.lDongSignguCd,
+          url: s.url,
+          usedUrl: s.usedUrl || s.url,
+          reachable: s.reachable,
+          statusCode: s.statusCode,
+          elapsedMs: s.elapsedMs,
+          extractedPostCount: s.extractedPostCount,
+          festivalMentionCount: s.festivalMentionCount,
+          swimMentionCount: s.swimMentionCount,
         })),
       },
       null,
@@ -1661,11 +1697,19 @@ async function runDailyCrawler() {
     );
   }
 
+  // 사이트별 마지막 게시글 ID·수집시각·날짜범위 체크포인트(crawl-checkpoints.json) 업데이트
+  bootstrapCheckpointsFromExistingEvents();
+
   console.log('================================================================');
-  if (portalStepFailed) {
-    console.error('[Crawler] 핵심 단계(KorService2) 실패로 비정상 종료합니다 (exit 1).');
+  if (portalStepFailed && preservedPortalCount === 0) {
+    console.error('[Crawler] 핵심 단계(KorService2) 실패 및 기존 스냅샷 부재로 비정상 종료합니다 (exit 1).');
     console.log('================================================================');
     process.exit(1);
+  }
+  if (portalStepFailed) {
+    console.warn(
+      `[Crawler] KorService2 API 키 미설정 또는 응답 지연으로 기존 공공포털 스냅샷(${preservedPortalCount}건)을 유지하고 다음 단계로 진행합니다.`
+    );
   }
   console.log('[Crawler] 전수 스캔 및 시리즈 매칭 JSON 생성 완료!');
   console.log('================================================================');

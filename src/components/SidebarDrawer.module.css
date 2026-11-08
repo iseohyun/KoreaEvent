@@ -187,4 +187,7 @@
   padding: 12px 12px 16px;
   border-top: 1px solid var(--border-color);
   background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }

@@ -15,7 +15,7 @@
  *     - 1주 전: 파랑 50%, 2주 전: 파랑 25%, 3주 전: 파랑 10%
  *     - 동일 지자체에 2개 이상의 표시할 대회가 존재할 때, 오늘(기준 주)과 가장 가까운 대회를 기준으로 지도에서 색상 표시
  */
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Building2,
   Calendar,
@@ -24,9 +24,13 @@ import {
   ExternalLink,
   FileText,
   Globe,
+  Layers,
   MapPin,
+  RotateCcw,
   Share2,
   Ticket,
+  ZoomIn,
+  ZoomOut,
 } from 'lucide-react';
 import {
   CalendarDisplayOptions,
@@ -46,6 +50,7 @@ import {
   SPORT_LABELS,
 } from '../shared/promoPolicy';
 import { EventCalendarView } from './EventCalendarView';
+import { getSpecialPromoFormatShortLabels } from '../constants/categories';
 import { GeoCollection, GeoFeature } from './KoreaAdminMap';
 import styles from './SpecialPromoView.module.css';
 import { formatYmdRange } from '../shared/dateFormat';
@@ -71,11 +76,33 @@ interface MapWeekRow {
   events: UnifiedEventItem[];
 }
 
+type WeekDiffOffset = -3 | -2 | -1 | 0 | 1 | 2 | 3;
+
+interface WeekLegendItemConfig {
+  diff: WeekDiffOffset;
+  label: string;
+  colorTone: 'blue' | 'red';
+  enabled: boolean;
+  opacityPct: number; // 0 ~ 100
+}
+
+const WEEK_DIFF_ORDER: WeekDiffOffset[] = [-3, -2, -1, 0, 1, 2, 3];
+
+const DEFAULT_WEEK_LEGEND_CONFIGS: Record<WeekDiffOffset, WeekLegendItemConfig> = {
+  [-3]: { diff: -3, label: '3주전', colorTone: 'blue', enabled: true, opacityPct: 10 },
+  [-2]: { diff: -2, label: '2주전', colorTone: 'blue', enabled: true, opacityPct: 25 },
+  [-1]: { diff: -1, label: '1주전', colorTone: 'blue', enabled: true, opacityPct: 50 },
+  [0]: { diff: 0, label: '이번주', colorTone: 'red', enabled: true, opacityPct: 100 },
+  [1]: { diff: 1, label: '1주후', colorTone: 'red', enabled: true, opacityPct: 50 },
+  [2]: { diff: 2, label: '2주후', colorTone: 'red', enabled: true, opacityPct: 25 },
+  [3]: { diff: 3, label: '3주후', colorTone: 'red', enabled: true, opacityPct: 10 },
+};
+
 interface MuniHighlightInfo {
-  diff: number; // -3 ~ +3
+  diff: WeekDiffOffset; // -3 ~ +3
   distanceDays: number;
   primaryEvent: UnifiedEventItem;
-  allWindowEvents: Array<{ diff: number; event: UnifiedEventItem }>;
+  allWindowEvents: Array<{ diff: WeekDiffOffset; event: UnifiedEventItem }>;
 }
 
 const SCOPE_CARD_CLASS: Record<PromoLevel, string> = {
@@ -95,6 +122,8 @@ const SCOPE_PILL_CLASS: Record<PromoLevel, string> = {
 const SVG_WIDTH = 680;
 const SVG_HEIGHT = 440;
 const SVG_PAD = 16;
+const MIN_MAP_ZOOM = 1;
+const MAX_MAP_ZOOM = 7;
 
 function pad2(n: number): string {
   return String(n).padStart(2, '0');
@@ -230,37 +259,33 @@ function doesFeatureMatchEvent(feat: GeoFeature, ev: UnifiedEventItem): boolean 
 }
 
 /**
- * 주차 차이(diff: -3 ~ +3)에 따른 지도 지자체 폴리곤 색상 반환
- * - 0주(선택 주): 빨간색 100%
- * - 1주 후(+1): 빨강 50%, 2주 후(+2): 빨강 25%, 3주 후(+3): 빨강 10%
- * - 1주 전(-1): 파랑 50%, 2주 전(-2): 파랑 25%, 3주 전(-3): 파랑 10%
+ * 주차 차이(diff: -3 ~ +3) 및 사용자 범례 설정(표시여부·% 농도)에 따른 지도 지자체 폴리곤 색상 반환
  */
-function getDiffFillColor(diff: number): string {
-  switch (diff) {
-    case 0:
-      return 'rgba(220, 38, 38, 1)'; // 당주: 빨간색 100%
-    case 1:
-      return 'rgba(239, 68, 68, 0.50)'; // 1주후: 빨강 50%
-    case 2:
-      return 'rgba(239, 68, 68, 0.25)'; // 2주후: 빨강 25%
-    case 3:
-      return 'rgba(239, 68, 68, 0.10)'; // 3주후: 빨강 10%
-    case -1:
-      return 'rgba(37, 99, 235, 0.50)'; // 1주전: 파랑 50%
-    case -2:
-      return 'rgba(37, 99, 235, 0.25)'; // 2주전: 파랑 25%
-    case -3:
-      return 'rgba(37, 99, 235, 0.10)'; // 3주전: 파랑 10%
-    default:
-      return '#f8fafc';
+function getDiffFillColor(
+  diff: WeekDiffOffset,
+  legendConfigs: Record<WeekDiffOffset, WeekLegendItemConfig>
+): string {
+  const cfg = legendConfigs[diff];
+  if (!cfg || !cfg.enabled) return '#f8fafc';
+  const alpha = Math.max(0, Math.min(100, cfg.opacityPct)) / 100;
+  if (diff === 0) {
+    return `rgba(220, 38, 38, ${alpha})`;
   }
+  if (diff > 0) {
+    return `rgba(239, 68, 68, ${alpha})`;
+  }
+  return `rgba(37, 99, 235, ${alpha})`;
 }
 
-function getDiffBadgeText(diff: number): string {
-  if (diff === 0) return '이번 주 (빨강 100%)';
-  if (diff > 0) return `${diff}주 후 (빨강 ${diff === 1 ? 50 : diff === 2 ? 25 : 10}%)`;
-  const abs = Math.abs(diff);
-  return `${abs}주 전 (파랑 ${abs === 1 ? 50 : abs === 2 ? 25 : 10}%)`;
+function getDiffBadgeText(
+  diff: WeekDiffOffset,
+  legendConfigs: Record<WeekDiffOffset, WeekLegendItemConfig>
+): string {
+  const cfg = legendConfigs[diff];
+  const pct = cfg ? cfg.opacityPct : 0;
+  if (diff === 0) return `이번주 (빨강 ${pct}%)`;
+  if (diff > 0) return `${diff}주후 (빨강 ${pct}%)`;
+  return `${Math.abs(diff)}주전 (파랑 ${pct}%)`;
 }
 
 export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
@@ -357,6 +382,162 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
 
   const [activeWeekIdx, setActiveWeekIdx] = useState<number>(todayWeekIdx);
   const weekRowRefs = useRef<Record<number, HTMLTableRowElement | null>>({});
+
+  // 지도 우상단 리모콘(범례 보이기/숨기기) 및 우하단 7단계 범례(3주전~3주후 표시여부 및 % 농도) 상태
+  const [showLegend, setShowLegend] = useState<boolean>(true);
+  const [legendConfigs, setLegendConfigs] = useState<
+    Record<WeekDiffOffset, WeekLegendItemConfig>
+  >(() => ({ ...DEFAULT_WEEK_LEGEND_CONFIGS }));
+
+  const toggleLegendDiffEnabled = useCallback((diff: WeekDiffOffset) => {
+    setLegendConfigs((prev) => ({
+      ...prev,
+      [diff]: {
+        ...prev[diff],
+        enabled: !prev[diff].enabled,
+      },
+    }));
+  }, []);
+
+  const updateLegendDiffOpacity = useCallback(
+    (diff: WeekDiffOffset, rawPct: number) => {
+      const clamped = Math.max(0, Math.min(100, Math.round(Number(rawPct) || 0)));
+      setLegendConfigs((prev) => ({
+        ...prev,
+        [diff]: {
+          ...prev[diff],
+          opacityPct: clamped,
+        },
+      }));
+    },
+    []
+  );
+
+  const resetLegendConfigs = useCallback(() => {
+    setLegendConfigs({ ...DEFAULT_WEEK_LEGEND_CONFIGS });
+  }, []);
+
+  // 지도 확대/축소(휠 스크롤 및 리모콘) & 드래그 이동 상태
+  const [mapZoom, setMapZoom] = useState<number>(1);
+  const [mapPan, setMapPan] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [isDraggingMap, setIsDraggingMap] = useState<boolean>(false);
+  const dragStartRef = useRef<{
+    clientX: number;
+    clientY: number;
+    panX: number;
+    panY: number;
+    moved: boolean;
+  } | null>(null);
+  const mapCanvasRef = useRef<HTMLDivElement | null>(null);
+  const svgRef = useRef<SVGSVGElement | null>(null);
+
+  const clampPan = useCallback((panX: number, panY: number, zoom: number) => {
+    if (zoom <= 1.01) return { x: 0, y: 0 };
+    const maxOffsetX = ((zoom - 1) * SVG_WIDTH) / 2 + 60;
+    const maxOffsetY = ((zoom - 1) * SVG_HEIGHT) / 2 + 40;
+    return {
+      x: Math.max(-maxOffsetX, Math.min(maxOffsetX, panX)),
+      y: Math.max(-maxOffsetY, Math.min(maxOffsetY, panY)),
+    };
+  }, []);
+
+  const handleZoomByFactor = useCallback(
+    (factor: number, focalSvgX = SVG_WIDTH / 2, focalSvgY = SVG_HEIGHT / 2) => {
+      setMapZoom((prevZoom) => {
+        const nextZoom = Number(
+          Math.max(MIN_MAP_ZOOM, Math.min(MAX_MAP_ZOOM, prevZoom * factor)).toFixed(2)
+        );
+        if (nextZoom === prevZoom) return prevZoom;
+        setMapPan((prevPan) => {
+          if (nextZoom <= 1.01) return { x: 0, y: 0 };
+          const ratio = nextZoom / prevZoom;
+          const dx = focalSvgX - SVG_WIDTH / 2;
+          const dy = focalSvgY - SVG_HEIGHT / 2;
+          const nextPanX = dx - (dx - prevPan.x) * ratio;
+          const nextPanY = dy - (dy - prevPan.y) * ratio;
+          return clampPan(nextPanX, nextPanY, nextZoom);
+        });
+        return nextZoom;
+      });
+    },
+    [clampPan]
+  );
+
+  const handleResetMapZoom = useCallback(() => {
+    setMapZoom(1);
+    setMapPan({ x: 0, y: 0 });
+  }, []);
+
+  // 지도 위/아래 마우스 휠 스크롤로 확대/축소 (페이지 스크롤 간섭 방지를 위해 passive: false 등록)
+  useEffect(() => {
+    if (viewMode !== 'MAP') return;
+    const el = mapCanvasRef.current;
+    if (!el) return;
+
+    const onWheel = (e: WheelEvent) => {
+      const target = e.target as HTMLElement | null;
+      // 우하단 범례나 우상단 리모콘 위에서 스크롤할 때는 지도 줌 동작 제외
+      if (target && target.closest('[data-map-ui="true"]')) {
+        return;
+      }
+      e.preventDefault();
+
+      let focalX = SVG_WIDTH / 2;
+      let focalY = SVG_HEIGHT / 2;
+      const svgEl = svgRef.current;
+      if (svgEl) {
+        const rect = svgEl.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          focalX = ((e.clientX - rect.left) / rect.width) * SVG_WIDTH;
+          focalY = ((e.clientY - rect.top) / rect.height) * SVG_HEIGHT;
+        }
+      }
+
+      const factor = e.deltaY < 0 ? 1.18 : 1 / 1.18;
+      handleZoomByFactor(factor, focalX, focalY);
+    };
+
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, [viewMode, handleZoomByFactor]);
+
+  const handleMapMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return;
+    const target = e.target as HTMLElement | null;
+    if (target && target.closest('[data-map-ui="true"]')) return;
+    setIsDraggingMap(true);
+    dragStartRef.current = {
+      clientX: e.clientX,
+      clientY: e.clientY,
+      panX: mapPan.x,
+      panY: mapPan.y,
+      moved: false,
+    };
+  };
+
+  const handleMapMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDraggingMap || !dragStartRef.current) return;
+    const dxClient = e.clientX - dragStartRef.current.clientX;
+    const dyClient = e.clientY - dragStartRef.current.clientY;
+    if (Math.abs(dxClient) > 3 || Math.abs(dyClient) > 3) {
+      dragStartRef.current.moved = true;
+    }
+    const svgEl = svgRef.current;
+    const rect = svgEl ? svgEl.getBoundingClientRect() : null;
+    const scaleX = rect && rect.width > 0 ? SVG_WIDTH / rect.width : 1;
+    const scaleY = rect && rect.height > 0 ? SVG_HEIGHT / rect.height : 1;
+
+    const nextPan = clampPan(
+      dragStartRef.current.panX + dxClient * scaleX,
+      dragStartRef.current.panY + dyClient * scaleY,
+      mapZoom
+    );
+    setMapPan(nextPan);
+  };
+
+  const handleMapMouseUp = () => {
+    setIsDraggingMap(false);
+  };
 
   // 지도보기 진입 또는 기준 연도 변경 시 오늘이 포함된 주로 자동 선택
   useEffect(() => {
@@ -489,15 +670,16 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
     const activeRow = mapWeekRows[activeWeekIdx];
     const refMs = activeRow?.containsToday ? todayMs : activeRow?.midMs || todayMs;
 
-    // [-3주 ~ +3주] 윈도우에 속한 주차들의 이벤트 수집
+    // [-3주 ~ +3주] 윈도우에 속한 주차들의 이벤트 수집 (범례에서 표시여부가 체크된 주차만 반영)
     const windowEntries: Array<{
-      diff: number;
+      diff: WeekDiffOffset;
       absDiff: number;
       distanceDays: number;
       event: UnifiedEventItem;
     }> = [];
 
-    for (let diff = -3; diff <= 3; diff += 1) {
+    for (const diff of WEEK_DIFF_ORDER) {
+      if (!legendConfigs[diff]?.enabled) continue;
       const targetIdx = activeWeekIdx + diff;
       if (targetIdx < 0 || targetIdx >= mapWeekRows.length) continue;
       const weekRow = mapWeekRows[targetIdx];
@@ -548,7 +730,7 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
     });
 
     return result;
-  }, [municipalitiesGeo, mapWeekRows, activeWeekIdx, todayMs]);
+  }, [municipalitiesGeo, mapWeekRows, activeWeekIdx, todayMs, legendConfigs]);
 
   // 지도 라벨: 같은 시(예: 창원시 5개 구, 수원시 4개 구)는 라벨을 하나만 표시 (가장 가까운 주의 구를 대표로)
   const mapLabelEntries = useMemo(() => {
@@ -587,16 +769,14 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
               현재 선택한 필터 조건에 해당하는 {sportLabel} 대회가 없습니다. (상단 필터에서 범위·연도·월 선택을 확인해 보세요)
             </div>
           ) : (
-            scopeGroups.map((group, groupIdx) => {
+            scopeGroups.map((group) => {
               const isExpanded = expandedScopes[group.level];
               return (
-                <React.Fragment key={group.level}>
-                  {groupIdx > 0 && <hr className={styles.levelDivider} />}
-
-                  <section
-                    className={styles.levelGroup}
-                    aria-label={group.scopeName}
-                  >
+                <section
+                  key={group.level}
+                  className={styles.levelGroup}
+                  aria-label={group.scopeName}
+                >
                     {/* 범위 분류 헤더 버튼: 클릭 시 펼치기/접기 애니메이션 */}
                     <button
                       type="button"
@@ -637,6 +817,10 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                             const specificLinks = (ev.links || []).filter((lnk) =>
                               isSpecificEventLink(lnk.url, lnk.label)
                             );
+                            const formatLabels = getSpecialPromoFormatShortLabels(
+                              sport,
+                              ev
+                            );
 
                             return (
                               <article
@@ -644,12 +828,20 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                                 className={`${styles.card} ${SCOPE_CARD_CLASS[ev.promoLevel]}`}
                                 onClick={() => onSelectEvent(ev)}
                               >
-                                {/* 1행: 범위 배지 + 제목 <---> 주최 */}
+                                {/* 1행: 범위 배지 + 행사 형태 배지 + 제목 <---> 주최 */}
                                 <div className={styles.rowBetween}>
                                   <div className={styles.titleRow}>
                                     <span className={SCOPE_PILL_CLASS[ev.promoLevel]}>
                                       {PROMO_LEVEL_SHORT_LABELS[ev.promoLevel]}
                                     </span>
+                                    {formatLabels.map((fmtLabel) => (
+                                      <span
+                                        key={fmtLabel}
+                                        className={styles.formatBadge}
+                                      >
+                                        {fmtLabel}
+                                      </span>
+                                    ))}
                                     <h3 className={styles.title}>{ev.title}</h3>
                                     {ev.seriesHistory &&
                                       ev.seriesHistory.length >= 2 && (
@@ -731,7 +923,6 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                       </div>
                     </div>
                   </section>
-                </React.Fragment>
               );
             })
           )}
@@ -762,36 +953,30 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                   <span className={styles.todayWeekTag}>오늘 포함 주</span>
                 )}
                 <span className={styles.keyGuideText}>
-                  ⌨️ 키보드 <strong>↑ / ↓ 방향키</strong>(또는 아래 행 클릭)로 주차를 이동합니다
+                  ⌨️ 키보드 <strong>↑ / ↓ 방향키</strong>로 주차 이동 · 🖱️ 지도{' '}
+                  <strong>위/아래 스크롤</strong>로 확대/축소 · 드래그로 이동
                 </span>
               </div>
 
-              <div className={styles.colorScaleLegend}>
-                <span className={styles.scaleChip} style={{ background: 'rgba(37, 99, 235, 0.10)', color: '#1e3a8a' }}>
-                  3주전(파랑 10%)
-                </span>
-                <span className={styles.scaleChip} style={{ background: 'rgba(37, 99, 235, 0.25)', color: '#1e3a8a' }}>
-                  2주전(파랑 25%)
-                </span>
-                <span className={styles.scaleChip} style={{ background: 'rgba(37, 99, 235, 0.50)', color: '#ffffff' }}>
-                  1주전(파랑 50%)
-                </span>
-                <span className={styles.scaleChip} style={{ background: 'rgba(220, 38, 38, 1)', color: '#ffffff', fontWeight: 900 }}>
-                  선택주(빨강 100%)
-                </span>
-                <span className={styles.scaleChip} style={{ background: 'rgba(239, 68, 68, 0.50)', color: '#ffffff' }}>
-                  1주후(빨강 50%)
-                </span>
-                <span className={styles.scaleChip} style={{ background: 'rgba(239, 68, 68, 0.25)', color: '#7f1d1d' }}>
-                  2주후(빨강 25%)
-                </span>
-                <span className={styles.scaleChip} style={{ background: 'rgba(239, 68, 68, 0.10)', color: '#7f1d1d' }}>
-                  3주후(빨강 10%)
-                </span>
+              <div className={styles.zoomStatusBadge}>
+                배율 <strong>{Math.round(mapZoom * 100)}%</strong>
               </div>
             </div>
 
-            <div className={styles.mapCanvasWrap}>
+            <div
+              ref={mapCanvasRef}
+              className={`${styles.mapCanvasWrap} ${
+                isDraggingMap ? styles.mapCanvasDragging : ''
+              }`}
+              onMouseDown={handleMapMouseDown}
+              onMouseMove={handleMapMouseMove}
+              onMouseUp={handleMapMouseUp}
+              onMouseLeave={() => {
+                setIsDraggingMap(false);
+                setHoveredFeature(null);
+              }}
+            >
+              {/* 좌상단 호버 툴팁 */}
               {hoveredFeature && (
                 <div className={styles.mapHoverTooltip}>
                   <strong>
@@ -803,12 +988,12 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                       hoveredFeature.properties.kostatCode
                     );
                     if (!info) {
-                      return <span>전후 3주 내 {sportLabel} 대회 없음</span>;
+                      return <span>표시 설정된 전후 3주 내 {sportLabel} 대회 없음</span>;
                     }
                     return (
                       <>
                         <span className={styles.tooltipDiffTag}>
-                          기준 표시: {getDiffBadgeText(info.diff)}
+                          기준 표시: {getDiffBadgeText(info.diff, legendConfigs)}
                         </span>
                         <span>대표 대회: {info.primaryEvent.title}</span>
                       </>
@@ -817,83 +1002,242 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                 </div>
               )}
 
+              {/* 우상단 지도 리모콘: 범례 보이기/숨기기 아이콘 + 확대/축소/초기화 */}
+              <div
+                className={styles.mapRemoteControl}
+                data-map-ui="true"
+                role="toolbar"
+                aria-label="지도 리모콘"
+              >
+                <button
+                  type="button"
+                  className={`${styles.remoteIconBtn} ${
+                    showLegend ? styles.remoteIconBtnActive : ''
+                  }`}
+                  onClick={() => setShowLegend((prev) => !prev)}
+                  title={showLegend ? '범례 숨기기' : '범례 보이기'}
+                  aria-label={showLegend ? '범례 숨기기' : '범례 보이기'}
+                  aria-pressed={showLegend}
+                >
+                  <Layers size={16} />
+                </button>
+                <div className={styles.remoteDivider} />
+                <button
+                  type="button"
+                  className={styles.remoteIconBtn}
+                  onClick={() => handleZoomByFactor(1.25)}
+                  disabled={mapZoom >= MAX_MAP_ZOOM}
+                  title="지도 확대 (마우스 휠 위로 스크롤)"
+                  aria-label="지도 확대"
+                >
+                  <ZoomIn size={16} />
+                </button>
+                <button
+                  type="button"
+                  className={styles.remoteIconBtn}
+                  onClick={() => handleZoomByFactor(1 / 1.25)}
+                  disabled={mapZoom <= MIN_MAP_ZOOM}
+                  title="지도 축소 (마우스 휠 아래로 스크롤)"
+                  aria-label="지도 축소"
+                >
+                  <ZoomOut size={16} />
+                </button>
+                <button
+                  type="button"
+                  className={styles.remoteIconBtn}
+                  onClick={handleResetMapZoom}
+                  disabled={mapZoom === 1 && mapPan.x === 0 && mapPan.y === 0}
+                  title="지도 배율·위치 초기화 (100%)"
+                  aria-label="지도 배율·위치 초기화"
+                >
+                  <RotateCcw size={15} />
+                </button>
+              </div>
+
+              {/* 우하단 범례: 3주전, 2주전, 1주전, 이번주, 1주후, 2주후, 3주후 표시여부 및 % 조절 */}
+              {showLegend && (
+                <aside
+                  className={styles.mapLegendFloatingBox}
+                  data-map-ui="true"
+                  aria-label="주차별 표시 및 농도 범례"
+                >
+                  <div className={styles.legendBoxHeader}>
+                    <span className={styles.legendBoxTitle}>주차별 범례 (표시 · %)</span>
+                    <button
+                      type="button"
+                      className={styles.legendResetBtn}
+                      onClick={resetLegendConfigs}
+                      title="범례 표시여부 및 % 기본값 복원"
+                    >
+                      초기화
+                    </button>
+                  </div>
+
+                  <div className={styles.legendRowsList}>
+                    {WEEK_DIFF_ORDER.map((diff) => {
+                      const item = legendConfigs[diff];
+                      const swatchBg = item.enabled
+                        ? getDiffFillColor(diff, legendConfigs)
+                        : '#f1f5f9';
+
+                      return (
+                        <div
+                          key={diff}
+                          className={`${styles.legendItemRow} ${
+                            !item.enabled ? styles.legendItemRowDisabled : ''
+                          } ${diff === 0 ? styles.legendItemRowCurrent : ''}`}
+                        >
+                          <label className={styles.legendCheckLabel}>
+                            <input
+                              type="checkbox"
+                              checked={item.enabled}
+                              onChange={() => toggleLegendDiffEnabled(diff)}
+                              className={styles.legendCheckbox}
+                            />
+                            <span
+                              className={styles.legendColorSwatch}
+                              style={{
+                                background: swatchBg,
+                                borderColor:
+                                  item.colorTone === 'red' ? '#dc2626' : '#2563eb',
+                              }}
+                            />
+                            <span className={styles.legendDiffName}>{item.label}</span>
+                          </label>
+
+                          <div className={styles.legendPctControls}>
+                            <input
+                              type="range"
+                              min={0}
+                              max={100}
+                              step={5}
+                              value={item.opacityPct}
+                              disabled={!item.enabled}
+                              onChange={(e) =>
+                                updateLegendDiffOpacity(diff, Number(e.target.value))
+                              }
+                              className={styles.legendRangeInput}
+                              aria-label={`${item.label} 농도 슬라이더`}
+                            />
+                            <div className={styles.legendPctNumberWrap}>
+                              <input
+                                type="number"
+                                min={0}
+                                max={100}
+                                step={5}
+                                value={item.opacityPct}
+                                disabled={!item.enabled}
+                                onChange={(e) =>
+                                  updateLegendDiffOpacity(diff, Number(e.target.value))
+                                }
+                                className={styles.legendPctNumberInput}
+                                aria-label={`${item.label} 농도 퍼센트`}
+                              />
+                              <span className={styles.legendPctUnit}>%</span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </aside>
+              )}
+
               {mapProjection && municipalitiesGeo ? (
                 <svg
+                  ref={svgRef}
                   viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
                   className={styles.twoLevelSvgMap}
                   role="img"
                   aria-label="전국 2단계 시군구 행정지도"
                 >
-                  {/* 2단계 전국 250개 시·군·구 폴리곤 한번에 렌더링 */}
-                  <g>
-                    {municipalitiesGeo.features.map((feat) => {
-                      const info = muniHighlightByKostatCode.get(
-                        feat.properties.kostatCode
-                      );
-                      const fill = info ? getDiffFillColor(info.diff) : '#f8fafc';
-                      const isCurrentWeekRed = info?.diff === 0;
-                      const d = mapProjection.geometryToSvgPath(feat.geometry);
+                  <g
+                    transform={`translate(${SVG_WIDTH / 2 + mapPan.x}, ${
+                      SVG_HEIGHT / 2 + mapPan.y
+                    }) scale(${mapZoom}) translate(${-SVG_WIDTH / 2}, ${
+                      -SVG_HEIGHT / 2
+                    })`}
+                  >
+                    {/* 2단계 전국 250개 시·군·구 폴리곤 한번에 렌더링 */}
+                    <g>
+                      {municipalitiesGeo.features.map((feat) => {
+                        const info = muniHighlightByKostatCode.get(
+                          feat.properties.kostatCode
+                        );
+                        const fill = info
+                          ? getDiffFillColor(info.diff, legendConfigs)
+                          : '#f8fafc';
+                        const isCurrentWeekRed = info?.diff === 0;
+                        const d = mapProjection.geometryToSvgPath(feat.geometry);
+                        const invScale = Math.pow(mapZoom, 0.65);
 
-                      return (
-                        <path
-                          key={feat.properties.kostatCode}
-                          d={d}
-                          fill={fill}
-                          stroke={isCurrentWeekRed ? '#991b1b' : '#cbd5e1'}
-                          strokeWidth={isCurrentWeekRed ? 1.3 : 0.45}
-                          className={styles.muniPolygon}
-                          onMouseEnter={() => setHoveredFeature(feat)}
-                          onMouseLeave={() => setHoveredFeature(null)}
-                          onClick={() => {
-                            if (info?.primaryEvent) {
-                              onSelectEvent(info.primaryEvent);
-                            }
-                          }}
-                        />
-                      );
-                    })}
-                  </g>
-
-                  {/* 1단계 17개 시·도 광역 경계선 오버레이 */}
-                  {provincesGeo && (
-                    <g pointerEvents="none">
-                      {provincesGeo.features.map((prov) => (
-                        <path
-                          key={`prov-${prov.properties.kostatCode}`}
-                          d={mapProjection.geometryToSvgPath(prov.geometry)}
-                          fill="none"
-                          stroke="#475569"
-                          strokeWidth={1.1}
-                          strokeOpacity={0.75}
-                        />
-                      ))}
+                        return (
+                          <path
+                            key={feat.properties.kostatCode}
+                            d={d}
+                            fill={fill}
+                            stroke={isCurrentWeekRed ? '#991b1b' : '#cbd5e1'}
+                            strokeWidth={(isCurrentWeekRed ? 1.3 : 0.45) / invScale}
+                            className={styles.muniPolygon}
+                            onMouseEnter={() => setHoveredFeature(feat)}
+                            onMouseLeave={() => setHoveredFeature(null)}
+                            onClick={() => {
+                              if (dragStartRef.current?.moved) return;
+                              if (info?.primaryEvent) {
+                                onSelectEvent(info.primaryEvent);
+                              }
+                            }}
+                          />
+                        );
+                      })}
                     </g>
-                  )}
 
-                  {/* 전후 3주 내 대회가 있는 지자체 라벨 표시 (선택 주 지자체는 굵은 빨강 강조) */}
-                  <g pointerEvents="none">
-                    {mapLabelEntries.map(({ feat, info }) => {
-                      const [cx, cy] = mapProjection.projectPoint(
-                        feat.properties.center[0],
-                        feat.properties.center[1]
-                      );
-                      const shortCity = getEventCityShortName(info.primaryEvent);
+                    {/* 1단계 17개 시·도 광역 경계선 오버레이 */}
+                    {provincesGeo && (
+                      <g pointerEvents="none">
+                        {provincesGeo.features.map((prov) => (
+                          <path
+                            key={`prov-${prov.properties.kostatCode}`}
+                            d={mapProjection.geometryToSvgPath(prov.geometry)}
+                            fill="none"
+                            stroke="#475569"
+                            strokeWidth={1.1 / Math.pow(mapZoom, 0.65)}
+                            strokeOpacity={0.75}
+                          />
+                        ))}
+                      </g>
+                    )}
 
-                      return (
-                        <text
-                          key={`lbl-${feat.properties.kostatCode}`}
-                          x={cx}
-                          y={cy}
-                          className={
-                            info.diff === 0
-                              ? styles.mapLabelCurrentWeek
-                              : styles.mapLabelWindowWeek
-                          }
-                        >
-                          {shortCity}
-                        </text>
-                      );
-                    })}
+                    {/* 전후 3주 내 대회가 있는 지자체 라벨 표시 (선택 주 지자체는 굵은 빨강 강조) */}
+                    <g pointerEvents="none">
+                      {mapLabelEntries.map(({ feat, info }) => {
+                        const [cx, cy] = mapProjection.projectPoint(
+                          feat.properties.center[0],
+                          feat.properties.center[1]
+                        );
+                        const shortCity = getEventCityShortName(info.primaryEvent);
+                        const invTextScale = Math.pow(mapZoom, 0.55);
+
+                        return (
+                          <text
+                            key={`lbl-${feat.properties.kostatCode}`}
+                            x={cx}
+                            y={cy}
+                            style={{
+                              fontSize: `${(info.diff === 0 ? 9.5 : 8) / invTextScale}px`,
+                              strokeWidth: `${(info.diff === 0 ? 2.8 : 2.2) / invTextScale}px`,
+                            }}
+                            className={
+                              info.diff === 0
+                                ? styles.mapLabelCurrentWeek
+                                : styles.mapLabelWindowWeek
+                            }
+                          >
+                            {shortCity}
+                          </text>
+                        );
+                      })}
+                    </g>
                   </g>
                 </svg>
               ) : (
@@ -947,7 +1291,7 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                             )}
                             {isSelected && (
                               <span className={styles.selectedRowBadge}>
-                                선택 (빨강 100%)
+                                이번주 (빨강 {legendConfigs[0].opacityPct}%)
                               </span>
                             )}
                             {!isSelected && Math.abs(diff) <= 3 && (
@@ -958,7 +1302,9 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                                     : styles.diffPastBadge
                                 }
                               >
-                                {diff > 0 ? `+${diff}주` : `${diff}주`}
+                                {diff > 0
+                                  ? `${diff}주후 (${legendConfigs[diff as WeekDiffOffset]?.opacityPct ?? 0}%)`
+                                  : `${Math.abs(diff)}주전 (${legendConfigs[diff as WeekDiffOffset]?.opacityPct ?? 0}%)`}
                               </span>
                             )}
                           </div>

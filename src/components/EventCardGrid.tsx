@@ -14,6 +14,67 @@ interface EventCardGridProps {
   onSelectEvent: (event: UnifiedEventItem) => void;
 }
 
+const DAY_MS = 1000 * 60 * 60 * 24;
+
+function getDaysRemainingUntilStart(
+  startDateYmd: string,
+  todayMidnightMs: number
+): number {
+  const clean = String(startDateYmd || '').replace(/\D/g, '');
+  if (clean.length < 8) return 30;
+  const y = Number(clean.slice(0, 4));
+  const m = Number(clean.slice(4, 6)) - 1;
+  const d = Number(clean.slice(6, 8));
+  const startMs = new Date(y, m, d).getTime();
+  if (Number.isNaN(startMs)) return 30;
+  return Math.max(0, Math.round((startMs - todayMidnightMs) / DAY_MS));
+}
+
+/**
+ * 지도로 보기 상단 노출 점수 계산
+ * - "공공포털": 100점
+ * - "시도 단위": 80점
+ * - "시군구 단위": 60점
+ * - "진행중": +20점
+ * - "예정": +(21 - 남은일수)점 (남은 일당 1점 감점)
+ * - "종료": -50점
+ * - 같은 점수라면 무작위 순위
+ */
+function computeMapExposureScore(
+  ev: UnifiedEventItem,
+  todayMidnightMs: number
+): number {
+  let score = 0;
+
+  // 1) 출처 및 행정단위 점수 ("공공포털" 100점 / 시도 단위 80점 / 시군구 단위 60점)
+  if (ev.source === 'PUBLIC_PORTAL') {
+    score += 100;
+  } else if (
+    (ev.promoLevel ?? 0) >= 2 ||
+    ev.lDongSignguCd === '000' ||
+    ev.sigunguName === '본청' ||
+    ev.sigunguName === '전체'
+  ) {
+    score += 80;
+  } else if ((ev.promoLevel ?? 0) === 1 || ev.source === 'MUNICIPAL_WEB') {
+    score += 60;
+  }
+
+  // 2) 진행 상태 점수 ("진행중" 20점 / "예정" 21점 - 남은일당 감점 / "종료" -50점)
+  if (ev.status === 'ONGOING') {
+    score += 20;
+  } else if (ev.status === 'UPCOMING') {
+    const daysLeft = getDaysRemainingUntilStart(ev.startDate, todayMidnightMs);
+    score += 21 - daysLeft;
+  } else if (ev.status === 'ENDED') {
+    score -= 50;
+  } else if (ev.dateUnknown) {
+    score -= 30;
+  }
+
+  return score;
+}
+
 export const EventCardGrid: React.FC<EventCardGridProps> = ({
   events,
   selectedRegionId,
@@ -22,6 +83,30 @@ export const EventCardGrid: React.FC<EventCardGridProps> = ({
   loading,
   onSelectEvent,
 }) => {
+  const sortedEvents = useMemo(() => {
+    const now = new Date();
+    const todayMidnightMs = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    ).getTime();
+
+    const scored = events.map((ev) => ({
+      ev,
+      score: computeMapExposureScore(ev, todayMidnightMs),
+      tieBreaker: Math.random(),
+    }));
+
+    scored.sort((a, b) => {
+      if (b.score !== a.score) {
+        return b.score - a.score;
+      }
+      return a.tieBreaker - b.tieBreaker;
+    });
+
+    return scored.map((item) => item.ev);
+  }, [events]);
+
   const categoryCounts = useMemo(() => {
     const counts = { EV01: 0, EV02: 0, EV03: 0, MUNICIPAL: 0 };
     events.forEach((ev) => {
@@ -96,7 +181,7 @@ export const EventCardGrid: React.FC<EventCardGridProps> = ({
         </div>
       ) : (
         <div className={styles.grid}>
-          {events.map((ev) => {
+          {sortedEvents.map((ev) => {
             const statusInfo = getStatusInfo(ev.status);
             const isPortal = ev.source === 'PUBLIC_PORTAL';
             const linkCount = ev.links?.length || 0;

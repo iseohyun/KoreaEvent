@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Calendar,
+  CalendarPlus,
   Check,
   Columns,
+  Database,
   List,
   Map as MapIcon,
   Menu,
@@ -12,7 +14,12 @@ import {
   X,
 } from 'lucide-react';
 import { ADMIN_REGIONS } from '../constants/regions';
-import { MAJOR_CATEGORIES, SUB_CATEGORIES } from '../constants/categories';
+import {
+  buildDefaultSpecialPromoFormats,
+  MAJOR_CATEGORIES,
+  SPECIAL_PROMO_EVENT_FORMATS,
+  SUB_CATEGORIES,
+} from '../constants/categories';
 import {
   ACTIVE_PROMO_LEVELS,
   PROMO_LEVEL_SHORT_LABELS,
@@ -20,6 +27,7 @@ import {
 } from '../shared/promoPolicy';
 import {
   CalendarDisplayOptions,
+  DbCrawlTabCategory,
   DetailSearchTargets,
   EventFilterState,
   ListColumnKey,
@@ -30,19 +38,27 @@ import {
   SpecialPromoSport,
   ViewMode,
 } from '../types/event';
+import {
+  KoreaGovEventIcon,
+  OlympicSportPictogram,
+} from './BrandAndSportIcons';
 import styles from './HeaderBar.module.css';
 
 interface HeaderBarProps {
   activeMenu: MainMenuView;
   activeSport: SpecialPromoSport;
+  activeDbTab: DbCrawlTabCategory;
   viewMode: ViewMode;
   filters: EventFilterState;
+  scopeEventCounts: Record<PromoLevel, number>;
+  specialPromoFormatCounts: Record<string, number>;
   availableYears: number[];
   sigunguOptions: Array<{ code: string; name: string }>;
   calendarOptions: CalendarDisplayOptions;
   listColumns: ListColumnVisibility;
   onToggleSidebar: () => void;
   onChangeViewMode: (mode: ViewMode) => void;
+  onChangeDbTab: (tab: DbCrawlTabCategory) => void;
   onUpdateFilter: <K extends keyof EventFilterState>(
     key: K,
     value: EventFilterState[K]
@@ -56,9 +72,30 @@ const MENU_PAGE_TITLES: Record<MainMenuView, string> = {
   MAP: '지도로 보기',
   CALENDAR: '달력으로 보기',
   LIST: '행사 리스트',
-  PROMO_DIRECTORY: '지자체 사이트',
+  EVENT_REGISTER: '행사 등록',
+  PROMO_DIRECTORY: 'DB',
   SPECIAL_PROMO: '특별 홍보관',
   ABOUT: '사이트 소개',
+};
+
+const DB_CRAWL_TABS: Array<{
+  id: DbCrawlTabCategory;
+  label: string;
+  sport?: SpecialPromoSport;
+}> = [
+  { id: 'ALL', label: '전체' },
+  { id: 'MUNICIPAL', label: '지자체·행정' },
+  { id: 'SWIMMING', label: '수영', sport: 'SWIMMING' },
+  { id: 'RUNNING', label: '러닝', sport: 'RUNNING' },
+  { id: 'CYCLING', label: '자전거', sport: 'CYCLING' },
+  { id: 'TRIATHLON', label: '철인', sport: 'TRIATHLON' },
+];
+
+const DB_SCOPE_LABELS: Record<PromoLevel, string> = {
+  3: '전국',
+  2: '광역시도',
+  1: '시군구',
+  0: '기타',
 };
 
 const MONTH_PERIOD_OPTIONS: Array<{ value: MonthPeriodFilter; label: string }> = [
@@ -96,42 +133,21 @@ const LIST_COLUMN_LABELS: Array<{ key: ListColumnKey; label: string }> = [
   { key: 'status', label: '진행상태' },
 ];
 
-/**
- * 남한국토지도 실루엣 아이콘
- */
-const SouthKoreaTerritoryIcon: React.FC = () => (
-  <svg
-    width="26"
-    height="26"
-    viewBox="0 0 64 64"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    aria-hidden="true"
-  >
-    <rect width="64" height="64" rx="14" fill="#2563eb" />
-    <path
-      d="M27 8 L36 7 L43 13 L46 21 L49 30 L48 39 L44 45 L37 47 L31 50 L23 52 L17 49 L16 41 L18 33 L15 25 L19 18 L21 12 Z"
-      fill="#ffffff"
-      stroke="#93c5fd"
-      strokeWidth="1.5"
-      strokeLinejoin="round"
-    />
-    <ellipse cx="22" cy="58" rx="5.2" ry="2.4" fill="#ffffff" />
-    <circle cx="55" cy="24" r="2.1" fill="#ffffff" />
-  </svg>
-);
-
 export const HeaderBar: React.FC<HeaderBarProps> = ({
   activeMenu,
   activeSport,
+  activeDbTab,
   viewMode,
   filters,
+  scopeEventCounts,
+  specialPromoFormatCounts,
   availableYears,
   sigunguOptions,
   calendarOptions,
   listColumns,
   onToggleSidebar,
   onChangeViewMode,
+  onChangeDbTab,
   onUpdateFilter,
   onResetFilters,
   onChangeCalendarOptions,
@@ -140,6 +156,24 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
   const [filterOpen, setFilterOpen] = useState(false);
   const [displayMenuOpen, setDisplayMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const headerRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const updateOffset = () => {
+      document.documentElement.style.setProperty(
+        '--sticky-header-offset',
+        `${el.offsetHeight}px`
+      );
+    };
+    updateOffset();
+    if (typeof ResizeObserver !== 'undefined') {
+      const ro = new ResizeObserver(updateOffset);
+      ro.observe(el);
+      return () => ro.disconnect();
+    }
+  }, [filterOpen, activeMenu]);
 
   useEffect(() => {
     setDisplayMenuOpen(false);
@@ -155,7 +189,8 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
     return () => document.removeEventListener('mousedown', handleOutside);
   }, []);
 
-  const showFilterToolbar = activeMenu !== 'ABOUT';
+  const showFilterToolbar =
+    activeMenu !== 'ABOUT' && activeMenu !== 'EVENT_REGISTER';
   const showViewModeIcons =
     activeMenu === 'SPECIAL_PROMO' ||
     activeMenu === 'MAP' ||
@@ -174,6 +209,8 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
     1: true,
     0: true,
   };
+  const safeSpecialPromoFormats =
+    filters.specialPromoFormats || buildDefaultSpecialPromoFormats();
   const safeDetailKeyword = filters.detailKeyword ?? filters.keyword ?? '';
   const safeDetailTargets = filters.detailSearchTargets || {
     organizer: true,
@@ -190,13 +227,21 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
     !safeScopeLevels[1] ||
     !safeScopeLevels[0];
 
+  const isSpecialPromoFormatFiltered =
+    activeMenu === 'SPECIAL_PROMO' &&
+    (SPECIAL_PROMO_EVENT_FORMATS[activeSport] || []).some(
+      (fmt) => safeSpecialPromoFormats[fmt.code] === false
+    );
+
   const hasActiveDetailFilters =
     filters.regionId !== 'ALL' ||
     filters.sigunguCode !== 'ALL' ||
+    (activeMenu === 'PROMO_DIRECTORY' && activeDbTab !== 'ALL') ||
     safeSelectedYear !== 'ALL' ||
     safeSelectedMonthPeriod !== 'ALL' ||
     filters.majorCategory !== 'ALL' ||
     filters.subCategory !== 'ALL' ||
+    isSpecialPromoFormatFiltered ||
     filters.status !== 'ALL' ||
     filters.source !== 'ALL' ||
     isScopeFiltered ||
@@ -240,8 +285,17 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
     onUpdateFilter('scopeLevels', nextScope);
   };
 
+  const handleToggleSpecialPromoFormat = (formatCode: string) => {
+    const currentChecked = safeSpecialPromoFormats[formatCode] !== false;
+    const nextFormats = {
+      ...safeSpecialPromoFormats,
+      [formatCode]: !currentChecked,
+    };
+    onUpdateFilter('specialPromoFormats', nextFormats);
+  };
+
   return (
-    <header className={styles.header}>
+    <header ref={headerRef} className={styles.header}>
       {/* 상단 메뉴바: 좌측(메뉴·아이콘·제목) / 우측(목록보기·달력보기·지도보기 택1 아이콘 + 필터 아이콘 + 표시항목 아이콘) */}
       <div className={styles.topBar}>
         <div className={styles.leftSection}>
@@ -255,8 +309,16 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
             <Menu size={19} />
           </button>
 
-          <div className={styles.koreaMapIconWrap} title="대한민국 행사">
-            <SouthKoreaTerritoryIcon />
+          <div className={styles.koreaMapIconWrap} title={pageTitle}>
+            {activeMenu === 'SPECIAL_PROMO' ? (
+              <OlympicSportPictogram sport={activeSport} size={26} withBadge />
+            ) : activeMenu === 'PROMO_DIRECTORY' ? (
+              <Database size={22} color="#1d4ed8" />
+            ) : activeMenu === 'EVENT_REGISTER' ? (
+              <CalendarPlus size={22} color="#1d4ed8" />
+            ) : (
+              <KoreaGovEventIcon size={26} />
+            )}
           </div>
 
           <h1 className={styles.pageTitle}>{pageTitle}</h1>
@@ -380,7 +442,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
                               })
                             }
                           />
-                          <span>행정구역명</span>
+                          <span>소재지</span>
                         </label>
                         <label className={styles.checkRow}>
                           <input
@@ -482,6 +544,35 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
         >
           <div className={styles.filterAnimInner}>
             <div className={styles.filterContent}>
+              {/* DB 화면에서 종목별 필터링 지원 */}
+              {activeMenu === 'PROMO_DIRECTORY' && (
+                <div className={styles.topicRow}>
+                  <span className={styles.topicLabel}>종목</span>
+                  <div className={styles.topicRight}>
+                    <div className={styles.primaryControlsLine}>
+                      {DB_CRAWL_TABS.map((tab) => {
+                        const isSelected = activeDbTab === tab.id;
+                        return (
+                          <button
+                            key={tab.id}
+                            type="button"
+                            className={`${styles.scopeToggleBtn} ${
+                              isSelected ? styles.scopeToggleBtnChecked : ''
+                            }`}
+                            onClick={() => onChangeDbTab(tab.id)}
+                          >
+                            {tab.sport && (
+                              <OlympicSportPictogram sport={tab.sport} size={14} />
+                            )}
+                            <span>{tab.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* 1. 지역: 시·도 선택 + 시·군·구 선택 (상단 메뉴바에서 필터 하부 항목으로 이전) */}
               <div className={styles.topicRow}>
                 <span className={styles.topicLabel}>지역</span>
@@ -582,14 +673,18 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
                 </div>
               </div>
 
-              {/* 3. 범위: "세계/대한연맹", "광역시도", "시군구", "동네" on/off 구분 (선택되었을 때만 하이라이트, lv 표기 없음) */}
+              {/* 3. 범위: "세계/대한연맹", "광역시도", "시군구", "동네" on/off 구분 (선택되었을 때만 하이라이트, lv 표기 없음, 각 범위별 이벤트 수 배지 표시) */}
               <div className={styles.topicRow}>
                 <span className={styles.topicLabel}>범위</span>
                 <div className={styles.topicRight}>
                   <div className={styles.primaryControlsLine}>
                     {ACTIVE_PROMO_LEVELS.map((level) => {
                       const isChecked = Boolean(safeScopeLevels[level]);
-                      const scopeLabel = PROMO_LEVEL_SHORT_LABELS[level];
+                      const scopeLabel =
+                        activeMenu === 'PROMO_DIRECTORY'
+                          ? DB_SCOPE_LABELS[level]
+                          : PROMO_LEVEL_SHORT_LABELS[level];
+                      const count = scopeEventCounts[level] ?? 0;
                       return (
                         <button
                           key={level}
@@ -605,6 +700,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
                             {isChecked && <Check size={12} strokeWidth={3} />}
                           </span>
                           <span>{scopeLabel}</span>
+                          <span className={styles.toggleCountBadge}>{count}</span>
                         </button>
                       );
                     })}
@@ -612,41 +708,69 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
                 </div>
               </div>
 
-              {/* 4. 행사 형태 (대분류 · 소분류) */}
+              {/* 4. 행사 형태 (특별홍보관: 종목별 행사 형태 복수선택 토글 + 건수 배지 / 일반: 대분류·소분류) */}
               <div className={styles.topicRow}>
                 <span className={styles.topicLabel}>행사 형태</span>
                 <div className={styles.topicRight}>
-                  <div className={styles.primaryControlsLine}>
-                    <select
-                      className={styles.detailSelect}
-                      value={filters.majorCategory}
-                      aria-label="행사 대분류"
-                      onChange={(e) => {
-                        onUpdateFilter('majorCategory', e.target.value as any);
-                        onUpdateFilter('subCategory', 'ALL');
-                      }}
-                    >
-                      {MAJOR_CATEGORIES.map((cat) => (
-                        <option key={cat.code} value={cat.code}>
-                          {cat.name}
-                        </option>
-                      ))}
-                    </select>
+                  {activeMenu === 'SPECIAL_PROMO' ? (
+                    <div className={styles.primaryControlsLine}>
+                      {(SPECIAL_PROMO_EVENT_FORMATS[activeSport] || []).map((fmt) => {
+                        const isChecked = safeSpecialPromoFormats[fmt.code] !== false;
+                        const count = specialPromoFormatCounts[fmt.code] ?? 0;
+                        return (
+                          <button
+                            key={fmt.code}
+                            type="button"
+                            role="checkbox"
+                            aria-checked={isChecked}
+                            className={`${styles.scopeToggleBtn} ${
+                              isChecked ? styles.scopeToggleBtnChecked : ''
+                            }`}
+                            onClick={() => handleToggleSpecialPromoFormat(fmt.code)}
+                            title={fmt.label}
+                          >
+                            <span className={styles.scopeCheckIndicator}>
+                              {isChecked && <Check size={12} strokeWidth={3} />}
+                            </span>
+                            <span>{fmt.shortLabel}</span>
+                            <span className={styles.toggleCountBadge}>{count}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className={styles.primaryControlsLine}>
+                      <select
+                        className={styles.detailSelect}
+                        value={filters.majorCategory}
+                        aria-label="행사 대분류"
+                        onChange={(e) => {
+                          onUpdateFilter('majorCategory', e.target.value as any);
+                          onUpdateFilter('subCategory', 'ALL');
+                        }}
+                      >
+                        {MAJOR_CATEGORIES.map((cat) => (
+                          <option key={cat.code} value={cat.code}>
+                            {cat.name}
+                          </option>
+                        ))}
+                      </select>
 
-                    <select
-                      className={styles.detailSelect}
-                      value={filters.subCategory}
-                      aria-label="행사 세부 성격"
-                      onChange={(e) => onUpdateFilter('subCategory', e.target.value)}
-                    >
-                      <option value="ALL">전체 세부 성격</option>
-                      {availableSubCategories.map((sub) => (
-                        <option key={sub.code} value={sub.code}>
-                          {sub.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                      <select
+                        className={styles.detailSelect}
+                        value={filters.subCategory}
+                        aria-label="행사 세부 성격"
+                        onChange={(e) => onUpdateFilter('subCategory', e.target.value)}
+                      >
+                        <option value="ALL">전체 세부 성격</option>
+                        {availableSubCategories.map((sub) => (
+                          <option key={sub.code} value={sub.code}>
+                            {sub.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                 </div>
               </div>
 

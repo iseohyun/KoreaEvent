@@ -20,6 +20,12 @@ import {
   normalizeEventDoc,
 } from '../src/shared/promoPolicy.js';
 import { linkEventSeries } from '../src/shared/seriesLinker.js';
+import {
+  bootstrapCheckpointsFromExistingEvents,
+  hasSourceCheckpoint,
+  isAlreadyCrawledPost,
+  loadCrawlCheckpoints,
+} from './crawl-checkpoint-manager.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -445,18 +451,18 @@ function buildSportsFederationRegistry(swimReg) {
           },
         ],
         provincialFederations: [
-          { id: 'tri-seoul', level: 2, city: '서울', name: '서울특별시철인3종협회', homepageUrl: 'http://www.seoultriathlon.or.kr' },
+          { id: 'tri-seoul', level: 2, city: '서울', name: '서울특별시철인3종협회 (공식 네이버 카페·대회공지)', homepageUrl: 'https://cafe.naver.com/seoultriathlon' },
           { id: 'tri-busan', level: 2, city: '부산', name: '부산광역시철인3종협회', homepageUrl: 'https://www.triathlon.or.kr/events/tour/' },
           { id: 'tri-daegu', level: 2, city: '대구', name: '대구광역시철인3종협회', homepageUrl: 'https://www.triathlon.or.kr/events/tour/' },
           { id: 'tri-incheon', level: 2, city: '인천', name: '인천광역시철인3종협회', homepageUrl: 'https://www.triathlon.or.kr/events/tour/' },
-          { id: 'tri-ulsan', level: 2, city: '울산', name: '울산광역시철인3종협회 (태화강 아쿠아슬론)', homepageUrl: 'https://www.triathlon.or.kr/events/tour/' },
+          { id: 'tri-ulsan', level: 2, city: '울산', name: '울산광역시철인3종협회 (울주 해양레포츠대축전·태화강 아쿠아슬론)', homepageUrl: 'https://search.naver.com/search.naver?where=nexearch&query=%EC%9A%B8%EC%82%B0%EA%B4%91%EC%97%AD%EC%8B%9C%EC%B2%A0%EC%9D%B83%EC%A2%85%ED%98%91%ED%9A%8C+%EC%95%84%EC%BF%A0%EC%95%84%EC%8A%AC%EB%A1%A0' },
           { id: 'tri-sejong', level: 2, city: '세종', name: '세종특별자치시철인3종협회', homepageUrl: 'https://www.triathlon.or.kr/events/tour/' },
           { id: 'tri-gyeonggi', level: 2, city: '경기', name: '경기도철인3종협회', homepageUrl: 'https://www.triathlon.or.kr/events/tour/' },
           { id: 'tri-chungnam', level: 2, city: '충남', name: '충청남도철인3종협회 (홍성·보령·부여)', homepageUrl: 'https://www.triathlon.or.kr/events/tour/' },
           { id: 'tri-jeonbuk', level: 2, city: '전북', name: '전북특별자치도철인3종협회 (새만금·익산)', homepageUrl: 'https://www.triathlon.or.kr/events/tour/' },
           { id: 'tri-jeonnam', level: 2, city: '전남', name: '전라남도철인3종협회 (구례·여수·순천)', homepageUrl: 'https://www.triathlon.or.kr/events/tour/' },
           { id: 'tri-gyeongbuk', level: 2, city: '경북', name: '경상북도철인3종협회 (포항·울진·경주)', homepageUrl: 'https://www.triathlon.or.kr/events/tour/' },
-          { id: 'tri-gyeongnam', level: 2, city: '경남', name: '경상남도철인3종협회 (통영·거제·합천)', homepageUrl: 'https://www.triathlon.or.kr/events/tour/' },
+          { id: 'tri-gyeongnam', level: 2, city: '경남', name: '경상남도철인3종협회 (거제 와현·예구 해변 / 통영 / 합천)', homepageUrl: 'https://search.naver.com/search.naver?where=nexearch&query=%EA%B2%BD%EB%82%A8%EC%B2%A0%EC%9D%B83%EC%A2%85%ED%98%91%ED%9A%8C%EC%9E%A5%EB%B0%B0+%EC%95%84%EC%BF%A0%EC%95%84%EC%8A%AC%EB%A1%A0%EB%8C%80%ED%9A%8C' },
           { id: 'tri-jeju', level: 2, city: '제주', name: '제주특별자치도철인3종협회', homepageUrl: 'https://www.triathlon.or.kr/events/tour/' },
         ],
         municipalFederations: [
@@ -646,16 +652,23 @@ async function enrichSwimmingAttachmentLinks(existingEvents) {
  *   대회 상세 공지 팝업(`view.php?no=...`) + 실제 대회가 홍보된 외부 홈페이지(`<img src="image/home.gif">`) 동시 수집!
  * - 출처 2: 스파인더 러닝 (`https://www.sfinder.co.kr/contest/contest_list/running`)
  */
-async function crawlRunningEvents() {
+async function crawlRunningEvents(checkpointState) {
   console.log('🏃 [2/4] 러닝(마라톤·트레일런·크루) 대회 및 실제 외부 홍보 홈페이지 크롤링 중...');
   const runningDocs = [];
 
-  // 2026년 및 2025년/2024년 마라톤 일정 크롤링
-  const yearTimestamps = [
+  // 이전 체크포인트 존재 시 최신 연도만 증분 스캔, 최초 수집(또는 --full) 시 2024~2026 전체 스캔
+  const allYearTimestamps = [
     { year: 2026, url: 'http://www.roadrun.co.kr/schedule/list.php?today=1767193200&todays=Y' },
     { year: 2025, url: 'http://www.roadrun.co.kr/schedule/list.php?today=1735657200&todays=Y' },
     { year: 2024, url: 'http://www.roadrun.co.kr/schedule/list.php?today=1704034800&todays=Y' },
   ];
+  const hasRoadrunCp = hasSourceCheckpoint(checkpointState, 'run-roadrun');
+  const yearTimestamps = hasRoadrunCp ? allYearTimestamps.slice(0, 1) : allYearTimestamps;
+  if (hasRoadrunCp) {
+    console.log(
+      `   [Incremental] 마라톤온라인 체크포인트 감지 (maxPostId=${checkpointState.sources['run-roadrun']?.maxPostId}) -> 최신 연도 증분 스캔 수행`
+    );
+  }
 
   const seenRunIds = new Set();
 
@@ -670,6 +683,10 @@ async function crawlRunningEvents() {
       if (!noMatch) continue;
       const no = noMatch[1];
       if (seenRunIds.has(no)) continue;
+      if (hasRoadrunCp && isAlreadyCrawledPost(checkpointState, 'run-roadrun', no)) {
+        seenRunIds.add(no);
+        continue;
+      }
 
       // 날짜 추출 (예: 1/3 (토) 또는 10/25)
       const dateMatch = block.match(/(\d{1,2})\s*\/\s*(\d{1,2})/);
@@ -1159,17 +1176,26 @@ async function crawlCyclingEvents() {
  *   각 대회의 `/events/tour/overview/?mode=overview&tourcd=...` 상세 페이지를 열어
  *   모집공고/참가신청서 `.hwp`/`.pdf` (`/common/download/?pos=article&id=...`) 및 외부 홍보 사이트 동시 수집!
  */
-async function crawlTriathlonEvents() {
+async function crawlTriathlonEvents(checkpointState) {
   console.log('🏊‍♂️🚴‍♂️🏃‍♂️ [4/4] 철인3종(트라이애슬론·아쿠아슬론) 대회 및 모집공고(PDF/HWP) 크롤링 중...');
   const triDocs = [];
   const seenTriIds = new Set();
 
-  for (const sYear of [2026, 2025, 2024]) {
+  const hasKtfCp = hasSourceCheckpoint(checkpointState, 'tri-ktf');
+  const targetYears = hasKtfCp ? [2026] : [2026, 2025, 2024];
+  if (hasKtfCp) {
+    console.log(
+      `   [Incremental] 대한철인3종협회 체크포인트 감지 (maxPostId=${checkpointState.sources['tri-ktf']?.maxPostId}) -> 신규 tourcd 증분 스캔 수행`
+    );
+  }
+
+  for (const sYear of targetYears) {
     for (const page of [1, 2, 3]) {
       const listUrl = `https://www.triathlon.or.kr/events/tour/?sYear=${sYear}&page=${page}`;
       const html = await fetchRaw(listUrl, 'utf-8', 8000);
       if (!html) continue;
 
+      let newCountOnPage = 0;
       const trBlocks = html.split(/<tr[^>]*>/i);
       for (const block of trBlocks) {
         const linkMatch = block.match(
@@ -1179,6 +1205,11 @@ async function crawlTriathlonEvents() {
         const relHref = linkMatch[1].replace(/&amp;/g, '&');
         const tourcd = linkMatch[2];
         if (seenTriIds.has(tourcd)) continue;
+        if (hasKtfCp && isAlreadyCrawledPost(checkpointState, 'tri-ktf', tourcd)) {
+          seenTriIds.add(tourcd);
+          continue;
+        }
+        newCountOnPage++;
 
         const strongMatch = linkMatch[3].match(/<strong>([\s\S]*?)<\/strong>/i);
         const title = cleanHtmlText(strongMatch ? strongMatch[1] : linkMatch[3]);
@@ -1286,10 +1317,200 @@ async function crawlTriathlonEvents() {
           updatedAt: new Date().toISOString(),
         });
       }
+      // 증분 모드에서 현재 페이지에 신규 게시글이 하나도 없으면 이후 페이지 조기 종료(Early-Stop)
+      if (hasKtfCp && newCountOnPage === 0) {
+        break;
+      }
     }
   }
 
-  console.log(`   -> 철인3종 대회 총 ${triDocs.length}건 수집 완료 (첨부공고 HWP/PDF 포함)`);
+  // 2) 시·도 및 시·군·구 철인3종협회 자체 주최 대회 (중앙연맹 KTF 미등재 · 네이버 카페/블로그/폼 공지 대회) 보강 및 오픈 검색 디스커버리
+  const regionalTriathlonVerified = [
+    {
+      id: 'tri-gyeongnam-wahyeon-2026',
+      lDongRegnCd: '48',
+      lDongSignguCd: '310',
+      sigunguName: '거제시',
+      title: '와현해수욕장 예구 해변 스포츠 축제 (2026 경남철인3종협회장배 아쿠아슬론대회 겸 비치런핀수영 & 수상인명구조 SUP 대회)',
+      startDate: '20261115',
+      endDate: '20261115',
+      scheduleNote: '2026년 11월 15일(일) 10:00 (접수마감: 11.10(화) 선착순 350명) · 종목: 아쿠아슬론(오픈수영 1.5km/750m+달리기), 비치런핀수영, 수상인명구조 SUP',
+      eventTime: '08:00 등록 · 09:30 개회식 · 10:00 ~ 13:30 경기 및 시상',
+      host: '경남철인3종협회',
+      supervise: '경남철인3종협회 (후원: 경상남도체육회, 거제시체육회, 대한철인3종협회, 거제경찰서, 통영해양경찰서, 와현마을회, 예구마을회)',
+      contact: '이동명(010-6369-3220) / 김재필(010-8544-8894) · myeung73@naver.com',
+      place: '경남 거제시 일운면 와현해수욕장 & 예구 해안로 일원',
+      links: [
+        {
+          type: 'TICKET',
+          label: '네이버 폼 참가 신청 및 모집 요강 안내 (경남철인3종협회)',
+          url: 'https://search.naver.com/search.naver?where=nexearch&query=%EA%B2%BD%EB%82%A8%EC%B2%A0%EC%9D%B83%EC%A2%85%ED%98%91%ED%9A%8C%EC%9E%A5%EB%B0%B0+%EC%95%84%EC%BF%A0%EC%95%84%EC%8A%AC%EB%A1%A0%EB%8C%80%ED%9A%8C',
+        },
+      ],
+      invitation:
+        '[해변 스포츠 축제 · 아쿠아슬론 & 오픈워터 핀수영] 거제시 와현해수욕장 & 예구 해안로 일원에서 개최되는 2026 경남철인3종협회장배 아쿠아슬론대회 겸 비치런핀수영 & 수상인명구조 SUP 대회입니다. (개인전: 아쿠아슬론 / 비치런핀수영 / SUP+구조술 대회, 참가비 각 30,000원, 이메일 myeung73@naver.com 및 네이버 폼 접수)',
+    },
+    {
+      id: 'tri-gyeongnam-aquathlon-2025',
+      lDongRegnCd: '48',
+      lDongSignguCd: '220',
+      sigunguName: '통영시',
+      title: '2025 경남철인3종협회장배 겸 제1회 통영시철인3종협회장배 아쿠아슬론대회',
+      startDate: '20251109',
+      endDate: '20251109',
+      scheduleNote: '2025년 11월 9일(일) · 경남 통영시 도남동 트라이애슬론광장 일원',
+      eventTime: '08:00 집결 · 09:00 경기 시작',
+      host: '경남철인3종협회 · 통영시철인3종협회',
+      supervise: '경남철인3종협회 · 통영시체육회',
+      place: '경남 통영시 도남동 트라이애슬론광장 일원',
+      links: [
+        {
+          type: 'TIER2_PROMO',
+          label: '2025 경남철인3종협회장배 아쿠아슬론대회 안내 및 후기',
+          url: 'https://blog.naver.com/jia9646/224071365273',
+        },
+      ],
+      invitation:
+        '[철인3종·아쿠아슬론] 경남철인3종협회 및 통영시철인3종협회가 주최·주관하는 2025 경남철인3종협회장배 겸 제1회 통영시철인3종협회장배 아쿠아슬론대회입니다.',
+    },
+    {
+      id: 'tri-ulju-aquathlon-2026',
+      lDongRegnCd: '31',
+      lDongSignguCd: '710',
+      sigunguName: '울주군',
+      title: '2026 울주 해양레포츠대축전 아쿠아슬론대회',
+      startDate: '20260726',
+      endDate: '20260726',
+      scheduleNote: '2026년 7월 26일(일) 오전 9시 (선수등록 07:00~08:00) · 울산 울주군 진하해수욕장',
+      eventTime: '07:00 선수등록 · 09:00 경기 시작',
+      host: 'UBC 울산방송',
+      supervise: '울산광역시철인3종협회 (후원: 울산광역시, 울주군)',
+      place: '울산광역시 울주군 서생면 진하해수욕장 일원',
+      links: [
+        {
+          type: 'TIER2_PROMO',
+          label: '2026 울주 해양레포츠대축전 아쿠아슬론대회 참가 신청 안내',
+          url: 'https://blog.naver.com/stmshop/224315280981',
+        },
+      ],
+      invitation:
+        '[철인3종·아쿠아슬론] 울산 울주군 진하해수욕장 일원에서 개최되는 2026 울주 해양레포츠대축전 아쿠아슬론대회입니다. (주최: UBC 울산방송, 주관: 울산광역시철인3종협회)',
+    },
+    {
+      id: 'tri-yeongdeungpo-aquathlon-2026',
+      lDongRegnCd: '11',
+      lDongSignguCd: '560',
+      sigunguName: '영등포구',
+      title: '제1회 영등포구협회장배 어린이&청소년 아쿠아슬론 철인3종대회',
+      startDate: '20260906',
+      endDate: '20260906',
+      scheduleNote: '2026년 9월 6일(일) · 영등포 제1스포츠센터',
+      eventTime: '08:00 집결 · 09:00 경기 시작',
+      host: '영등포구철인3종협회 · 서울특별시철인3종협회',
+      supervise: '영등포구철인3종협회',
+      place: '서울특별시 영등포구 영등포 제1스포츠센터',
+      links: [
+        {
+          type: 'TIER1_PROMO',
+          label: '서울특별시철인3종협회 공식 카페 대회 공지 (article 1594)',
+          url: 'https://cafe.naver.com/seoultriathlon/1594',
+        },
+      ],
+      invitation:
+        '[철인3종·아쿠아슬론] 영등포 제1스포츠센터에서 개최되는 제1회 영등포구협회장배 어린이&청소년 아쿠아슬론 철인3종대회입니다.',
+    },
+  ];
+
+  for (const item of regionalTriathlonVerified) {
+    if (seenTriIds.has(item.id)) continue;
+    seenTriIds.add(item.id);
+    triDocs.push({
+      id: item.id,
+      lDongRegnCd: item.lDongRegnCd,
+      lDongSignguCd: item.lDongSignguCd,
+      sigunguName: item.sigunguName,
+      title: item.title,
+      eventDate: {
+        startDate: item.startDate,
+        endDate: item.endDate,
+        scheduleNote: item.scheduleNote,
+      },
+      eventTime: item.eventTime,
+      organizer: {
+        host: item.host,
+        supervise: item.supervise,
+        contact: item.contact,
+      },
+      category: {
+        lclsSystm2: 'EV03',
+        lclsSystm3: 'EV030200',
+        label: '스포츠 > 철인3종·아쿠아슬론·오픈워터 대회',
+      },
+      links: item.links,
+      invitation: item.invitation,
+      promoLevel: computePromoLevel({
+        title: item.title,
+        invitation: item.invitation,
+        organizer: item.host,
+        lDongRegnCd: item.lDongRegnCd,
+        addr1: item.place,
+      }),
+      addr1: item.place,
+      updatedAt: new Date().toISOString(),
+    });
+  }
+
+  // 3) 포털 오픈 검색 기반 시·도/시·군·구 협회장배 대회 자동 디스커버리 (네이버 카페·블로그·폼 공지 탐색)
+  const discoveryQueries = [
+    '철인3종협회장배 아쿠아슬론대회 2026',
+    '해양레포츠대축전 아쿠아슬론대회 2026',
+    '와현해수욕장 예구 해변 스포츠 축제',
+    '비치런핀수영 대회 2026',
+  ];
+
+  for (const query of discoveryQueries) {
+    const searchUrl = `https://search.naver.com/search.naver?where=nexearch&query=${encodeURIComponent(query)}`;
+    const sHtml = await fetchRaw(searchUrl, 'utf-8', 6000);
+    if (!sHtml) continue;
+
+    const postLinks = [
+      ...sHtml.matchAll(
+        /href=["'](https?:\/\/(?:blog\.naver\.com\/[a-zA-Z0-9_-]+\/\d+|cafe\.naver\.com\/[a-zA-Z0-9_-]+\/\d+|form\.naver\.com\/[^\s"']+|naver\.me\/[a-zA-Z0-9_-]+)[^"']*)["'][^>]*>([\s\S]*?)<\/a>/gi
+      ),
+    ];
+
+    for (const pm of postLinks) {
+      const rawUrl = pm[1].split('?')[0];
+      const text = cleanHtmlText(pm[2]).replace(/새 창 열림$/g, '').trim();
+      if (text.length < 10 || text.length > 90) continue;
+      if (!/아쿠아슬론|철인\s*3종|트라이애슬론|비치런핀수영|오픈워터/i.test(text)) continue;
+      if (/후기|참가무산|마감|취소|결과|훈련/i.test(text)) continue;
+
+      const dateMatch = sHtml.match(/대회일시\s*:\s*(202\d)년\s*(\d{1,2})월\s*(\d{1,2})일/);
+      if (!dateMatch) continue;
+      const ymd = `${dateMatch[1]}${String(dateMatch[2]).padStart(2, '0')}${String(dateMatch[3]).padStart(2, '0')}`;
+      const regInfo = resolveRegionFromText(text);
+
+      // 이미 등록된 동일 일자·지역 대회가 있으면 링크만 보강
+      const duplicate = triDocs.find(
+        (d) =>
+          d.eventDate?.startDate === ymd &&
+          d.lDongRegnCd === regInfo.lDongRegnCd
+      );
+      if (duplicate) {
+        if (!duplicate.links.some((l) => l.url === rawUrl)) {
+          duplicate.links.push({
+            type: 'TIER2_PROMO',
+            label: `${text} (포털 검색 디스커버리)`,
+            url: rawUrl,
+          });
+        }
+        continue;
+      }
+    }
+  }
+
+  console.log(`   -> 철인3종 대회 총 ${triDocs.length}건 수집 완료 (첨부공고 HWP/PDF 및 시도협회 자체 대회 포함)`);
   return triDocs;
 }
 
@@ -1301,14 +1522,16 @@ async function main() {
 
   const existingEvents = Array.isArray(autoJson.events) ? autoJson.events : [];
 
+  const checkpointState = loadCrawlCheckpoints();
+
   // 1) 기존 수영 대회 모집공고(PDF/HWP) 보강 및 단순 루트 링크 제거
   await enrichSwimmingAttachmentLinks(existingEvents);
 
-  // 2) 러닝, 자전거, 철인3종 크롤링 실행
+  // 2) 러닝, 자전거, 철인3종 크롤링 실행 (체크포인트 기반 증분 수집 지원)
   const [runningDocs, cyclingDocs, triDocs] = await Promise.all([
-    crawlRunningEvents(),
-    crawlCyclingEvents(),
-    crawlTriathlonEvents(),
+    crawlRunningEvents(checkpointState),
+    crawlCyclingEvents(checkpointState),
+    crawlTriathlonEvents(checkpointState),
   ]);
 
   // 3) 기존 이벤트와 병합 + 공용 정규화(normalizeEventDoc) 적용
@@ -1362,6 +1585,9 @@ async function main() {
   const sportsRegistry = buildSportsFederationRegistry(swimReg);
   sportsRegistry.crawlSummary = sportStats;
   fs.writeFileSync(SPORTS_REGISTRY_PATH, JSON.stringify(sportsRegistry, null, 2), 'utf-8');
+
+  // 7) 크롤링 완료 후 사이트별 마지막 글번호·수집시각·날짜범위 체크포인트(crawl-checkpoints.json) 업데이트
+  bootstrapCheckpointsFromExistingEvents();
 
   console.log('\n✅ 4대 스포츠(수영·러닝·자전거·철인) 크롤링 및 시리즈 인덱싱 완료!');
   console.log('   - 전체 이벤트 수:', linkedDocs.length);

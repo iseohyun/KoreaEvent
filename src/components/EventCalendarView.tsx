@@ -288,25 +288,30 @@ export const EventCalendarView: React.FC<EventCalendarViewProps> = ({
                             className={styles.eventItemChip}
                             onClick={() => onSelectEvent(ev)}
                           >
-                            <div className={styles.chipTopMeta}>
+                            {(displayOptions.showCategoryBadge ||
+                              displayOptions.showStatusBadge) && (
+                              <div className={styles.chipTopMeta}>
+                                {displayOptions.showCategoryBadge && (
+                                  <span className={getCatChipClass(ev.lclsSystm2)}>
+                                    {ev.lclsSystm2Name}
+                                  </span>
+                                )}
+                                {displayOptions.showStatusBadge && (
+                                  <span className={styles.chipStatus}>
+                                    {getStatusLabel(ev.status)}
+                                  </span>
+                                )}
+                              </div>
+                            )}
+
+                            <div className={styles.chipMainRow}>
                               {displayOptions.showRegion && (
                                 <span className={styles.chipRegion}>
                                   {ev.sigunguName || ev.regionName}
                                 </span>
                               )}
-                              {displayOptions.showCategoryBadge && (
-                                <span className={getCatChipClass(ev.lclsSystm2)}>
-                                  {ev.lclsSystm2Name}
-                                </span>
-                              )}
-                              {displayOptions.showStatusBadge && (
-                                <span className={styles.chipStatus}>
-                                  {getStatusLabel(ev.status)}
-                                </span>
-                              )}
+                              <span className={styles.chipTitle}>{ev.title}</span>
                             </div>
-
-                            <span className={styles.chipTitle}>{ev.title}</span>
 
                             {displayOptions.showEventTime && ev.eventTime && (
                               <span className={styles.chipSubLine}>

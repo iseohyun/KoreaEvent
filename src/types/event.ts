@@ -10,6 +10,7 @@ export type MainMenuView =
   | 'MAP'
   | 'CALENDAR'
   | 'LIST'
+  | 'EVENT_REGISTER'
   | 'PROMO_DIRECTORY'
   | 'SPECIAL_PROMO'
   | 'ABOUT';
@@ -18,6 +19,17 @@ export type MainMenuView =
  * 특별 홍보관 하위 스포츠 종목 카테고리
  */
 export type SpecialPromoSport = 'SWIMMING' | 'RUNNING' | 'CYCLING' | 'TRIATHLON';
+
+/**
+ * DB(크롤링 사이트 디렉토리) 상단 탭 및 필터 종목 카테고리
+ */
+export type DbCrawlTabCategory =
+  | 'ALL'
+  | 'MUNICIPAL'
+  | 'SWIMMING'
+  | 'RUNNING'
+  | 'CYCLING'
+  | 'TRIATHLON';
 
 /**
  * 상단 메뉴바 보기 방식 (목록보기 / 달력보기 / 지도보기)
@@ -98,6 +110,18 @@ export interface FirestoreEventDoc {
   imageUrl?: string;
   updatedAt: string;
   manualEdited?: boolean;
+  registrationMeta?: {
+    isPastEvent: boolean;
+    twoChannelVerified?: boolean;
+    contactPhone?: string;
+    contactEmail?: string;
+    pressVerifyUrl?: string;
+    pressOutletName?: string;
+    municipalDomainSiteUrl?: string;
+    municipalDomainEmail?: string;
+    municipalDomainVerified?: boolean;
+    agreedPreNoticeAt: string;
+  };
 
   // 회차별·연도별 대회/행사 시리즈 연결 메타데이터
   seriesId?: string;
@@ -249,6 +273,7 @@ export interface EventFilterState {
   source: 'ALL' | DataSourceType;
   majorCategory: MajorCategoryCode;
   subCategory: string; // 'ALL' or lclsSystm3
+  specialPromoFormats?: Record<string, boolean>; // 특별 홍보관 종목별 행사 형태 복수 선택 (기본: 모두 true)
   status: 'ALL' | EventProgressStatus;
   scopeLevels: ScopeFilterState; // 범위 on/off ("세계/대한연맹", "광역시도", "시군구", "동네")
   selectedYear: string; // 'ALL' or '2026', '2025', ...

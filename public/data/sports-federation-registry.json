@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-07T23:34:32.930Z",
+  "updatedAt": "2026-11-08T02:54:32.510Z",
   "description": "특별 홍보관 4대 스포츠(수영·러닝·자전거·철인) 세계/중앙연맹(Lv.3 전국), 광역시·도 연맹(Lv.2 광역), 기초지자체(Lv.1 지자체), 개별시설·크루(Lv.0 동네) 홈페이지 마스터 DB",
   "sports": {
     "SWIMMING": {
@@ -801,8 +801,8 @@
           "id": "tri-seoul",
           "level": 2,
           "city": "서울",
-          "name": "서울특별시철인3종협회",
-          "homepageUrl": "http://www.seoultriathlon.or.kr"
+          "name": "서울특별시철인3종협회 (공식 네이버 카페·대회공지)",
+          "homepageUrl": "https://cafe.naver.com/seoultriathlon"
         },
         {
           "id": "tri-busan",
@@ -829,8 +829,8 @@
           "id": "tri-ulsan",
           "level": 2,
           "city": "울산",
-          "name": "울산광역시철인3종협회 (태화강 아쿠아슬론)",
-          "homepageUrl": "https://www.triathlon.or.kr/events/tour/"
+          "name": "울산광역시철인3종협회 (울주 해양레포츠대축전·태화강 아쿠아슬론)",
+          "homepageUrl": "https://search.naver.com/search.naver?where=nexearch&query=%EC%9A%B8%EC%82%B0%EA%B4%91%EC%97%AD%EC%8B%9C%EC%B2%A0%EC%9D%B83%EC%A2%85%ED%98%91%ED%9A%8C+%EC%95%84%EC%BF%A0%EC%95%84%EC%8A%AC%EB%A1%A0"
         },
         {
           "id": "tri-sejong",
@@ -878,8 +878,8 @@
           "id": "tri-gyeongnam",
           "level": 2,
           "city": "경남",
-          "name": "경상남도철인3종협회 (통영·거제·합천)",
-          "homepageUrl": "https://www.triathlon.or.kr/events/tour/"
+          "name": "경상남도철인3종협회 (거제 와현·예구 해변 / 통영 / 합천)",
+          "homepageUrl": "https://search.naver.com/search.naver?where=nexearch&query=%EA%B2%BD%EB%82%A8%EC%B2%A0%EC%9D%B83%EC%A2%85%ED%98%91%ED%9A%8C%EC%9E%A5%EB%B0%B0+%EC%95%84%EC%BF%A0%EC%95%84%EC%8A%AC%EB%A1%A0%EB%8C%80%ED%9A%8C"
         },
         {
           "id": "tri-jeju",
@@ -938,31 +938,31 @@
   },
   "crawlSummary": {
     "SWIMMING": {
-      "total": 587,
-      "lv3": 200,
-      "lv2": 291,
-      "lv1": 91,
+      "total": 535,
+      "lv3": 180,
+      "lv2": 207,
+      "lv1": 143,
       "lv0": 5
     },
     "RUNNING": {
-      "total": 625,
-      "lv3": 25,
-      "lv2": 8,
-      "lv1": 376,
-      "lv0": 216
+      "total": 613,
+      "lv3": 0,
+      "lv2": 97,
+      "lv1": 513,
+      "lv0": 3
     },
     "CYCLING": {
       "total": 35,
       "lv3": 8,
-      "lv2": 2,
-      "lv1": 19,
-      "lv0": 6
+      "lv2": 0,
+      "lv1": 27,
+      "lv0": 0
     },
     "TRIATHLON": {
-      "total": 128,
-      "lv3": 91,
-      "lv2": 13,
-      "lv1": 15,
+      "total": 132,
+      "lv3": 23,
+      "lv2": 17,
+      "lv1": 83,
       "lv0": 9
     }
   }

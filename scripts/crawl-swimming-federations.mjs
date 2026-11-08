@@ -23,6 +23,12 @@ import http from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { computePromoLevel, isSwimEvent } from '../src/shared/promoPolicy.js';
 import { linkEventSeries } from '../src/shared/seriesLinker.js';
+import {
+  bootstrapCheckpointsFromExistingEvents,
+  hasSourceCheckpoint,
+  isAlreadyCrawledPost,
+  loadCrawlCheckpoints,
+} from './crawl-checkpoint-manager.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -540,18 +546,29 @@ function buildSwimDoc({
 /**
  * 1. 대한수영연맹 (https://www.korswim.co.kr/11?page=1..14) 크롤링
  */
-async function crawlKoreaAquatics() {
+async function crawlKoreaAquatics(checkpointState) {
   const docs = [];
+  const hasKsfCp = hasSourceCheckpoint(checkpointState, 'swim-ksf');
+  if (hasKsfCp) {
+    console.log(
+      `  [Incremental] 대한수영연맹 체크포인트 감지 (maxPostId=${checkpointState.sources['swim-ksf']?.maxPostId}) -> 신규 게시글 증분 스캔 수행`
+    );
+  }
   for (let page = 1; page <= 14; page += 1) {
     const url = `https://www.korswim.co.kr/11?page=${page}`;
     const res = await fetchPage(url);
     if (!res.ok) continue;
 
+    let newOnPage = 0;
     const anchorRegex =
       /<a[^>]+href=["'](https:\/\/www\.korswim\.co\.kr\/11\/(\d+)[^"']*)["'][^>]*>([\s\S]*?)<\/a>/gi;
     let m;
     while ((m = anchorRegex.exec(res.html)) !== null) {
       const postId = m[2];
+      if (hasKsfCp && isAlreadyCrawledPost(checkpointState, 'swim-ksf', postId)) {
+        continue;
+      }
+      newOnPage++;
       const rawText = cleanText(m[3]).replace(/^공지\s*/, '');
       // 포맷: "제1회 오픈워터스위밍 전국 마스터즈 대회 - 제주 서귀포시 동방파제 대회기간 : 2026-11-29 ~ 2026-11-29"
       const dateMatch = rawText.match(
@@ -583,13 +600,111 @@ async function crawlKoreaAquatics() {
         })
       );
     }
+    if (hasKsfCp && newOnPage === 0) {
+      break;
+    }
   }
   return docs;
 }
 
 /**
+ * 부산수영연맹 게시글 본문에서 실제 대회 개최일(예: '날짜; 2026년 11월 29(일)', '일시 : 11월 21일(토)') 추출
+ */
+function extractBusanBodyEventDate(html = '', fallbackYear = '2026') {
+  if (!html) return null;
+  const mainBody = cleanText(html.split('꼬리말을 쓰실려면')[0] || html);
+  const m = mainBody.match(
+    /(?:개최\s*)?(?:날짜|일시)\s*[:;]\s*(?:(20\d{2})\s*년\s*)?(\d{1,2})\s*월\s*(\d{1,2})\s*일?(?:\s*\(([^)]+)\))?/i
+  );
+  if (!m) return null;
+  const yyyy = m[1] || String(fallbackYear);
+  const mm = String(Number(m[2])).padStart(2, '0');
+  const dd = String(Number(m[3])).padStart(2, '0');
+  const dow = m[4] ? `(${m[4].trim()})` : '';
+  return {
+    ymd: `${yyyy}${mm}${dd}`,
+    scheduleNote: `대회일시: ${yyyy}년 ${Number(m[2])}월 ${Number(m[3])}일${dow} · 사직실내수영장`,
+  };
+}
+
+/** 부산수영연맹 주요 대회 공지(idx)별 본문·요강 검증된 실제 개최일자 및 정식 대회명 */
+const BUSAN_VERIFIED_EVENT_MAP = {
+  '862': {
+    title: '제44회 부산광역시교육감배 초·중학교 수영대회',
+    ymd: '20261121',
+    scheduleNote: '2026년 11월 21일(토) 오전 9시 · 부산 사직실내수영장',
+  },
+  '860': {
+    title: '제4회 부산광역시체육회장배 생활체육 수영대회',
+    ymd: '20261129',
+    scheduleNote: '2026년 11월 29일(일) 사직실내수영장 (선착순 1,000명)',
+  },
+  '845': {
+    title: '부산광역시 5대 인기종목 수영대회',
+    ymd: '20260919',
+    scheduleNote: '2026년 9월 19일(토) 08:30 · 부산 사직실내수영장',
+  },
+  '838': {
+    title: '제48회 부산광역시수영연맹회장배 수영대회 겸 제107회 전국체육대회 부산예선대회',
+    ymd: '20260704',
+    scheduleNote: '2026년 7월 4일(토) 09:30 · 부산 사직실내수영장',
+  },
+  '825': {
+    title: '제5회 부산광역시장배 생활체육 수영대회',
+    ymd: '20260503',
+    scheduleNote: '2026년 5월 3일(일) 사직실내수영장 (선착순 1,000명)',
+  },
+  '812': {
+    title: '2026년 부산초·중학생 체육대회 수영대회 (제55회 전국소년체육대회 선발전)',
+    ymd: '20260321',
+    scheduleNote: '2026년 3월 21일(토) · 부산 사직실내수영장',
+  },
+  '797': {
+    title: '제3회 부산광역시체육회장배 전국 생활체육 수영대회',
+    ymd: '20251130',
+    scheduleNote: '2025년 11월 30일(일) · 부산 사직실내수영장 (선착순 1,000명)',
+  },
+  '783': {
+    title: '제43회 부산광역시교육감배 초·중학교 수영대회',
+    ymd: '20250816',
+    scheduleNote: '2025년 8월 16일(토) · 부산 사직실내수영장',
+  },
+  '770': {
+    title: '제4회 부산광역시장배 전국 생활체육 수영대회',
+    ymd: '20250713',
+    scheduleNote: '2025년 7월 13일(일) · 부산 사직실내수영장',
+  },
+  '751': {
+    title: '2025년 부산초·중학생 체육대회 수영대회 (전국소년체육대회 부산대표선발전)',
+    ymd: '20250406',
+    scheduleNote: '2025년 4월 6일(일) · 창원실내수영장',
+  },
+  '728': {
+    title: '제2회 부산광역시체육회장배 생활체육 수영대회',
+    ymd: '20240901',
+    scheduleNote: '2024년 9월 1일(일) · 부산 사직실내수영장',
+  },
+  '712': {
+    title: '제42회 부산광역시교육감기 초·중학교 수영대회',
+    ymd: '20240713',
+    scheduleNote: '2024년 7월 13일(토) · 부산 사직실내수영장',
+  },
+  '710': {
+    title: '제46회 부산광역시수영연맹회장배 및 제105회 전국체육대회 부산선발전 수영대회',
+    ymd: '20240622',
+    scheduleNote: '2024년 6월 22일(토) 오전 9시 30분 · 부산 사직실내수영장',
+  },
+  '687': {
+    title: '제3회 부산광역시장배 생활체육 수영대회',
+    ymd: '20240331',
+    scheduleNote: '2024년 3월 31일(일) · 부산 사직실내수영장 (선착순 1,000명)',
+  },
+};
+
+/**
  * 2. 부산광역시수영연맹 (http://www.busanswimming.kr/BoardView.asp?idx=860&gubun=notice) 크롤링
  *    - idx=860 상세 본문 + 하단 382개 전체 역대 공지 리스트(2010~2026) 파싱
+ *    - 게시글 목록의 '공지 등록일'이 아니라 본문 내 실제 '대회 개최일(날짜/일시)'을 우선 추출한다.
  */
 async function crawlBusanSwimming() {
   const docs = [];
@@ -604,13 +719,15 @@ async function crawlBusanSwimming() {
     mapY: 35.1928,
   };
 
-  // (A) 질문하신 idx=860 대회: 제4회 부산광역시체육회장배 생활체육 수영대회 (2026-11-29)
+  // (A) idx=860 대회: 제4회 부산광역시체육회장배 생활체육 수영대회 (본문 개최일: 2026-11-29)
+  const parsed860 = res.ok ? extractBusanBodyEventDate(res.html, '2026') : null;
+  const idx860Ymd = parsed860?.ymd || '20261129';
   docs.push(
     buildSwimDoc({
       id: 'swim-busan-idx-860',
       title: '제4회 부산광역시체육회장배 생활체육 수영대회',
-      startDate: '20261129',
-      endDate: '20261129',
+      startDate: idx860Ymd,
+      endDate: idx860Ymd,
       scheduleNote: '2026년 11월 29일(일) 사직실내수영장 (선착순 1,000명)',
       host: '부산광역시체육회 · 부산광역시수영연맹',
       supervise: '부산광역시수영연맹',
@@ -625,10 +742,11 @@ async function crawlBusanSwimming() {
 
   if (!res.ok) return docs;
 
-  // (B) 하단 전체 역대 게시판 리스트에서 개최/요강/수영대회 게시물 추출 (2010~2026)
+  // (B) 하단 전체 역대 게시판 리스트에서 개최/요강/수영대회 대표 게시물 추출 (2010~2026)
   const trRegex = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
   let m;
-  const seenTitlesByYear = new Set(['2026:제4회 부산광역시체육회장배 생활체육 수영대회']);
+  const seenIds = new Set(['swim-busan-idx-860']);
+  const seenTitlesByYear = new Set(['2026:제4회부산광역시체육회장배생활체육수영대회']);
 
   while ((m = trRegex.exec(res.html)) !== null) {
     const rowHtml = m[1];
@@ -641,31 +759,37 @@ async function crawlBusanSwimming() {
       /<a[^>]+href=["'][^"']*BoardView\.asp\?idx=(\d+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i
     );
     const idx = anchorMatch ? anchorMatch[1] : hrefMatch ? hrefMatch[1] : '';
+    const docId = `swim-busan-idx-${idx || normalizeYmd(dateMatch[1], dateMatch[2], dateMatch[3])}`;
+    if (seenIds.has(docId)) continue;
+
     let rawTitle = anchorMatch ? cleanText(anchorMatch[2]) : '';
     if (!rawTitle) continue;
 
-    // 대진표/입장순서/마감/결과 중복 공지보다는 대회 개최/요강/대회명 대표 게시물 위주 추출
+    // 대진표/입장순서/마감/결과/배부/회의 등 대회 운영 후속 공지는 제외하고 실제 대회 개최 공지만 추출
     if (
-      !/수영\s*대회|생활체육\s*대회|시장배|체육회장배|교육감배|교육감기|연맹회장배|회장기|아레나\s*마스터즈|이순신장군배/.test(
+      !/수영\s*대회|생활체육\s*대회|초\.?중학생\s*체육대회|시장배|체육회장배|교육감배|교육감기|연맹회장배|회장기|아레나\s*마스터즈|이순신장군배/.test(
         rawTitle
       )
     ) {
       continue;
     }
-    if (/입장순서|감독자회의|대표자회의|워밍업|스타트\s*연습|배부\s*불가|경품\s*미수령|선발명단/.test(rawTitle)) {
+    if (
+      /입장\s*순서|자리\s*순서|감독자\s*회의|대표자\s*회의|워밍업|스타트\s*연습|배부|수령|미수령|선발\s*명단|경기\s*순서|대진표|종합\s*성적|기록\s*결과|결과지|결과\s*및|선착순\s*마감|접수\s*마감|마감되었습니다|\s마감$|참가\s*신청(?:서)?\s*(?:열람|명단)|참가\s*현황|비등록선수\s*연습|적응\s*훈련|대비\s*훈련|광고\s*신청|무기한\s*연기|최종\s*알림|개최\s*예정/.test(
+        rawTitle
+      )
+    ) {
       continue;
     }
 
-    // 제목 정제 (괄호 안 부가 안내문 정리)
-    let cleanTitle = rawTitle
+    const verified = idx ? BUSAN_VERIFIED_EVENT_MAP[idx] : null;
+
+    // 제목 정제 (괄호 안 부가 안내문 및 잘린 괄호 정리)
+    let cleanTitle = verified?.title || rawTitle
       .replace(/\[\d+\]$/g, '')
-      .replace(/\(개최요강[^)]*\)/g, '')
-      .replace(/\(신청[^)]*\)/g, '')
-      .replace(/\(참가[^)]*\)/g, '')
-      .replace(/\(내용\s*필독[^)]*\)/g, '')
-      .replace(/\(마감\)/g, '')
+      .replace(/^\(대회명\s*변경\)\s*/g, '')
+      .replace(/\((?:개최요강|신청|참가|내용\s*필독|수정|시\.도|마감)[^)]*(?:\)|$)/g, '')
       .replace(/-마감$/g, '')
-      .replace(/\s*(개최\s*알림|개최\s*통보|개최\s*안내|개최\s*요강|개최\s*예정|개최|참가\s*신청\s*안내|공지사항|경기순서.*|대진표.*|종합성적표.*|기록결과.*)$/g, '')
+      .replace(/\s*(개최\s*알림|개최\s*통보|개최\s*안내|개최\s*요강\s*및\s*참가신청서|개최\s*요강|개최\s*예정|개최|참가\s*신청\s*안내|공지사항)\s*(?:\([^)]*(?:\)|$))?$/g, '')
       .trim();
 
     if (!/대회/.test(cleanTitle)) {
@@ -673,10 +797,26 @@ async function crawlBusanSwimming() {
     }
 
     const postYear = dateMatch[1];
-    const postYmd = normalizeYmd(dateMatch[1], dateMatch[2], dateMatch[3]);
-    const dedupKey = `${postYear}:${cleanTitle.replace(/\s+/g, '')}`;
+    let eventYmd = verified?.ymd || normalizeYmd(dateMatch[1], dateMatch[2], dateMatch[3]);
+    let scheduleNote = verified?.scheduleNote || `부산수영연맹 공지일: ${dateMatch[1]}.${dateMatch[2]}.${dateMatch[3]}`;
+
+    // 최근 대회 공지인데 BUSAN_VERIFIED_EVENT_MAP에 없는 경우 상세 페이지 본문에서 실제 대회 개최일 추출
+    if (!verified && idx && Number(postYear) >= 2024) {
+      const detailRes = await fetchPage(`http://www.busanswimming.kr/BoardView.asp?idx=${idx}&gubun=notice`);
+      if (detailRes.ok) {
+        const parsedBody = extractBusanBodyEventDate(detailRes.html, postYear);
+        if (parsedBody) {
+          eventYmd = parsedBody.ymd;
+          scheduleNote = parsedBody.scheduleNote;
+        }
+      }
+    }
+
+    const eventYear = eventYmd.slice(0, 4);
+    const dedupKey = `${eventYear}:${cleanTitle.replace(/\s+/g, '')}`;
     if (seenTitlesByYear.has(dedupKey)) continue;
     seenTitlesByYear.add(dedupKey);
+    seenIds.add(docId);
 
     const viewUrl = idx
       ? `http://www.busanswimming.kr/BoardView.asp?idx=${idx}&gubun=notice`
@@ -684,16 +824,16 @@ async function crawlBusanSwimming() {
 
     docs.push(
       buildSwimDoc({
-        id: `swim-busan-idx-${idx || postYmd}`,
+        id: docId,
         title: cleanTitle,
-        startDate: postYmd,
-        endDate: postYmd,
-        scheduleNote: `부산수영연맹 공지일: ${dateMatch[1]}.${dateMatch[2]}.${dateMatch[3]}`,
+        startDate: eventYmd,
+        endDate: eventYmd,
+        scheduleNote,
         host: '부산광역시수영연맹',
         supervise: '부산광역시수영연맹',
         url: viewUrl,
-        label: '부산수영연맹 공지 원문',
-        invitation: `[부산광역시수영연맹] ${cleanTitle} 공식 공지 및 대회 요강 안내입니다.`,
+        label: `부산수영연맹 공지 원문${idx ? ` (idx=${idx})` : ''}`,
+        invitation: `[부산광역시수영연맹] ${cleanTitle} 공식 공지 및 대회 요강 안내입니다. (${scheduleNote})`,
         defaultGeo: busanDefaultGeo,
       })
     );
@@ -1261,13 +1401,14 @@ async function main() {
   const payload = JSON.parse(existingRaw);
   const existingEvents = Array.isArray(payload.events) ? payload.events : [];
 
+  const checkpointState = loadCrawlCheckpoints();
   const [ksfDocs, busanDocs, ulsanDocs, seoulDocs, gyeonggiDocs, otherDocs] = await Promise.all([
-    crawlKoreaAquatics(),
-    crawlBusanSwimming(),
-    crawlUlsanSwimming(),
-    crawlSeoulSwimming(),
-    crawlGyeonggiSwimming(),
-    crawlOtherFederationsAndPools(),
+    crawlKoreaAquatics(checkpointState),
+    crawlBusanSwimming(checkpointState),
+    crawlUlsanSwimming(checkpointState),
+    crawlSeoulSwimming(checkpointState),
+    crawlGyeonggiSwimming(checkpointState),
+    crawlOtherFederationsAndPools(checkpointState),
   ]);
 
   console.log(
@@ -1373,6 +1514,9 @@ async function main() {
   } catch {
     // ignore
   }
+
+  // 사이트별 마지막 게시글 ID·수집시각·날짜범위 체크포인트(crawl-checkpoints.json) 업데이트
+  bootstrapCheckpointsFromExistingEvents();
 
   console.log(`✅ 총 이벤트 수: ${linkedEvents.length}건`);
   console.log(`✅ 수영 행사 레벨별 분포:`, swimLevelCounts);

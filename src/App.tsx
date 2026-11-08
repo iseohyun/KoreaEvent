@@ -1,5 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  buildDefaultSpecialPromoFormats,
+  classifySpecialPromoEventFormats,
+  isSpecialPromoFormatCode,
+  matchesSpecialPromoMultiFormats,
+  SPECIAL_PROMO_EVENT_FORMATS,
+} from './constants/categories';
 import { REGION_BY_ID } from './constants/regions';
+import { matchesSportCategory } from './shared/promoPolicy';
 import {
   buildInitialSeedFirestoreDocs,
   composeEventsWithFirestore,
@@ -16,11 +24,13 @@ import {
 } from './services/promoEnrichmentService';
 import {
   CalendarDisplayOptions,
+  DbCrawlTabCategory,
   EventFilterState,
   FirestoreEventDoc,
   ListColumnVisibility,
   MainMenuView,
   MonthPeriodFilter,
+  PromoLevel,
   ResponseFormatMode,
   SigunguItem,
   SpecialPromoSport,
@@ -34,6 +44,7 @@ import { EventCardGrid } from './components/EventCardGrid';
 import { EventCalendarView } from './components/EventCalendarView';
 import { EventTableView } from './components/EventTableView';
 import { PromoDirectoryView } from './components/PromoDirectoryView';
+import { EventRegistrationView } from './components/EventRegistrationView';
 import { SpecialPromoView } from './components/SpecialPromoView';
 import { SiteAboutView } from './components/SiteAboutView';
 import { EventDetailModal } from './components/EventDetailModal';
@@ -140,6 +151,7 @@ function matchesYearAndMonthFilter(
 export const App: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<MainMenuView>('MAP');
   const [activeSport, setActiveSport] = useState<SpecialPromoSport>('SWIMMING');
+  const [activeDbTab, setActiveDbTab] = useState<DbCrawlTabCategory>('ALL');
   const [specialPromoViewMode, setSpecialPromoViewMode] =
     useState<ViewMode>('LIST');
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -150,6 +162,7 @@ export const App: React.FC = () => {
     source: 'ALL',
     majorCategory: 'ALL',
     subCategory: 'ALL',
+    specialPromoFormats: buildDefaultSpecialPromoFormats(),
     status: 'ALL',
     scopeLevels: {
       3: true,
@@ -175,13 +188,13 @@ export const App: React.FC = () => {
     formatMode: 'JSON',
   });
 
-  // 달력에 표시할 내용 체크 상태
+  // 달력에 표시할 내용 체크 상태 (기본: 소재지와 행사명만 표시)
   const [calendarOptions, setCalendarOptions] = useState<CalendarDisplayOptions>({
     showRegion: true,
-    showCategoryBadge: true,
-    showEventTime: true,
+    showCategoryBadge: false,
+    showEventTime: false,
     showOrganizer: false,
-    showInvitation: true,
+    showInvitation: false,
     showStatusBadge: false,
   });
 
@@ -245,6 +258,7 @@ export const App: React.FC = () => {
   );
 
   const handleResetFilters = useCallback(() => {
+    setActiveDbTab('ALL');
     setFilters((prev) => ({
       ...prev,
       regionId: 'ALL',
@@ -252,6 +266,7 @@ export const App: React.FC = () => {
       source: 'ALL',
       majorCategory: 'ALL',
       subCategory: 'ALL',
+      specialPromoFormats: buildDefaultSpecialPromoFormats(),
       status: 'ALL',
       scopeLevels: {
         3: true,
@@ -459,25 +474,21 @@ export const App: React.FC = () => {
     return allCombinedEvents.find((e) => e.id === selectedEventId) || null;
   }, [allCombinedEvents, selectedEventId]);
 
-  // 모든 필터 조건(지역 + 연도/월 + 범위 + 행사형태 + 행사상태 + 세부검색) 적용
-  const filteredEvents = useMemo(() => {
-    const detailKw = (filters.detailKeyword || filters.keyword || '').trim().toLowerCase();
-    const targets = filters.detailSearchTargets || {
-      organizer: true,
-      content: true,
-      title: true,
-      place: true,
-    };
-    const scopeLevels = filters.scopeLevels || {
-      3: true,
-      2: true,
-      1: true,
-      0: true,
-    };
-    const selYear = filters.selectedYear || 'ALL';
-    const selMonthPeriod = filters.selectedMonthPeriod || 'ALL';
+  // 공통 기본 필터 조건(지역, 시군구, 출처, 상태, 연도/월, 세부검색) 검사 헬퍼
+  const matchesCommonFilters = useCallback(
+    (ev: UnifiedEventItem): boolean => {
+      const detailKw = (filters.detailKeyword || filters.keyword || '')
+        .trim()
+        .toLowerCase();
+      const targets = filters.detailSearchTargets || {
+        organizer: true,
+        content: true,
+        title: true,
+        place: true,
+      };
+      const selYear = filters.selectedYear || 'ALL';
+      const selMonthPeriod = filters.selectedMonthPeriod || 'ALL';
 
-    return allCombinedEvents.filter((ev) => {
       if (filters.regionId !== 'ALL' && ev.regionId !== filters.regionId) {
         return false;
       }
@@ -487,20 +498,9 @@ export const App: React.FC = () => {
       if (filters.source !== 'ALL' && ev.source !== filters.source) {
         return false;
       }
-      if (!scopeLevels[ev.promoLevel ?? 0]) {
-        return false;
-      }
-      if (filters.majorCategory !== 'ALL' && ev.lclsSystm2 !== filters.majorCategory) {
-        return false;
-      }
-      if (filters.subCategory !== 'ALL' && ev.lclsSystm3 !== filters.subCategory) {
-        return false;
-      }
       if (filters.status !== 'ALL' && ev.status !== filters.status) {
         return false;
       }
-
-      // 날짜 필터: 연도 선택(DB 최초~최후, 기본=전체) + 월 선택(전체, 상반기, 하반기, 1~4분기, 1~12월)
       if (
         !matchesYearAndMonthFilter(
           ev.startDate,
@@ -511,8 +511,6 @@ export const App: React.FC = () => {
       ) {
         return false;
       }
-
-      // 세부 검색: 선택된 검색위치(주최기관, 초댓말/내용, 행사명, 장소/주소) 기준 매칭
       if (detailKw) {
         const chunks: string[] = [];
         if (targets.organizer) {
@@ -542,10 +540,107 @@ export const App: React.FC = () => {
           return false;
         }
       }
+      return true;
+    },
+    [filters]
+  );
 
+  // 모든 필터 조건(지역 + 연도/월 + 범위 + 행사형태 + 행사상태 + 세부검색) 적용
+  const filteredEvents = useMemo(() => {
+    const scopeLevels = filters.scopeLevels || {
+      3: true,
+      2: true,
+      1: true,
+      0: true,
+    };
+
+    return allCombinedEvents.filter((ev) => {
+      if (!matchesCommonFilters(ev)) {
+        return false;
+      }
+      if (!scopeLevels[ev.promoLevel ?? 0]) {
+        return false;
+      }
+      if (activeMenu === 'SPECIAL_PROMO') {
+        if (!matchesSpecialPromoMultiFormats(activeSport, ev, filters.specialPromoFormats)) {
+          return false;
+        }
+      } else {
+        if (filters.majorCategory !== 'ALL' && ev.lclsSystm2 !== filters.majorCategory) {
+          return false;
+        }
+        if (
+          filters.subCategory !== 'ALL' &&
+          !isSpecialPromoFormatCode(filters.subCategory) &&
+          ev.lclsSystm3 !== filters.subCategory
+        ) {
+          return false;
+        }
+      }
       return true;
     });
-  }, [allCombinedEvents, filters]);
+  }, [allCombinedEvents, matchesCommonFilters, filters, activeMenu, activeSport]);
+
+  // 범위(3/2/1/0) 각 버튼에 표시할 이벤트 수 배지 계산
+  const scopeEventCounts = useMemo<Record<PromoLevel, number>>(() => {
+    const counts: Record<PromoLevel, number> = { 3: 0, 2: 0, 1: 0, 0: 0 };
+    allCombinedEvents.forEach((ev) => {
+      if (!matchesCommonFilters(ev)) return;
+      if (activeMenu === 'SPECIAL_PROMO') {
+        const hay = `${ev.title} ${ev.invitation || ''} ${ev.summary || ''} ${ev.organizer || ''}`;
+        if (!matchesSportCategory(hay, activeSport)) return;
+        if (!matchesSpecialPromoMultiFormats(activeSport, ev, filters.specialPromoFormats)) {
+          return;
+        }
+      } else {
+        if (filters.majorCategory !== 'ALL' && ev.lclsSystm2 !== filters.majorCategory) {
+          return;
+        }
+        if (
+          filters.subCategory !== 'ALL' &&
+          !isSpecialPromoFormatCode(filters.subCategory) &&
+          ev.lclsSystm3 !== filters.subCategory
+        ) {
+          return;
+        }
+      }
+      const lv = (ev.promoLevel ?? 0) as PromoLevel;
+      counts[lv] = (counts[lv] || 0) + 1;
+    });
+    return counts;
+  }, [allCombinedEvents, matchesCommonFilters, filters, activeMenu, activeSport]);
+
+  // 특별 홍보관 행사 형태 각 버튼에 표시할 이벤트 수 배지 계산
+  const specialPromoFormatCounts = useMemo<Record<string, number>>(() => {
+    const counts: Record<string, number> = {};
+    const defs = SPECIAL_PROMO_EVENT_FORMATS[activeSport] || [];
+    defs.forEach((d) => {
+      counts[d.code] = 0;
+    });
+
+    const scopeLevels = filters.scopeLevels || {
+      3: true,
+      2: true,
+      1: true,
+      0: true,
+    };
+
+    allCombinedEvents.forEach((ev) => {
+      if (!matchesCommonFilters(ev)) return;
+      if (!scopeLevels[ev.promoLevel ?? 0]) return;
+      const hay = `${ev.title} ${ev.invitation || ''} ${ev.summary || ''} ${ev.organizer || ''}`;
+      if (!matchesSportCategory(hay, activeSport)) return;
+
+      const codes = classifySpecialPromoEventFormats(activeSport, ev);
+      codes.forEach((code) => {
+        if (code in counts) {
+          counts[code] += 1;
+        }
+      });
+    });
+
+    return counts;
+  }, [allCombinedEvents, matchesCommonFilters, filters.scopeLevels, activeSport]);
 
   const handleRefreshAll = useCallback(() => {
     loadPortalData();
@@ -566,14 +661,18 @@ export const App: React.FC = () => {
       <HeaderBar
         activeMenu={activeMenu}
         activeSport={activeSport}
+        activeDbTab={activeDbTab}
         viewMode={headerViewMode}
         filters={filters}
+        scopeEventCounts={scopeEventCounts}
+        specialPromoFormatCounts={specialPromoFormatCounts}
         availableYears={availableYears}
         sigunguOptions={sigunguOptions}
         calendarOptions={calendarOptions}
         listColumns={listColumns}
         onToggleSidebar={() => setSidebarOpen(true)}
         onChangeViewMode={handleChangeViewMode}
+        onChangeDbTab={setActiveDbTab}
         onUpdateFilter={updateFilter}
         onResetFilters={handleResetFilters}
         onChangeCalendarOptions={setCalendarOptions}
@@ -643,12 +742,25 @@ export const App: React.FC = () => {
         />
       )}
 
-      {/* 4. 지자체 홈페이지 홍보 리스트 뷰 */}
+      {/* 4. 행사 등록 메뉴 뷰 (사전안내 동의 · 주소 기반 지역/코드 자동 분류 · 2채널/도메인/언론노출 검증) */}
+      {activeMenu === 'EVENT_REGISTER' && (
+        <EventRegistrationView
+          registry={promoRegistry}
+          onRegisterEventDoc={handleSaveFirestoreDoc}
+        />
+      )}
+
+      {/* 5. 크롤링 대상 사이트 DB 뷰 (전국/광역시도/시군구/기타 펼치기·접기 및 종목별 필터) */}
       {activeMenu === 'PROMO_DIRECTORY' && (
         <PromoDirectoryView
           registry={promoRegistry}
+          activeDbTab={activeDbTab}
+          onChangeDbTab={setActiveDbTab}
           selectedRegionId={filters.regionId}
           selectedSigunguCode={filters.sigunguCode}
+          scopeLevels={
+            filters.scopeLevels || { 3: true, 2: true, 1: true, 0: true }
+          }
           keyword={filters.detailKeyword || filters.keyword}
         />
       )}

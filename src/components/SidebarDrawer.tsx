@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Activity,
   Award,
-  Bike,
   Calendar,
+  CalendarPlus,
   ChevronDown,
   ChevronRight,
-  Globe,
+  Database,
   Info,
   List,
   Map,
-  Trophy,
-  Waves,
   X,
 } from 'lucide-react';
 import { MainMenuView, SpecialPromoSport } from '../types/event';
+import {
+  KoreaGovEventIcon,
+  OlympicSportPictogram,
+} from './BrandAndSportIcons';
 import styles from './SidebarDrawer.module.css';
 
 interface SidebarDrawerProps {
@@ -61,7 +62,13 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
       <aside className={styles.drawer} aria-label="메인 메뉴 사이드바">
         <div className={styles.topBlock}>
           <div className={styles.drawerHeader}>
-            <span className={styles.drawerTitle}>대한민국 행사</span>
+            <span
+              className={styles.drawerTitle}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+            >
+              <KoreaGovEventIcon size={24} />
+              <span>대한민국 행사</span>
+            </span>
             <button
               type="button"
               className={styles.closeBtn}
@@ -106,17 +113,6 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
               <span>행사 리스트</span>
             </button>
 
-            <button
-              type="button"
-              className={`${styles.navItem} ${
-                activeMenu === 'PROMO_DIRECTORY' ? styles.navItemActive : ''
-              }`}
-              onClick={() => handlePick('PROMO_DIRECTORY')}
-            >
-              <Globe size={18} />
-              <span>지자체 사이트</span>
-            </button>
-
             {/* 특별 홍보관: 자체 페이지 없이 하위 항목('수영', '러닝', '자전거', '철인')을 펼치는 상위 그룹 */}
             <div className={styles.navGroup}>
               <button
@@ -149,7 +145,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                     }`}
                     onClick={() => handlePickSport('SWIMMING')}
                   >
-                    <Waves size={15} />
+                    <OlympicSportPictogram sport="SWIMMING" size={18} />
                     <span>수영</span>
                   </button>
 
@@ -162,7 +158,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                     }`}
                     onClick={() => handlePickSport('RUNNING')}
                   >
-                    <Activity size={15} />
+                    <OlympicSportPictogram sport="RUNNING" size={18} />
                     <span>러닝</span>
                   </button>
 
@@ -175,7 +171,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                     }`}
                     onClick={() => handlePickSport('CYCLING')}
                   >
-                    <Bike size={15} />
+                    <OlympicSportPictogram sport="CYCLING" size={18} />
                     <span>자전거</span>
                   </button>
 
@@ -188,7 +184,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                     }`}
                     onClick={() => handlePickSport('TRIATHLON')}
                   >
-                    <Trophy size={15} />
+                    <OlympicSportPictogram sport="TRIATHLON" size={18} />
                     <span>철인</span>
                   </button>
                 </div>
@@ -197,8 +193,30 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
           </nav>
         </div>
 
-        {/* 사이드바 하단: 사이트 소개 */}
+        {/* 사이드바 하단: 행사 등록 -> DB -> 사이트 소개 */}
         <div className={styles.bottomBlock}>
+          <button
+            type="button"
+            className={`${styles.navItem} ${
+              activeMenu === 'EVENT_REGISTER' ? styles.navItemActive : ''
+            }`}
+            onClick={() => handlePick('EVENT_REGISTER')}
+          >
+            <CalendarPlus size={18} />
+            <span>행사 등록</span>
+          </button>
+
+          <button
+            type="button"
+            className={`${styles.navItem} ${
+              activeMenu === 'PROMO_DIRECTORY' ? styles.navItemActive : ''
+            }`}
+            onClick={() => handlePick('PROMO_DIRECTORY')}
+          >
+            <Database size={18} />
+            <span>DB</span>
+          </button>
+
           <button
             type="button"
             className={`${styles.navItem} ${

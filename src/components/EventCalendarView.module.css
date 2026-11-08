@@ -225,13 +225,21 @@
   flex-wrap: wrap;
 }
 
+.chipMainRow {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
 .chipRegion {
-  font-size: 0.67rem;
+  font-size: 0.68rem;
   font-weight: 800;
   color: #1e40af;
   background: #dbeafe;
   padding: 1px 5px;
   border-radius: 4px;
+  flex-shrink: 0;
 }
 
 .chipCatEV01 {

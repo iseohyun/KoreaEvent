@@ -283,7 +283,7 @@ export const TITLE_SIGUNGU_CODE_RULES = [
   { re: /사천|삼천포/, lDongRegnCd: '48', lDongSignguCd: '240', sigunguName: '사천시' },
   { re: /김해/, lDongRegnCd: '48', lDongSignguCd: '250', sigunguName: '김해시' },
   { re: /밀양/, lDongRegnCd: '48', lDongSignguCd: '270', sigunguName: '밀양시' },
-  { re: /거제|산방산|지세포|구조라|펭귄\s*수영/, lDongRegnCd: '48', lDongSignguCd: '310', sigunguName: '거제시' },
+  { re: /거제|산방산|지세포|구조라|와현해수욕장|와현모래숲|예구\s*해변|펭귄\s*수영/, lDongRegnCd: '48', lDongSignguCd: '310', sigunguName: '거제시' },
   { re: /양산/, lDongRegnCd: '48', lDongSignguCd: '330', sigunguName: '양산시' },
   { re: /의령/, lDongRegnCd: '48', lDongSignguCd: '720', sigunguName: '의령군' },
   { re: /함안/, lDongRegnCd: '48', lDongSignguCd: '730', sigunguName: '함안군' },
@@ -690,7 +690,7 @@ export function getEventCityShortName(ev = {}) {
  * - 같은 대회의 본 행사 게시글과 중복되거나, 대회 자체가 아니므로 스포츠 행사 목록에서 제외한다.
  */
 const SPORTS_NOTICE_TITLE_RE =
-  /경기\s*결과|대회\s*결과|결과\s*(?:및|공지|안내|발표|보고|알림)|일정\s*변경|변경\s*(?:통보|안내|공지|알림)|대진표|조\s*편성|기록\s*(?:공지|발표)|순위\s*발표|시상\s*(?:결과|내역)|(?:취소|연기|순연)\s*(?:안내|공지|알림|통보)|심판\s*배정|참가\s*(?:신청\s*)?현황|명단\s*(?:공지|발표|안내)|입상자|수상자\s*발표|레인\s*배정|엔트리\s*(?:공지|발표)/;
+  /경기\s*결과|대회\s*결과|결과\s*(?:및|공지|안내|발표|보고|알림)|결과지|종합\s*성적|일정\s*변경|변경\s*(?:통보|안내|공지|알림)|경기\s*순서|대진표|조\s*편성|기록\s*(?:공지|발표|결과)|순위\s*발표|시상\s*(?:결과|내역)|(?:취소|연기|순연)\s*(?:안내|공지|알림|통보)|무기한\s*연기|심판\s*배정|참가\s*(?:신청\s*)?현황|참가\s*신청(?:서)?\s*(?:열람|명단)|명단\s*(?:공지|발표|안내)|입상자|수상자\s*발표|레인\s*배정|엔트리\s*(?:공지|발표)|선착순\s*마감|접수\s*마감|마감되었습니다|\s마감(?:\s*수영대회)?$|(?:상장|사장|메달)\s*(?:,\s*메달\s*|및\s*메달\s*)?(?:배부|수령)|자리\s*순서|입장\s*순서|대표자\s*회의|감독자\s*회의|비등록선수\s*연습|적응\s*훈련|대비\s*훈련|광고\s*신청|최종\s*알림글/;
 
 /** 일반 행사 중 결과 발표성 게시글 (예: '경연대회 결과') */
 const GENERAL_RESULT_NOTICE_RE = /결과$|결과\s*(?:공지|발표|알림)$/;
@@ -716,6 +716,133 @@ export function isPlaceholderFullYearRange(startDate = '', endDate = '') {
 }
 
 /**
+ * 부산수영연맹 게시판에서 기존 크롤러가 '경기순서/대진표/종합성적표/개최예정' 접미어를 잘라내어
+ * 일반 대회처럼 남았던 후속 운영 공지 ID 목록 (실제 대회 개최 공지 본문은 별도 ID로 존재)
+ */
+const BUSAN_SWIM_NOTICE_ONLY_IDS = new Set([
+  'swim-busan-idx-864', // 선착순 마감
+  'swim-busan-idx-850', // 5대 인기종목 경기순서 및 대진표(최종)
+  'swim-busan-idx-844', // 제48회 회장배 종합성적표
+  'swim-busan-idx-843', // 제48회 회장배 비등록선수 연습x
+  'swim-busan-idx-839', // 제48회 회장배 경기순서, 대진표(최종본)
+  'swim-busan-idx-831', // 제5회 부산시장배 경기순서, 대진표(최종본)
+  'swim-busan-idx-830', // 제5회 부산시장배 선착순 마감
+  'swim-busan-idx-810', // 제3회 체육회장배 상장 및 메달 배부 안내
+  'swim-busan-idx-808', // 제3회 체육회장배 팀 자리 순서 명단
+  'swim-busan-idx-806', // 제3회 체육회장배 경기순서 및 대진표(최종본)
+  'swim-busan-idx-789', // 제4회 부산시장배 상장 및 메달 배부안내
+  'swim-busan-idx-787', // 제43회 교육감배 경기순서 및 대진표(최종본)
+  'swim-busan-idx-782', // 제4회 부산시장배 상장 및 메달 수령 안내
+  'swim-busan-idx-781', // 제4회 부산시장배 자리순서(수정) 명단
+  'swim-busan-idx-778', // 제4회 부산시장배 경기순서, 대진표(최종본)
+  'swim-busan-idx-774', // 제4회 부산시장배 선착순 마감
+  'swim-busan-idx-742', // 제2회 체육회장배 상장,메달 배부안내
+  'swim-busan-idx-737', // 제2회 체육회장배 상장 및 메달 배부시기 안내
+  'swim-busan-idx-732', // 제2회 체육회장배 대진표(최종본)
+  'swim-busan-idx-730', // 제2회 체육회장배 마감
+  'swim-busan-idx-729', // 제2회 체육회장배 광고 신청
+  'swim-busan-idx-726', // 제2회 체육회장배 개최예정 (728 본 공지와 중복)
+  'swim-busan-idx-717', // 제42회 교육감배 경기순서, 대진표(최종본)
+  'swim-busan-idx-704', // 제3회 부산시장배 상장 및 메달 배부
+  'swim-busan-idx-698', // 제3회 부산시장배 대표자 회의 자료 배부
+  'swim-busan-idx-697', // 2024 부산초중학교 수영대회 대진표
+  'swim-busan-idx-695', // 제3회 부산시장배 경기순서, 대진표(최종본)
+  'swim-busan-idx-694', // 제3회 부산시장배 경기순서, 대진표
+  'swim-busan-idx-693', // 시장배 접수 마감
+]);
+
+/**
+ * 부산수영연맹 주요 대회 공지(idx)별 본문 내 실제 대회 개최일 및 정식 명칭 보정 맵
+ * (목록의 '공지 등록일'로 잘못 저장된 항목을 본문 '날짜/일시' 기준 실제 대회일로 보정)
+ */
+const BUSAN_SWIM_VERIFIED_FIXES = {
+  'swim-busan-idx-862': {
+    title: '제44회 부산광역시교육감배 초·중학교 수영대회',
+    startDate: '20261121',
+    endDate: '20261121',
+    scheduleNote: '2026년 11월 21일(토) 오전 9시 · 부산 사직실내수영장',
+  },
+  'swim-busan-idx-860': {
+    title: '제4회 부산광역시체육회장배 생활체육 수영대회',
+    startDate: '20261129',
+    endDate: '20261129',
+    scheduleNote: '2026년 11월 29일(일) 사직실내수영장 (선착순 1,000명)',
+  },
+  'swim-busan-idx-845': {
+    title: '부산광역시 5대 인기종목 수영대회',
+    startDate: '20260919',
+    endDate: '20260919',
+    scheduleNote: '2026년 9월 19일(토) 08:30 · 부산 사직실내수영장',
+  },
+  'swim-busan-idx-838': {
+    title: '제48회 부산광역시수영연맹회장배 수영대회 겸 제107회 전국체육대회 부산예선대회',
+    startDate: '20260704',
+    endDate: '20260704',
+    scheduleNote: '2026년 7월 4일(토) 09:30 · 부산 사직실내수영장',
+  },
+  'swim-busan-idx-825': {
+    title: '제5회 부산광역시장배 생활체육 수영대회',
+    startDate: '20260503',
+    endDate: '20260503',
+    scheduleNote: '2026년 5월 3일(일) 사직실내수영장 (선착순 1,000명)',
+  },
+  'swim-busan-idx-812': {
+    title: '2026년 부산초·중학생 체육대회 수영대회 (제55회 전국소년체육대회 선발전)',
+    startDate: '20260321',
+    endDate: '20260321',
+    scheduleNote: '2026년 3월 21일(토) · 부산 사직실내수영장',
+  },
+  'swim-busan-idx-797': {
+    title: '제3회 부산광역시체육회장배 전국 생활체육 수영대회',
+    startDate: '20251130',
+    endDate: '20251130',
+    scheduleNote: '2025년 11월 30일(일) · 부산 사직실내수영장 (선착순 1,000명)',
+  },
+  'swim-busan-idx-783': {
+    title: '제43회 부산광역시교육감배 초·중학교 수영대회',
+    startDate: '20250816',
+    endDate: '20250816',
+    scheduleNote: '2025년 8월 16일(토) · 부산 사직실내수영장',
+  },
+  'swim-busan-idx-770': {
+    title: '제4회 부산광역시장배 전국 생활체육 수영대회',
+    startDate: '20250713',
+    endDate: '20250713',
+    scheduleNote: '2025년 7월 13일(일) · 부산 사직실내수영장',
+  },
+  'swim-busan-idx-751': {
+    title: '2025년 부산초·중학생 체육대회 수영대회 (전국소년체육대회 부산대표선발전)',
+    startDate: '20250406',
+    endDate: '20250406',
+    scheduleNote: '2025년 4월 6일(일) · 창원실내수영장',
+  },
+  'swim-busan-idx-728': {
+    title: '제2회 부산광역시체육회장배 생활체육 수영대회',
+    startDate: '20240901',
+    endDate: '20240901',
+    scheduleNote: '2024년 9월 1일(일) · 부산 사직실내수영장',
+  },
+  'swim-busan-idx-712': {
+    title: '제42회 부산광역시교육감기 초·중학교 수영대회',
+    startDate: '20240713',
+    endDate: '20240713',
+    scheduleNote: '2024년 7월 13일(토) · 부산 사직실내수영장',
+  },
+  'swim-busan-idx-710': {
+    title: '제46회 부산광역시수영연맹회장배 및 제105회 전국체육대회 부산선발전 수영대회',
+    startDate: '20240622',
+    endDate: '20240622',
+    scheduleNote: '2024년 6월 22일(토) 오전 9시 30분 · 부산 사직실내수영장',
+  },
+  'swim-busan-idx-687': {
+    title: '제3회 부산광역시장배 생활체육 수영대회',
+    startDate: '20240331',
+    endDate: '20240331',
+    scheduleNote: '2024년 3월 31일(일) · 부산 사직실내수영장 (선착순 1,000명)',
+  },
+};
+
+/**
  * [단일 정규화 지점] 모든 크롤러 결과와 프런트엔드 로드 시 공통으로 적용하는 행사 문서 정규화
  * - 스포츠 행사:
  *   - 연중 더미 일정(0101~1231)이면 null 반환(제외) → '매일 김천·거제 표시' 버그 재발 방지
@@ -730,22 +857,42 @@ export function isPlaceholderFullYearRange(startDate = '', endDate = '') {
 export function normalizeEventDoc(doc) {
   if (!doc || !doc.id || !doc.title) return null;
 
-  const startDate = doc.eventDate?.startDate || '';
-  const endDate = doc.eventDate?.endDate || '';
-  const fullText = `${doc.title || ''} ${doc.invitation || ''} ${doc.organizer?.host || ''}`;
+  if (!doc.manualEdited && BUSAN_SWIM_NOTICE_ONLY_IDS.has(doc.id)) {
+    return null;
+  }
+
+  let workingDoc = doc;
+  const busanFix = !doc.manualEdited ? BUSAN_SWIM_VERIFIED_FIXES[doc.id] : null;
+  if (busanFix) {
+    workingDoc = {
+      ...doc,
+      title: busanFix.title,
+      eventDate: {
+        ...doc.eventDate,
+        startDate: busanFix.startDate,
+        endDate: busanFix.endDate,
+        scheduleNote: busanFix.scheduleNote,
+      },
+      invitation: `[부산광역시수영연맹] ${busanFix.title} 개최 안내 (${busanFix.scheduleNote})`,
+    };
+  }
+
+  const startDate = workingDoc.eventDate?.startDate || '';
+  const endDate = workingDoc.eventDate?.endDate || '';
+  const fullText = `${workingDoc.title || ''} ${workingDoc.invitation || ''} ${workingDoc.organizer?.host || ''}`;
   const placeholderDate = isPlaceholderFullYearRange(startDate, endDate);
   const sports = isSportsEvent(fullText);
 
   // 대회 결과·대진표·일정 변경 같은 운영 공지는 행사가 아니므로 제외 (직접 편집한 문서는 유지)
-  if (!doc.manualEdited && isNoticeOnlyPost(doc.title, sports)) {
+  if (!workingDoc.manualEdited && isNoticeOnlyPost(workingDoc.title, sports)) {
     return null;
   }
 
   if (!sports) {
-    if (!placeholderDate) return doc;
+    if (!placeholderDate) return workingDoc;
     return {
-      ...doc,
-      eventDate: { ...doc.eventDate, dateUnknown: true },
+      ...workingDoc,
+      eventDate: { ...workingDoc.eventDate, dateUnknown: true },
     };
   }
 
@@ -754,19 +901,19 @@ export function normalizeEventDoc(doc) {
   }
 
   // 사용자가 상세 화면에서 직접 편집한 문서는 지자체·범위를 자동으로 덮어쓰지 않는다
-  if (doc.manualEdited) {
-    return doc;
+  if (workingDoc.manualEdited) {
+    return workingDoc;
   }
 
-  const titleMatch = matchTitleMunicipalityByCode(doc.title);
+  const titleMatch = matchTitleMunicipalityByCode(workingDoc.title);
   const synced = titleMatch
     ? {
-        ...doc,
+        ...workingDoc,
         lDongRegnCd: titleMatch.lDongRegnCd,
         lDongSignguCd: titleMatch.lDongSignguCd,
         sigunguName: titleMatch.sigunguName,
       }
-    : doc;
+    : workingDoc;
 
   return {
     ...synced,
