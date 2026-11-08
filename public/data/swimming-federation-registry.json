@@ -1,0 +1,415 @@
+{
+  "updatedAt": "2026-11-07T23:12:55.660Z",
+  "description": "세계수영연맹(World Aquatics), 대한수영연맹(Korea Aquatics), 전국 17개 광역시·도 수영연맹, 기초지자체(시·군·구) 수영연맹 및 개별 수영장 대회 채널 마스터 DB",
+  "levelPolicy": {
+    "0": "Lv.0 기타 각 수영장·체육센터 내 개별 행사 및 자체 대회",
+    "1": "Lv.1 기초지자체(시·군·구) 수영연맹 및 시장·군수·구청장배 수영대회",
+    "2": "Lv.2 광역시·도 수영연맹 및 광역지자체(광역시장배·도지사배·시도체육회장배·교육감배) 대회",
+    "3": "Lv.3 세계수영연맹(World Aquatics) / 대한수영연맹(Korea Aquatics) 주최·주관 공인 대회"
+  },
+  "worldAndNational": [
+    {
+      "id": "world-aquatics",
+      "level": 3,
+      "name": "세계수영연맹 (World Aquatics / 구 FINA)",
+      "region": "세계 (International)",
+      "city": "Lausanne / 국제 순회",
+      "homepageUrl": "https://www.worldaquatics.com",
+      "scheduleUrl": "https://www.worldaquatics.com/competitions",
+      "MainCompetitions": [
+        "World Aquatics Championships (세계수영선수권대회)",
+        "World Aquatics Swimming World Cup (경영 월드컵 - 인천 등 개최)",
+        "World Aquatics Open Water Swimming World Cup (오픈워터 월드컵)",
+        "World Aquatics Masters Championships (세계마스터즈수영선수권대회)"
+      ]
+    },
+    {
+      "id": "korea-aquatics",
+      "level": 3,
+      "name": "대한수영연맹 (Korea Aquatics / KSF)",
+      "region": "전국 (대한민국)",
+      "city": "서울 (올림픽회관)",
+      "homepageUrl": "https://www.korswim.co.kr",
+      "scheduleUrl": "https://www.korswim.co.kr/11",
+      "noticeUrl": "https://www.korswim.co.kr/41",
+      "sidoNewsUrl": "https://www.korswim.co.kr/43",
+      "address": "서울특별시 송파구 올림픽로 424 올림픽회관 신관 210호",
+      "MainCompetitions": [
+        "KB금융 코리아 스위밍 챔피언십 (국가대표 선발대회)",
+        "대통령배 전국수영대회",
+        "회장배 전국수영대회",
+        "동아수영대회",
+        "MBC배 전국수영대회",
+        "꿈나무 전국수영대회",
+        "교보생명컵 꿈나무체육대회(수영경기)",
+        "전국체육대회 / 전국소년체육대회 / 전국생활체육대축전 수영경기",
+        "오픈워터스위밍 전국 마스터즈 대회",
+        "수영등급제 인증대회"
+      ]
+    }
+  ],
+  "provincialFederations": [
+    {
+      "id": "swim-seoul",
+      "level": 2,
+      "regionId": "seoul",
+      "lDongRegnCd": "11",
+      "name": "서울특별시수영연맹",
+      "city": "서울",
+      "homepageUrl": "http://www.seoulswim.or.kr",
+      "scheduleUrl": "http://www.seoulswim.or.kr/bbs/board.php?bo_table=schedule",
+      "applicationUrl": "http://www.seoulswim.or.kr/bbs/board.php?bo_table=application",
+      "address": "서울특별시 중랑구 망우로 182 서울시체육회 301호",
+      "mainPool": "잠실제1수영장 / 올림픽수영장 / 서울체육고등학교 수영장"
+    },
+    {
+      "id": "swim-busan",
+      "level": 2,
+      "regionId": "busan",
+      "lDongRegnCd": "26",
+      "name": "부산광역시수영연맹",
+      "city": "부산",
+      "homepageUrl": "http://www.busanswimming.kr",
+      "scheduleUrl": "http://www.busanswimming.kr/BoardList.asp?gubun=notice",
+      "address": "부산광역시 동래구 종합운동장로 29 사직실내수영장 내 102호",
+      "mainPool": "부산 사직실내수영장"
+    },
+    {
+      "id": "swim-daegu",
+      "level": 2,
+      "regionId": "daegu",
+      "lDongRegnCd": "27",
+      "name": "대구광역시수영연맹",
+      "city": "대구",
+      "homepageUrl": "https://www.daegusports.or.kr",
+      "scheduleUrl": "https://www.korswim.co.kr/43",
+      "address": "대구광역시 수성구 유니버시아드로 42길 127 대구광역시체육회 3층",
+      "mainPool": "두류수영장"
+    },
+    {
+      "id": "swim-incheon",
+      "level": 2,
+      "regionId": "incheon",
+      "lDongRegnCd": "28",
+      "name": "인천광역시수영연맹",
+      "city": "인천",
+      "homepageUrl": "https://www.sfinder.co.kr/contest/contest_list/swimming",
+      "scheduleUrl": "https://www.sfinder.co.kr/contest/contest_list/swimming",
+      "address": "인천광역시 미추홀구 매소홀로 618 문학박태환수영장 1층",
+      "mainPool": "인천 문학박태환수영장"
+    },
+    {
+      "id": "swim-gwangju",
+      "level": 2,
+      "regionId": "gwangju",
+      "lDongRegnCd": "12",
+      "name": "광주광역시수영연맹 (전남광주통합수영연맹)",
+      "city": "광주",
+      "homepageUrl": "http://jnsf.kr",
+      "scheduleUrl": "http://jnsf.kr/board.php?bo=schedule",
+      "address": "광주광역시 서구 금화로 278 광주광역시체육회관 4층",
+      "mainPool": "남부대 시립국제수영장"
+    },
+    {
+      "id": "swim-daejeon",
+      "level": 2,
+      "regionId": "daejeon",
+      "lDongRegnCd": "30",
+      "name": "대전광역시수영연맹",
+      "city": "대전",
+      "homepageUrl": "http://www.djswimming.or.kr",
+      "scheduleUrl": "https://www.korswim.co.kr/43",
+      "address": "대전광역시 동구 용운동 용운국제수영장 내",
+      "mainPool": "용운국제수영장"
+    },
+    {
+      "id": "swim-ulsan",
+      "level": 2,
+      "regionId": "ulsan",
+      "lDongRegnCd": "31",
+      "name": "울산광역시수영연맹",
+      "city": "울산",
+      "homepageUrl": "http://www.ulsanswimming.com",
+      "scheduleUrl": "http://www.ulsanswimming.com/board/notice",
+      "address": "울산광역시 남구 문수로 44 문수실내수영장 1층",
+      "mainPool": "울산 문수실내수영장"
+    },
+    {
+      "id": "swim-sejong",
+      "level": 2,
+      "regionId": "sejong",
+      "lDongRegnCd": "36110",
+      "name": "세종특별자치시수영연맹",
+      "city": "세종",
+      "homepageUrl": "http://www.sejongsports.or.kr",
+      "scheduleUrl": "https://www.korswim.co.kr/43",
+      "address": "세종특별자치시 장군면 금송로 210 1층",
+      "mainPool": "세종시민체육관 수영장 / 정부세종청사체육관 수영장"
+    },
+    {
+      "id": "swim-gyeonggi",
+      "level": 2,
+      "regionId": "gyeonggi",
+      "lDongRegnCd": "41",
+      "name": "경기도수영연맹",
+      "city": "수원",
+      "homepageUrl": "http://www.gswimming.com",
+      "scheduleUrl": "http://www.gswimming.com/34",
+      "applicationUrl": "http://www.gswimming.com/41",
+      "noticeUrl": "http://www.gswimming.com/31",
+      "address": "경기도 수원시 장안구 장안로 134 경기도체육회관 816호",
+      "mainPool": "수원월드컵경기장 스포츠센터 / 안산올림픽기념관 수영장"
+    },
+    {
+      "id": "swim-gangwon",
+      "level": 2,
+      "regionId": "gangwon",
+      "lDongRegnCd": "51",
+      "name": "강원특별자치도수영연맹",
+      "city": "춘천",
+      "homepageUrl": "https://www.gwswim.or.kr",
+      "scheduleUrl": "https://www.gwswim.or.kr/bbs/board.php?bo_table=501",
+      "noticeUrl": "https://www.gwswim.or.kr/bbs/board.php?bo_table=301",
+      "address": "강원특별자치도 춘천시 우석로 102-3 국민체육센터수영장 내",
+      "mainPool": "춘천 국민체육센터 수영장 / 강릉 올림픽파크 수영장"
+    },
+    {
+      "id": "swim-chungbuk",
+      "level": 2,
+      "regionId": "chungbuk",
+      "lDongRegnCd": "43",
+      "name": "충청북도수영연맹",
+      "city": "청주",
+      "homepageUrl": "https://cafe.daum.net/cbswim",
+      "scheduleUrl": "https://cafe.daum.net/cbswim",
+      "address": "충청북도 청주시 흥덕구 사직1동 청주실내수영장 내",
+      "mainPool": "청주실내수영장"
+    },
+    {
+      "id": "swim-chungnam",
+      "level": 2,
+      "regionId": "chungnam",
+      "lDongRegnCd": "44",
+      "name": "충청남도수영연맹",
+      "city": "천안",
+      "homepageUrl": "https://cafe.daum.net/kick563",
+      "scheduleUrl": "https://cafe.daum.net/kick563",
+      "address": "충청남도 천안시 서북구 번영로 208 천안종합운동장 수영장 내",
+      "mainPool": "아산 배미수영장 / 천안한들문화센터 수영장"
+    },
+    {
+      "id": "swim-jeonbuk",
+      "level": 2,
+      "regionId": "jeonbuk",
+      "lDongRegnCd": "52",
+      "name": "전북특별자치도수영연맹",
+      "city": "전주",
+      "homepageUrl": "https://cafe.naver.com/jbswimfd",
+      "scheduleUrl": "https://cafe.naver.com/jbswimfd",
+      "address": "전북특별자치도 전주시 완산구 효자동 완산수영장 2층",
+      "mainPool": "전주 완산수영장"
+    },
+    {
+      "id": "swim-jeonnam",
+      "level": 2,
+      "regionId": "jeonnam",
+      "lDongRegnCd": "46",
+      "name": "전라남도수영연맹",
+      "city": "광양",
+      "homepageUrl": "http://jnsf.kr",
+      "scheduleUrl": "http://jnsf.kr/board.php?bo=schedule",
+      "noticeUrl": "http://jnsf.kr/board.php?bo=notice",
+      "address": "전라남도 광양시 구마9길 33",
+      "mainPool": "광양성황스포츠센터 수영장 / 목포실내수영장"
+    },
+    {
+      "id": "swim-gyeongbuk",
+      "level": 2,
+      "regionId": "gyeongbuk",
+      "lDongRegnCd": "47",
+      "name": "경상북도수영연맹",
+      "city": "경산",
+      "homepageUrl": "http://gbaquatics.co.kr",
+      "scheduleUrl": "http://gbaquatics.co.kr/pages/01_competition-info/01_schedule-guide/",
+      "noticeUrl": "http://gbaquatics.co.kr/pages/03_information-center/01_notices/",
+      "address": "경상북도 경산시 서상길 83 2층",
+      "mainPool": "김천실내수영장"
+    },
+    {
+      "id": "swim-gyeongnam",
+      "level": 2,
+      "regionId": "gyeongnam",
+      "lDongRegnCd": "48",
+      "name": "경상남도수영연맹",
+      "city": "창원",
+      "homepageUrl": "https://www.gnsports.or.kr",
+      "scheduleUrl": "https://cafe.daum.net/cwsun",
+      "address": "경상남도 창원시 의창구 원이대로 450 창원종합운동장 내 166호",
+      "mainPool": "창원실내수영장"
+    },
+    {
+      "id": "swim-jeju",
+      "level": 2,
+      "regionId": "jeju",
+      "lDongRegnCd": "50",
+      "name": "제주특별자치도수영연맹",
+      "city": "제주",
+      "homepageUrl": "https://kjaq.kr",
+      "scheduleUrl": "https://kjaq.kr/31",
+      "noticeUrl": "https://kjaq.kr/21",
+      "address": "제주특별자치도 제주시 조공포길 7 외도실내수영장 내",
+      "mainPool": "제주종합경기장 실내수영장 / 서귀포 국민체육센터 수영장"
+    }
+  ],
+  "municipalFederations": [
+    {
+      "id": "swim-muni-changwon",
+      "level": 1,
+      "regionId": "gyeongnam",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "120",
+      "city": "창원",
+      "name": "창원시수영연맹",
+      "homepageUrl": "https://cafe.daum.net/cwsun",
+      "mainPool": "창원실내수영장",
+      "mainEvents": [
+        "창원특례시장배 전국 마스터즈 수영대회",
+        "창원시수영연맹회장배 생활체육 수영대회"
+      ]
+    },
+    {
+      "id": "swim-muni-geoje",
+      "level": 1,
+      "regionId": "gyeongnam",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "310",
+      "city": "거제",
+      "name": "거제시수영연맹 / 거제시청 체육지원과",
+      "homepageUrl": "https://www.geoje.go.kr/index.geoje?menuCd=DOM_000008903001001000",
+      "mainPool": "거제국민체육센터 수영장 / 구조라해수욕장",
+      "mainEvents": [
+        "거제시장배 전국 마스터즈 수영대회",
+        "거제도 국제펭귄수영축제"
+      ]
+    },
+    {
+      "id": "swim-muni-gimcheon",
+      "level": 1,
+      "regionId": "gyeongbuk",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "150",
+      "city": "김천",
+      "name": "김천시수영연맹 / 김천시 스포츠산업과",
+      "homepageUrl": "https://www.gc.go.kr",
+      "mainPool": "김천실내수영장",
+      "mainEvents": [
+        "김천 전국 마스터즈 수영대회",
+        "김천 전국수영대회"
+      ]
+    },
+    {
+      "id": "swim-muni-mokpo",
+      "level": 1,
+      "regionId": "jeonnam",
+      "lDongRegnCd": "46",
+      "lDongSignguCd": "110",
+      "city": "목포",
+      "name": "목포시수영연맹",
+      "homepageUrl": "http://jnsf.kr/board.php?bo=schedule",
+      "mainPool": "목포실내수영장",
+      "mainEvents": [
+        "목포 유달산배 전국마스터즈 수영대회"
+      ]
+    },
+    {
+      "id": "swim-muni-gwangyang",
+      "level": 1,
+      "regionId": "jeonnam",
+      "lDongRegnCd": "46",
+      "lDongSignguCd": "230",
+      "city": "광양",
+      "name": "광양시수영연맹",
+      "homepageUrl": "http://jnsf.kr/board.php?bo=schedule",
+      "mainPool": "광양성황스포츠센터 50m 수영장",
+      "mainEvents": [
+        "광양만배 유소년 전국수영대회"
+      ]
+    },
+    {
+      "id": "swim-muni-hwasun",
+      "level": 1,
+      "regionId": "jeonnam",
+      "lDongRegnCd": "46",
+      "lDongSignguCd": "790",
+      "city": "화순",
+      "name": "화순군수영연맹",
+      "homepageUrl": "http://jnsf.kr/board.php?bo=schedule",
+      "mainPool": "화순하니움실내수영장",
+      "mainEvents": [
+        "화순적벽배 생활체육 수영대회"
+      ]
+    },
+    {
+      "id": "swim-muni-ansan",
+      "level": 1,
+      "regionId": "gyeonggi",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "270",
+      "city": "안산",
+      "name": "안산시수영연맹",
+      "homepageUrl": "http://www.gswimming.com/34",
+      "mainPool": "안산올림픽기념관 수영장",
+      "mainEvents": [
+        "안산시장배 수영대회"
+      ]
+    },
+    {
+      "id": "swim-muni-seoul-gu",
+      "level": 1,
+      "regionId": "seoul",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "680",
+      "city": "서울",
+      "name": "서울시 25개 자치구 수영연맹 (강남·영등포·양천·광진·동작·노원·종로·성동·성북 등)",
+      "homepageUrl": "http://www.seoulswim.or.kr/bbs/board.php?bo_table=schedule",
+      "mainPool": "각 자치구 구민체육센터 수영장",
+      "mainEvents": [
+        "강남구청장배 수영대회",
+        "영등포구청장배 수영대회",
+        "양천구청장배 수영대회",
+        "광진구청장배 수영대회",
+        "동작구청장배 수영대회",
+        "노원구청장배 수영대회",
+        "종로구청장배 수영대회",
+        "성동구청장배 수영대회",
+        "성북구체육회장배 수영대회"
+      ]
+    }
+  ],
+  "individualPoolChannels": [
+    {
+      "id": "swim-pool-sfinder",
+      "level": 0,
+      "name": "스파인더 (전국 실내수영장·청소년센터·스포츠센터 개별 대회 플랫폼)",
+      "homepageUrl": "https://www.sfinder.co.kr/contest/contest_list/swimming",
+      "description": "올림픽수영장, 시립노원청소년센터수영장, 대부동복지체육센터수영장 등 개별 수영장/센터 자체 대회 및 마스터즈 이벤트 안내"
+    }
+  ],
+  "crawlSummary": {
+    "totalSwimEvents": 587,
+    "levelBreakdown": {
+      "0": 5,
+      "1": 94,
+      "2": 302,
+      "3": 186
+    },
+    "bySource": {
+      "koreaAquatics": 154,
+      "busanSwimming": 175,
+      "ulsanSwimming": 70,
+      "seoulSwimming": 80,
+      "gyeonggiSwimming": 49,
+      "otherFederationsAndPools": 53
+    }
+  }
+}

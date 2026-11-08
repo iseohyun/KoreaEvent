@@ -1,0 +1,652 @@
+/* 특별 홍보관 > 스포츠 4종(수영·러닝·자전거·철인): 목록보기 / 달력보기 / 지도보기(상단 고정 2단계 지도 + 하단 주차별 리스트) */
+.page {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 18px 20px 48px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.calendarModeViewport {
+  width: 100%;
+}
+
+.mapModeViewport {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 10px 16px 16px;
+  box-sizing: border-box;
+}
+
+/* 범위 그룹 및 펼치기/접기 애니메이션 */
+.levelGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.levelGroupHeaderBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  text-align: left;
+}
+
+.levelGroupHeaderBtn:hover {
+  background: #f8fafc;
+  border-color: #93c5fd;
+}
+
+.levelHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.levelHeaderRight {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #475569;
+  font-size: 0.76rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.collapseToggleHint {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.levelCountText {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #334155;
+}
+
+/* 펼치기/접기 CSS Grid 애니메이션 */
+.levelCollapseWrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.22s ease;
+}
+
+.levelCollapseWrapperOpen {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.levelCollapseInner {
+  overflow: hidden;
+}
+
+.levelCardList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.levelDivider {
+  border: none;
+  border-top: 1px solid #cbd5e1;
+  margin: 12px 0;
+}
+
+/* 범위("세계/대한연맹" / "광역시도" / "시군구" / "동네") 배지 */
+.scopePill3,
+.scopePill2,
+.scopePill1,
+.scopePill0 {
+  font-size: 0.74rem;
+  font-weight: 900;
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: -0.01em;
+  flex-shrink: 0;
+}
+
+.scopePill3 {
+  background: #d97706;
+  color: #ffffff;
+}
+
+.scopePill2 {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+.scopePill1 {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.scopePill0 {
+  background: #475569;
+  color: #ffffff;
+}
+
+/* 카드 */
+.card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-left-width: 5px;
+  border-radius: 12px;
+  padding: 15px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+.cardScope3 {
+  border-left-color: #f59e0b;
+}
+
+.cardScope2 {
+  border-left-color: #0284c7;
+}
+
+.cardScope1 {
+  border-left-color: #16a34a;
+}
+
+.cardScope0 {
+  border-left-color: #94a3b8;
+}
+
+/* 좌우 배치 행 */
+.rowBetween {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.12rem;
+  font-weight: 800;
+  line-height: 1.35;
+  color: #0f172a;
+  min-width: 0;
+  word-break: keep-all;
+}
+
+.seriesBadge {
+  font-size: 0.71rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: #f3e8ff;
+  color: #6b21a8;
+  border: 1px solid #d8b4fe;
+}
+
+.organizer {
+  flex-shrink: 0;
+  max-width: 40%;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #475569;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.intro {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: #334155;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.metaGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  min-width: 0;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+
+.linkIcons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.linkIconBtn {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+
+.linkIconBtn:hover {
+  background: #dbeafe;
+  transform: translateY(-1px);
+}
+
+/* 모집공고·개최요강 PDF/HWP 전용 붉은색 아이콘 버튼 */
+.linkIconBtnRed {
+  border-color: #fca5a5;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.linkIconBtnRed:hover {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #b91c1c;
+}
+
+/* === 3. 특별 홍보관 지도보기 (상단 고정 2단계 지도 + 하단 주차별 리스트) === */
+.specialMapLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: calc(100vh - 72px);
+  min-height: 620px;
+}
+
+/* 상단 고정 지도 패널 */
+.mapTopFixedPane {
+  flex-shrink: 0;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+}
+
+.mapTopBarInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.activeWeekBanner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.activeWeekPill {
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 0.84rem;
+  font-weight: 900;
+  padding: 4px 12px;
+  border-radius: 8px;
+}
+
+.todayWeekTag {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #93c5fd;
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.keyGuideText {
+  font-size: 0.78rem;
+  color: #475569;
+}
+
+.colorScaleLegend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.scaleChip {
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 3px 7px;
+  border-radius: 5px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  white-space: nowrap;
+}
+
+.mapCanvasWrap {
+  position: relative;
+  width: 100%;
+  height: 330px;
+  background: linear-gradient(180deg, #f0f9ff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.twoLevelSvgMap {
+  width: 100%;
+  height: 100%;
+  max-width: 760px;
+}
+
+.muniPolygon {
+  cursor: pointer;
+  transition: fill 0.18s ease, stroke-width 0.15s ease;
+}
+
+.muniPolygon:hover {
+  stroke: #0f172a;
+  stroke-width: 1.5px;
+}
+
+.mapLabelCurrentWeek {
+  font-size: 9.5px;
+  font-weight: 900;
+  fill: #7f1d1d;
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: #ffffff;
+  stroke-width: 2.8px;
+  stroke-linejoin: round;
+}
+
+.mapLabelWindowWeek {
+  font-size: 8px;
+  font-weight: 800;
+  fill: #1e293b;
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: #ffffff;
+  stroke-width: 2.2px;
+  stroke-linejoin: round;
+}
+
+.mapHoverTooltip {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  background: rgba(15, 23, 42, 0.92);
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.76rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  z-index: 10;
+  pointer-events: none;
+  max-width: 320px;
+}
+
+.tooltipDiffTag {
+  color: #fca5a5;
+  font-weight: 800;
+}
+
+.mapLoadingText {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+/* 하단 주차별 리스트 스크롤 영역 (1열: 주차, 2열: 행사) */
+.weeklyBottomScrollPane {
+  flex: 1;
+  min-height: 220px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  overflow-y: auto;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.weeklyListTable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.weeklyListTable thead th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: #f1f5f9;
+  border-bottom: 2px solid #cbd5e1;
+  padding: 9px 14px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #1e293b;
+  text-align: left;
+}
+
+.colWeekTh {
+  width: 195px;
+  border-right: 1px solid #cbd5e1;
+}
+
+.colEventsTh {
+  width: auto;
+}
+
+.weeklyTr {
+  border-bottom: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.weeklyTr:hover {
+  background: #f8fafc;
+}
+
+.weeklyTrNear {
+  background: #fafaf9;
+}
+
+.weeklyTrSelected {
+  background: #fef2f2 !important;
+  outline: 2px solid #dc2626;
+  outline-offset: -2px;
+}
+
+.colWeekTd {
+  padding: 10px 14px;
+  border-right: 1px solid #e2e8f0;
+  vertical-align: middle;
+}
+
+.weekCellInner {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.weekLabelText {
+  font-size: 0.84rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.weekSubBadges {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.todayRowBadge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.selectedRowBadge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.diffFutureBadge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.diffPastBadge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.colEventsTd {
+  padding: 9px 14px;
+  vertical-align: middle;
+}
+
+.noWeekEventText {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+}
+
+.weekEventsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.weekEventChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.14s ease;
+  text-align: left;
+}
+
+.weekEventChip:hover {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.weekEventChipSelected {
+  border-color: #fca5a5;
+  background: #ffffff;
+}
+
+.weekEventCity {
+  font-weight: 900;
+  color: #1e3a8a;
+}
+
+.weekEventTitle {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.weekEventDate {
+  font-size: 0.74rem;
+  color: #64748b;
+}
+
+.emptyState {
+  background: #ffffff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 32px;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .rowBetween {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .organizer {
+    max-width: 100%;
+    text-align: left;
+  }
+
+  .colWeekTh {
+    width: 128px;
+  }
+}

@@ -1,0 +1,459 @@
+.header {
+  background: linear-gradient(90deg, #e0f2fe 0%, #dbeafe 100%);
+  border-bottom: 1px solid #bae6fd;
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+}
+
+.topBar {
+  max-width: 1640px;
+  margin: 0 auto;
+  padding: 7px 16px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.hamburgerBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid #93c5fd;
+  background: rgba(255, 255, 255, 0.85);
+  color: #1e3a8a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.hamburgerBtn:hover {
+  background: #ffffff;
+  border-color: #2563eb;
+}
+
+.koreaMapIconWrap {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pageTitle {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.toolbarSection {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+/* 상단 메뉴바 보기 모드 아이콘 그룹 (목록보기 / 달력보기 / 지도보기 택1) */
+.viewModeIconGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid #93c5fd;
+  margin-right: 4px;
+}
+
+.iconBtnWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.iconOnlyBtn {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid #93c5fd;
+  background: rgba(255, 255, 255, 0.9);
+  color: #1e3a8a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.iconOnlyBtn:hover {
+  background: #ffffff;
+  border-color: #2563eb;
+}
+
+.iconOnlyBtnActive {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+.filterBadgeDot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ef4444;
+  border: 1px solid #ffffff;
+}
+
+/* 표시 방식 체크 드롭다운 메뉴 */
+.displayDropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 240px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  padding: 12px 14px;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dropdownHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.checkRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.81rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 3px 2px;
+}
+
+.checkRow input {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--brand-primary);
+  cursor: pointer;
+}
+
+/* 필터 펼치기/접기 부드러운 애니메이션 래퍼 */
+.filterAnimWrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.22s ease;
+  background: #f0f9ff;
+}
+
+.filterAnimWrapperOpen {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  border-top: 1px solid #bae6fd;
+}
+
+.filterAnimInner {
+  overflow: hidden;
+}
+
+.filterContent {
+  max-width: 1640px;
+  margin: 0 auto;
+  padding: 12px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 좌=주제, 우=내용 배치 */
+.topicRow {
+  display: grid;
+  grid-template-columns: 82px 1fr;
+  align-items: start;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #cbd5e1;
+}
+
+.topicRow:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.topicLabel {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #1e3a8a;
+  padding-top: 6px;
+}
+
+.topicRight {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.primaryControlsLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.subControlsLine {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.quickBtn {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.quickBtn:hover {
+  border-color: #60a5fa;
+  color: #1d4ed8;
+}
+
+.quickBtnActive {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+/* 범위 on/off 토글 버튼 ("세계/대한연맹", "광역시도", "시군구", "동네" - 선택되었을 때만 하이라이트) */
+.scopeToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 7px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #64748b;
+  font-size: 0.79rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.scopeToggleBtn:hover {
+  border-color: #93c5fd;
+  color: #1e3a8a;
+}
+
+.scopeToggleBtnChecked {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 2px 5px rgba(37, 99, 235, 0.22);
+}
+
+.scopeToggleBtnChecked:hover {
+  background: #1d4ed8;
+  border-color: #1e40af;
+  color: #ffffff;
+}
+
+.scopeCheckIndicator {
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+  border: 1.5px solid #cbd5e1;
+  background: #f8fafc;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  transition: all 0.15s ease;
+}
+
+.scopeToggleBtnChecked .scopeCheckIndicator {
+  border-color: #ffffff;
+  background: #ffffff;
+  color: #2563eb;
+}
+
+.detailSelect {
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 7px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  font-size: 0.79rem;
+  color: #0f172a;
+}
+
+.detailSelect:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.detailInputWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-width: 240px;
+  flex: 1;
+  max-width: 380px;
+}
+
+.detailSearchIcon {
+  position: absolute;
+  left: 9px;
+  color: #64748b;
+  pointer-events: none;
+}
+
+.detailInput {
+  width: 100%;
+  height: 32px;
+  padding: 0 28px 0 30px;
+  border-radius: 7px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  font-size: 0.79rem;
+  color: #0f172a;
+}
+
+.detailInput:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.14);
+}
+
+.clearDetailSearchBtn {
+  position: absolute;
+  right: 7px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inlineSelectGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.inlineControlLabel {
+  font-size: 0.77rem;
+  font-weight: 800;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.searchTargetCheckGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  padding: 4px 10px;
+  min-height: 32px;
+  box-sizing: border-box;
+}
+
+.searchTargetGroupLabel {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #1e3a8a;
+  margin-right: 2px;
+}
+
+.targetCheckItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.77rem;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  user-select: none;
+}
+
+.targetCheckItem input {
+  width: 14px;
+  height: 14px;
+  accent-color: #2563eb;
+  cursor: pointer;
+  margin: 0;
+}
+
+.resetFilterBtn {
+  height: 32px;
+  padding: 0 11px;
+  border-radius: 7px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.resetFilterBtn:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #b91c1c;
+}

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="14" fill="#dbeafe"/>
+  <!-- 남한 국토 실루엣 (강원 고성~해남 땅끝~부산) -->
+  <path
+    d="M27 8 L36 7 L43 13 L46 21 L49 30 L48 39 L44 45 L37 47 L31 50 L23 52 L17 49 L16 41 L18 33 L15 25 L19 18 L21 12 Z"
+    fill="#1d4ed8"
+    stroke="#ffffff"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+  <!-- 제주도 실루엣 -->
+  <ellipse cx="22" cy="58" rx="5.5" ry="2.6" fill="#1d4ed8" stroke="#ffffff" stroke-width="1.5"/>
+  <!-- 울릉도·독도 포인트 -->
+  <circle cx="55" cy="24" r="2" fill="#1d4ed8"/>
+</svg>

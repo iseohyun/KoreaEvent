@@ -1,0 +1,5302 @@
+{
+  "provinces": {
+    "seoul": {
+      "regionId": "seoul",
+      "lDongRegnCd": "11",
+      "name": "서울특별시",
+      "hallName": "서울특별시청",
+      "hallUrl": "https://www.seoul.go.kr",
+      "promo1Name": "서울축제포털 (FUN SEOUL)",
+      "promo1Url": "https://festival.seoul.go.kr",
+      "promo2Name": "서울문화포털",
+      "promo2Url": "https://culture.seoul.go.kr",
+      "organizerKeywords": [
+        "서울특별시",
+        "서울시",
+        "서울시청",
+        "서울문화재단",
+        "서울시 체육회",
+        "서울관광재단",
+        "다산콜센터"
+      ]
+    },
+    "busan": {
+      "regionId": "busan",
+      "lDongRegnCd": "26",
+      "name": "부산광역시",
+      "hallName": "부산광역시청",
+      "hallUrl": "https://www.busan.go.kr",
+      "promo1Name": "부산문화포털 다봄",
+      "promo1Url": "https://dabom.busan.go.kr",
+      "promo2Name": "비짓부산 (Visit Busan)",
+      "promo2Url": "https://www.visitbusan.net",
+      "organizerKeywords": [
+        "부산광역시",
+        "부산시",
+        "부산시청",
+        "부산문화재단",
+        "부산관광공사",
+        "부산문화회관"
+      ]
+    },
+    "daegu": {
+      "regionId": "daegu",
+      "lDongRegnCd": "27",
+      "name": "대구광역시",
+      "hallName": "대구광역시청",
+      "hallUrl": "https://www.daegu.go.kr",
+      "promo1Name": "대구트립로드 (문화관광·축제)",
+      "promo1Url": "https://tour.daegu.go.kr",
+      "promo2Name": "대구문화예술진흥원",
+      "promo2Url": "https://www.dgfca.or.kr",
+      "organizerKeywords": [
+        "대구광역시",
+        "대구시",
+        "대구시청",
+        "대구문화예술진흥원"
+      ]
+    },
+    "incheon": {
+      "regionId": "incheon",
+      "lDongRegnCd": "28",
+      "name": "인천광역시",
+      "hallName": "인천광역시청",
+      "hallUrl": "https://www.incheon.go.kr",
+      "promo1Name": "인천투어 (축제·행사포털)",
+      "promo1Url": "https://itour.incheon.go.kr",
+      "promo2Name": "인천문화재단 문화예술포털",
+      "promo2Url": "https://www.ifac.or.kr",
+      "organizerKeywords": [
+        "인천광역시",
+        "인천시",
+        "인천시청",
+        "인천관광공사",
+        "인천문화재단"
+      ]
+    },
+    "gwangju": {
+      "regionId": "gwangju",
+      "lDongRegnCd": "12",
+      "name": "광주광역시",
+      "hallName": "광주광역시청",
+      "hallUrl": "https://www.gwangju.go.kr",
+      "promo1Name": "오매광주 (문화관광·축제포털)",
+      "promo1Url": "https://tour.gwangju.go.kr",
+      "promo2Name": "광주문화재단 디어마이광주",
+      "promo2Url": "https://www.gjcf.or.kr",
+      "organizerKeywords": [
+        "광주광역시",
+        "광주시",
+        "광주시청",
+        "광주관광공사",
+        "광주문화재단"
+      ]
+    },
+    "daejeon": {
+      "regionId": "daejeon",
+      "lDongRegnCd": "30",
+      "name": "대전광역시",
+      "hallName": "대전광역시청",
+      "hallUrl": "https://www.daejeon.go.kr",
+      "promo1Name": "대전문화관광 축제포털",
+      "promo1Url": "https://www.daejeon.go.kr/tou/index.do",
+      "promo2Name": "대전문화재단 · 대전관광공사",
+      "promo2Url": "https://dcaf.or.kr",
+      "organizerKeywords": [
+        "대전광역시",
+        "대전시",
+        "대전시청",
+        "대전관광공사",
+        "대전문화재단"
+      ]
+    },
+    "ulsan": {
+      "regionId": "ulsan",
+      "lDongRegnCd": "31",
+      "name": "울산광역시",
+      "hallName": "울산광역시청",
+      "hallUrl": "https://www.ulsan.go.kr",
+      "promo1Name": "울산관광 (축제·문화행사)",
+      "promo1Url": "https://tour.ulsan.go.kr",
+      "promo2Name": "울산문화관광재단",
+      "promo2Url": "https://www.uctf.or.kr",
+      "organizerKeywords": [
+        "울산광역시",
+        "울산시",
+        "울산시청",
+        "울산문화관광재단"
+      ]
+    },
+    "sejong": {
+      "regionId": "sejong",
+      "lDongRegnCd": "36110",
+      "name": "세종특별자치시",
+      "hallName": "세종특별자치시청",
+      "hallUrl": "https://www.sejong.go.kr",
+      "promo1Name": "세종시 문화관광·축제포털",
+      "promo1Url": "https://www.sejong.go.kr/tour/index.do",
+      "promo2Name": "세종시문화관광재단",
+      "promo2Url": "https://www.sjcf.or.kr",
+      "organizerKeywords": [
+        "세종특별자치시",
+        "세종시",
+        "세종시청",
+        "세종시문화관광재단"
+      ]
+    },
+    "gyeonggi": {
+      "regionId": "gyeonggi",
+      "lDongRegnCd": "41",
+      "name": "경기도",
+      "hallName": "경기도청",
+      "hallUrl": "https://www.gg.go.kr",
+      "promo1Name": "경기관광포털 (축제·행사)",
+      "promo1Url": "https://ggtour.or.kr",
+      "promo2Name": "경기문화재단 GGCF",
+      "promo2Url": "https://www.ggcf.kr",
+      "organizerKeywords": [
+        "경기도",
+        "경기도청",
+        "경기관광공사",
+        "경기문화재단"
+      ]
+    },
+    "gangwon": {
+      "regionId": "gangwon",
+      "lDongRegnCd": "51",
+      "name": "강원특별자치도",
+      "hallName": "강원특별자치도청",
+      "hallUrl": "https://state.gwd.go.kr",
+      "promo1Name": "강원관광 (축제·행사포털)",
+      "promo1Url": "https://www.gangwon.to",
+      "promo2Name": "강원문화재단",
+      "promo2Url": "https://www.gwcf.or.kr",
+      "organizerKeywords": [
+        "강원특별자치도",
+        "강원도",
+        "강원도청",
+        "강원관광재단",
+        "강원문화재단"
+      ]
+    },
+    "chungbuk": {
+      "regionId": "chungbuk",
+      "lDongRegnCd": "43",
+      "name": "충청북도",
+      "hallName": "충청북도청",
+      "hallUrl": "https://www.chungbuk.go.kr",
+      "promo1Name": "충북나드리 (축제·문화관광)",
+      "promo1Url": "https://tour.chungbuk.go.kr",
+      "promo2Name": "충북문화재단",
+      "promo2Url": "https://www.cbfc.or.kr",
+      "organizerKeywords": [
+        "충청북도",
+        "충북도청",
+        "충북문화재단"
+      ]
+    },
+    "chungnam": {
+      "regionId": "chungnam",
+      "lDongRegnCd": "44",
+      "name": "충청남도",
+      "hallName": "충청남도청",
+      "hallUrl": "https://www.chungnam.go.kr",
+      "promo1Name": "충남문화관광 (축제·행사)",
+      "promo1Url": "https://tour.chungnam.go.kr",
+      "promo2Name": "충남문화관광재단",
+      "promo2Url": "https://www.cnctf.or.kr",
+      "organizerKeywords": [
+        "충청남도",
+        "충남도청",
+        "충남문화관광재단"
+      ]
+    },
+    "jeonbuk": {
+      "regionId": "jeonbuk",
+      "lDongRegnCd": "52",
+      "name": "전북특별자치도",
+      "hallName": "전북특별자치도청",
+      "hallUrl": "https://www.jeonbuk.go.kr",
+      "promo1Name": "전북문화관광 (축제·행사)",
+      "promo1Url": "https://tour.jb.go.kr",
+      "promo2Name": "전북특별자치도문화관광재단",
+      "promo2Url": "https://www.jbct.or.kr",
+      "organizerKeywords": [
+        "전북특별자치도",
+        "전라북도",
+        "전북도청",
+        "전북문화관광재단"
+      ]
+    },
+    "jeonnam": {
+      "regionId": "jeonnam",
+      "lDongRegnCd": "12",
+      "name": "전라남도",
+      "hallName": "전라남도청",
+      "hallUrl": "https://www.jeonnam.go.kr",
+      "promo1Name": "남도여행길잡이 (전남축제포털)",
+      "promo1Url": "https://www.namdokorea.com",
+      "promo2Name": "전남문화재단 · 전남관광재단",
+      "promo2Url": "https://www.ijnto.or.kr",
+      "organizerKeywords": [
+        "전라남도",
+        "전남도청",
+        "전남관광재단",
+        "전남문화재단"
+      ]
+    },
+    "gyeongbuk": {
+      "regionId": "gyeongbuk",
+      "lDongRegnCd": "47",
+      "name": "경상북도",
+      "hallName": "경상북도청",
+      "hallUrl": "https://www.gb.go.kr",
+      "promo1Name": "경북나드리 (축제·문화행사)",
+      "promo1Url": "https://tour.gb.go.kr",
+      "promo2Name": "경북문화관광공사",
+      "promo2Url": "https://www.gtc.co.kr",
+      "organizerKeywords": [
+        "경상북도",
+        "경북도청",
+        "경북문화관광공사",
+        "경북문화재단"
+      ]
+    },
+    "gyeongnam": {
+      "regionId": "gyeongnam",
+      "lDongRegnCd": "48",
+      "name": "경상남도",
+      "hallName": "경상남도청",
+      "hallUrl": "https://www.gyeongnam.go.kr",
+      "promo1Name": "경남관광길잡이 (축제·행사)",
+      "promo1Url": "https://tour.gyeongnam.go.kr",
+      "promo2Name": "경남문화예술진흥원 · 경남관광재단",
+      "promo2Url": "https://gnto.or.kr",
+      "organizerKeywords": [
+        "경상남도",
+        "경남도청",
+        "경남관광재단",
+        "경남문화예술진흥원"
+      ]
+    },
+    "jeju": {
+      "regionId": "jeju",
+      "lDongRegnCd": "50",
+      "name": "제주특별자치도",
+      "hallName": "제주특별자치도청",
+      "hallUrl": "https://www.jeju.go.kr",
+      "promo1Name": "비짓제주 (Visit Jeju 축제·행사)",
+      "promo1Url": "https://www.visitjeju.net/kr/festival/list",
+      "promo2Name": "제주문화예술재단 · 도정행사",
+      "promo2Url": "https://www.jeju.go.kr/news/news/law/event.htm",
+      "organizerKeywords": [
+        "제주특별자치도",
+        "제주도청",
+        "제주관광공사",
+        "제주문화예술재단"
+      ]
+    }
+  },
+  "municipalities": {
+    "11-110": {
+      "kostatCode": "11010",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "110",
+      "name": "종로구",
+      "hallName": "종로구청",
+      "hallUrl": "https://www.jongno.go.kr",
+      "promo1Name": "종로구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.jongno.go.kr/tourMain.do",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "종로구",
+        "종로구",
+        "종로구청",
+        "종로구"
+      ]
+    },
+    "11-140": {
+      "kostatCode": "11020",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "140",
+      "name": "중구",
+      "hallName": "중구청",
+      "hallUrl": "https://www.junggu.seoul.kr",
+      "promo1Name": "중구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.junggu.seoul.kr/tour/",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "중구",
+        "중구",
+        "중구청",
+        "중구"
+      ]
+    },
+    "11-170": {
+      "kostatCode": "11030",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "170",
+      "name": "용산구",
+      "hallName": "용산구청",
+      "hallUrl": "https://www.yongsan.go.kr",
+      "promo1Name": "용산구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yongsan.go.kr/portal/main/index.do",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "용산구",
+        "용산구",
+        "용산구청",
+        "용산구"
+      ]
+    },
+    "11-200": {
+      "kostatCode": "11040",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "200",
+      "name": "성동구",
+      "hallName": "성동구청",
+      "hallUrl": "https://www.sd.go.kr",
+      "promo1Name": "성동구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.sd.go.kr/main/index.do",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "성동구",
+        "성동구",
+        "성동구청",
+        "성동구"
+      ]
+    },
+    "11-215": {
+      "kostatCode": "11050",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "215",
+      "name": "광진구",
+      "hallName": "광진구청",
+      "hallUrl": "https://www.gwangjin.go.kr",
+      "promo1Name": "광진구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gwangjin.go.kr/portal/main/main.do",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "광진구",
+        "광진구",
+        "광진구청",
+        "광진구"
+      ]
+    },
+    "11-230": {
+      "kostatCode": "11060",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "230",
+      "name": "동대문구",
+      "hallName": "동대문구청",
+      "hallUrl": "https://www.ddm.go.kr",
+      "promo1Name": "동대문구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.ddm.go.kr/tour/index.do",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "동대문구",
+        "동대문구",
+        "동대문구청",
+        "동대문구"
+      ]
+    },
+    "11-260": {
+      "kostatCode": "11070",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "260",
+      "name": "중랑구",
+      "hallName": "중랑구청",
+      "hallUrl": "https://www.jungnang.go.kr",
+      "promo1Name": "중랑구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.jungnang.go.kr/portal/main/index.do",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "중랑구",
+        "중랑구",
+        "중랑구청",
+        "중랑구"
+      ]
+    },
+    "11-290": {
+      "kostatCode": "11080",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "290",
+      "name": "성북구",
+      "hallName": "성북구청",
+      "hallUrl": "https://www.sb.go.kr",
+      "promo1Name": "성북구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.sb.go.kr/tour/mainPage.do",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "성북구",
+        "성북구",
+        "성북구청",
+        "성북구"
+      ]
+    },
+    "11-305": {
+      "kostatCode": "11090",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "305",
+      "name": "강북구",
+      "hallName": "강북구청",
+      "hallUrl": "https://www.gangbuk.go.kr",
+      "promo1Name": "강북구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gangbuk.go.kr/tour/index.do",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "강북구",
+        "강북구",
+        "강북구청",
+        "강북구"
+      ]
+    },
+    "11-320": {
+      "kostatCode": "11100",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "320",
+      "name": "도봉구",
+      "hallName": "도봉구청",
+      "hallUrl": "https://www.dobong.go.kr",
+      "promo1Name": "도봉구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.dobong.go.kr/tour/",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "도봉구",
+        "도봉구",
+        "도봉구청",
+        "도봉구"
+      ]
+    },
+    "11-350": {
+      "kostatCode": "11110",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "350",
+      "name": "노원구",
+      "hallName": "노원구청",
+      "hallUrl": "https://www.nowon.kr",
+      "promo1Name": "노원구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.nowon.kr/www/index.do",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "노원구",
+        "노원구",
+        "노원구청",
+        "노원구"
+      ]
+    },
+    "11-380": {
+      "kostatCode": "11120",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "380",
+      "name": "은평구",
+      "hallName": "은평구청",
+      "hallUrl": "https://www.ep.go.kr",
+      "promo1Name": "은평구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.ep.go.kr/www/index.do",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "은평구",
+        "은평구",
+        "은평구청",
+        "은평구"
+      ]
+    },
+    "11-410": {
+      "kostatCode": "11130",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "410",
+      "name": "서대문구",
+      "hallName": "서대문구청",
+      "hallUrl": "https://www.sdm.go.kr",
+      "promo1Name": "서대문구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.sdm.go.kr/tour/",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "서대문구",
+        "서대문구",
+        "서대문구청",
+        "서대문구"
+      ]
+    },
+    "11-440": {
+      "kostatCode": "11140",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "440",
+      "name": "마포구",
+      "hallName": "마포구청",
+      "hallUrl": "https://www.mapo.go.kr",
+      "promo1Name": "마포구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.mapo.go.kr/site/culture/home",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "마포구",
+        "마포구",
+        "마포구청",
+        "마포구"
+      ]
+    },
+    "11-470": {
+      "kostatCode": "11150",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "470",
+      "name": "양천구",
+      "hallName": "양천구청",
+      "hallUrl": "https://www.yangcheon.go.kr",
+      "promo1Name": "양천구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yangcheon.go.kr/site/yangcheon/main.do",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "양천구",
+        "양천구",
+        "양천구청",
+        "양천구"
+      ]
+    },
+    "11-500": {
+      "kostatCode": "11160",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "500",
+      "name": "강서구",
+      "hallName": "강서구청",
+      "hallUrl": "https://www.gangseo.seoul.kr",
+      "promo1Name": "강서구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gangseo.seoul.kr/munhwa/index",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "강서구",
+        "강서구",
+        "강서구청",
+        "강서구"
+      ]
+    },
+    "11-530": {
+      "kostatCode": "11170",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "530",
+      "name": "구로구",
+      "hallName": "구로구청",
+      "hallUrl": "https://www.guro.go.kr",
+      "promo1Name": "구로구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.guro.go.kr/www/index.do",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "구로구",
+        "구로구",
+        "구로구청",
+        "구로구"
+      ]
+    },
+    "11-545": {
+      "kostatCode": "11180",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "545",
+      "name": "금천구",
+      "hallName": "금천구청",
+      "hallUrl": "https://www.geumcheon.go.kr",
+      "promo1Name": "금천구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.geumcheon.go.kr/portal/index.do",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "금천구",
+        "금천구",
+        "금천구청",
+        "금천구"
+      ]
+    },
+    "11-560": {
+      "kostatCode": "11190",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "560",
+      "name": "영등포구",
+      "hallName": "영등포구청",
+      "hallUrl": "https://www.ydp.go.kr",
+      "promo1Name": "영등포구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.ydp.go.kr/tour/index.do",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "영등포구",
+        "영등포구",
+        "영등포구청",
+        "영등포구"
+      ]
+    },
+    "11-590": {
+      "kostatCode": "11200",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "590",
+      "name": "동작구",
+      "hallName": "동작구청",
+      "hallUrl": "https://www.dongjak.go.kr",
+      "promo1Name": "동작구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.dongjak.go.kr/portal/main/index.do",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "동작구",
+        "동작구",
+        "동작구청",
+        "동작구"
+      ]
+    },
+    "11-620": {
+      "kostatCode": "11210",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "620",
+      "name": "관악구",
+      "hallName": "관악구청",
+      "hallUrl": "https://www.gwanak.go.kr",
+      "promo1Name": "관악구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gwanak.go.kr/site/gwanak/main.do",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "관악구",
+        "관악구",
+        "관악구청",
+        "관악구"
+      ]
+    },
+    "11-650": {
+      "kostatCode": "11220",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "650",
+      "name": "서초구",
+      "hallName": "서초구청",
+      "hallUrl": "https://www.seocho.go.kr",
+      "promo1Name": "서초구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.seocho.go.kr/site/seocho/main.do",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "서초구",
+        "서초구",
+        "서초구청",
+        "서초구"
+      ]
+    },
+    "11-680": {
+      "kostatCode": "11230",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "680",
+      "name": "강남구",
+      "hallName": "강남구청",
+      "hallUrl": "https://www.gangnam.go.kr",
+      "promo1Name": "강남구 문화관광·축제 홍보포털",
+      "promo1Url": "https://visitgangnam.net",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "강남구",
+        "강남구",
+        "강남구청",
+        "강남구"
+      ]
+    },
+    "11-710": {
+      "kostatCode": "11240",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "710",
+      "name": "송파구",
+      "hallName": "송파구청",
+      "hallUrl": "https://www.songpa.go.kr",
+      "promo1Name": "송파구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.songpa.go.kr/culture/index.do",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "송파구",
+        "송파구",
+        "송파구청",
+        "송파구"
+      ]
+    },
+    "11-740": {
+      "kostatCode": "11250",
+      "regionId": "seoul",
+      "regionName": "서울특별시",
+      "lDongRegnCd": "11",
+      "lDongSignguCd": "740",
+      "name": "강동구",
+      "hallName": "강동구청",
+      "hallUrl": "https://www.gangdong.go.kr",
+      "promo1Name": "강동구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gangdong.go.kr/web/culture",
+      "promo2Name": "서울축제포털 (FUN SEOUL)",
+      "promo2Url": "https://festival.seoul.go.kr",
+      "organizerKeywords": [
+        "강동구",
+        "강동구",
+        "강동구청",
+        "강동구"
+      ]
+    },
+    "26-110": {
+      "kostatCode": "21010",
+      "regionId": "busan",
+      "regionName": "부산광역시",
+      "lDongRegnCd": "26",
+      "lDongSignguCd": "110",
+      "name": "중구",
+      "hallName": "중구청",
+      "hallUrl": "https://www.bsjunggu.go.kr",
+      "promo1Name": "중구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.bsjunggu.go.kr/tour/index.bsjunggu",
+      "promo2Name": "부산문화포털 다봄",
+      "promo2Url": "https://dabom.busan.go.kr",
+      "organizerKeywords": [
+        "중구",
+        "중구",
+        "중구청",
+        "중구"
+      ]
+    },
+    "26-140": {
+      "kostatCode": "21020",
+      "regionId": "busan",
+      "regionName": "부산광역시",
+      "lDongRegnCd": "26",
+      "lDongSignguCd": "140",
+      "name": "서구",
+      "hallName": "서구청",
+      "hallUrl": "https://www.bsseogu.go.kr",
+      "promo1Name": "서구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.bsseogu.go.kr/tour/index.bsseogu",
+      "promo2Name": "부산문화포털 다봄",
+      "promo2Url": "https://dabom.busan.go.kr",
+      "organizerKeywords": [
+        "서구",
+        "서구",
+        "서구청",
+        "서구"
+      ]
+    },
+    "26-170": {
+      "kostatCode": "21030",
+      "regionId": "busan",
+      "regionName": "부산광역시",
+      "lDongRegnCd": "26",
+      "lDongSignguCd": "170",
+      "name": "동구",
+      "hallName": "동구청",
+      "hallUrl": "https://www.bsdonggu.go.kr",
+      "promo1Name": "동구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.bsdonggu.go.kr/tour/index.bsdonggu",
+      "promo2Name": "부산문화포털 다봄",
+      "promo2Url": "https://dabom.busan.go.kr",
+      "organizerKeywords": [
+        "동구",
+        "동구",
+        "동구청",
+        "동구"
+      ]
+    },
+    "26-200": {
+      "kostatCode": "21040",
+      "regionId": "busan",
+      "regionName": "부산광역시",
+      "lDongRegnCd": "26",
+      "lDongSignguCd": "200",
+      "name": "영도구",
+      "hallName": "영도구청",
+      "hallUrl": "https://www.yeongdo.go.kr",
+      "promo1Name": "영도구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yeongdo.go.kr/tour.web",
+      "promo2Name": "부산문화포털 다봄",
+      "promo2Url": "https://dabom.busan.go.kr",
+      "organizerKeywords": [
+        "영도구",
+        "영도구",
+        "영도구청",
+        "영도구"
+      ]
+    },
+    "26-230": {
+      "kostatCode": "21050",
+      "regionId": "busan",
+      "regionName": "부산광역시",
+      "lDongRegnCd": "26",
+      "lDongSignguCd": "230",
+      "name": "부산진구",
+      "hallName": "부산진구청",
+      "hallUrl": "https://www.busanjin.go.kr",
+      "promo1Name": "부산진구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.busanjin.go.kr/tour/index.busanjin",
+      "promo2Name": "부산문화포털 다봄",
+      "promo2Url": "https://dabom.busan.go.kr",
+      "organizerKeywords": [
+        "부산진구",
+        "부산진구",
+        "부산진구청",
+        "부산진구"
+      ]
+    },
+    "26-260": {
+      "kostatCode": "21060",
+      "regionId": "busan",
+      "regionName": "부산광역시",
+      "lDongRegnCd": "26",
+      "lDongSignguCd": "260",
+      "name": "동래구",
+      "hallName": "동래구청",
+      "hallUrl": "https://www.dongnae.go.kr",
+      "promo1Name": "동래구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.dongnae.go.kr/tour/index.dongnae",
+      "promo2Name": "부산문화포털 다봄",
+      "promo2Url": "https://dabom.busan.go.kr",
+      "organizerKeywords": [
+        "동래구",
+        "동래구",
+        "동래구청",
+        "동래구"
+      ]
+    },
+    "26-290": {
+      "kostatCode": "21070",
+      "regionId": "busan",
+      "regionName": "부산광역시",
+      "lDongRegnCd": "26",
+      "lDongSignguCd": "290",
+      "name": "남구",
+      "hallName": "남구청",
+      "hallUrl": "https://www.bsnamgu.go.kr",
+      "promo1Name": "남구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.bsnamgu.go.kr/tour/index.namgu",
+      "promo2Name": "부산문화포털 다봄",
+      "promo2Url": "https://dabom.busan.go.kr",
+      "organizerKeywords": [
+        "남구",
+        "남구",
+        "남구청",
+        "남구"
+      ]
+    },
+    "26-320": {
+      "kostatCode": "21080",
+      "regionId": "busan",
+      "regionName": "부산광역시",
+      "lDongRegnCd": "26",
+      "lDongSignguCd": "320",
+      "name": "북구",
+      "hallName": "북구청",
+      "hallUrl": "https://www.bsbukgu.go.kr",
+      "promo1Name": "북구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.bsbukgu.go.kr/tour/index.bsbukgu",
+      "promo2Name": "부산문화포털 다봄",
+      "promo2Url": "https://dabom.busan.go.kr",
+      "organizerKeywords": [
+        "북구",
+        "북구",
+        "북구청",
+        "북구"
+      ]
+    },
+    "26-350": {
+      "kostatCode": "21090",
+      "regionId": "busan",
+      "regionName": "부산광역시",
+      "lDongRegnCd": "26",
+      "lDongSignguCd": "350",
+      "name": "해운대구",
+      "hallName": "해운대구청",
+      "hallUrl": "https://www.haeundae.go.kr",
+      "promo1Name": "해운대구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.haeundae.go.kr/tour/index.do",
+      "promo2Name": "부산문화포털 다봄",
+      "promo2Url": "https://dabom.busan.go.kr",
+      "organizerKeywords": [
+        "해운대구",
+        "해운대구",
+        "해운대구청",
+        "해운대구"
+      ]
+    },
+    "26-380": {
+      "kostatCode": "21100",
+      "regionId": "busan",
+      "regionName": "부산광역시",
+      "lDongRegnCd": "26",
+      "lDongSignguCd": "380",
+      "name": "사하구",
+      "hallName": "사하구청",
+      "hallUrl": "https://www.saha.go.kr",
+      "promo1Name": "사하구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.saha.go.kr/tour/main.do",
+      "promo2Name": "부산문화포털 다봄",
+      "promo2Url": "https://dabom.busan.go.kr",
+      "organizerKeywords": [
+        "사하구",
+        "사하구",
+        "사하구청",
+        "사하구"
+      ]
+    },
+    "26-410": {
+      "kostatCode": "21110",
+      "regionId": "busan",
+      "regionName": "부산광역시",
+      "lDongRegnCd": "26",
+      "lDongSignguCd": "410",
+      "name": "금정구",
+      "hallName": "금정구청",
+      "hallUrl": "https://www.geumjeong.go.kr",
+      "promo1Name": "금정구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.geumjeong.go.kr/tour/index.geumjeong",
+      "promo2Name": "부산문화포털 다봄",
+      "promo2Url": "https://dabom.busan.go.kr",
+      "organizerKeywords": [
+        "금정구",
+        "금정구",
+        "금정구청",
+        "금정구"
+      ]
+    },
+    "26-440": {
+      "kostatCode": "21120",
+      "regionId": "busan",
+      "regionName": "부산광역시",
+      "lDongRegnCd": "26",
+      "lDongSignguCd": "440",
+      "name": "강서구",
+      "hallName": "강서구청",
+      "hallUrl": "https://www.bsgangseo.go.kr",
+      "promo1Name": "강서구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.bsgangseo.go.kr/tour/index.do",
+      "promo2Name": "부산문화포털 다봄",
+      "promo2Url": "https://dabom.busan.go.kr",
+      "organizerKeywords": [
+        "강서구",
+        "강서구",
+        "강서구청",
+        "강서구"
+      ]
+    },
+    "26-470": {
+      "kostatCode": "21130",
+      "regionId": "busan",
+      "regionName": "부산광역시",
+      "lDongRegnCd": "26",
+      "lDongSignguCd": "470",
+      "name": "연제구",
+      "hallName": "연제구청",
+      "hallUrl": "https://www.yeonje.go.kr",
+      "promo1Name": "연제구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yeonje.go.kr/tour/index.do",
+      "promo2Name": "부산문화포털 다봄",
+      "promo2Url": "https://dabom.busan.go.kr",
+      "organizerKeywords": [
+        "연제구",
+        "연제구",
+        "연제구청",
+        "연제구"
+      ]
+    },
+    "26-500": {
+      "kostatCode": "21140",
+      "regionId": "busan",
+      "regionName": "부산광역시",
+      "lDongRegnCd": "26",
+      "lDongSignguCd": "500",
+      "name": "수영구",
+      "hallName": "수영구청",
+      "hallUrl": "https://www.suyeong.go.kr",
+      "promo1Name": "수영구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.suyeong.go.kr/tour/index.suyeong",
+      "promo2Name": "부산문화포털 다봄",
+      "promo2Url": "https://dabom.busan.go.kr",
+      "organizerKeywords": [
+        "수영구",
+        "수영구",
+        "수영구청",
+        "수영구"
+      ]
+    },
+    "26-530": {
+      "kostatCode": "21150",
+      "regionId": "busan",
+      "regionName": "부산광역시",
+      "lDongRegnCd": "26",
+      "lDongSignguCd": "530",
+      "name": "사상구",
+      "hallName": "사상구청",
+      "hallUrl": "https://www.sasang.go.kr",
+      "promo1Name": "사상구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.sasang.go.kr/tour/index.sasang",
+      "promo2Name": "부산문화포털 다봄",
+      "promo2Url": "https://dabom.busan.go.kr",
+      "organizerKeywords": [
+        "사상구",
+        "사상구",
+        "사상구청",
+        "사상구"
+      ]
+    },
+    "26-710": {
+      "kostatCode": "21310",
+      "regionId": "busan",
+      "regionName": "부산광역시",
+      "lDongRegnCd": "26",
+      "lDongSignguCd": "710",
+      "name": "기장군",
+      "hallName": "기장군청",
+      "hallUrl": "https://www.gijang.go.kr",
+      "promo1Name": "기장군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gijang.go.kr/tour/index.gijang",
+      "promo2Name": "부산문화포털 다봄",
+      "promo2Url": "https://dabom.busan.go.kr",
+      "organizerKeywords": [
+        "기장군",
+        "기장군",
+        "기장군청",
+        "기장군"
+      ]
+    },
+    "27-110": {
+      "kostatCode": "22010",
+      "regionId": "daegu",
+      "regionName": "대구광역시",
+      "lDongRegnCd": "27",
+      "lDongSignguCd": "110",
+      "name": "중구",
+      "hallName": "중구청",
+      "hallUrl": "https://www.jung.daegu.kr",
+      "promo1Name": "중구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.jung.daegu.kr/new/culture/pages/main/",
+      "promo2Name": "대구트립로드 (문화관광·축제)",
+      "promo2Url": "https://tour.daegu.go.kr",
+      "organizerKeywords": [
+        "중구",
+        "중구",
+        "중구청",
+        "중구"
+      ]
+    },
+    "27-140": {
+      "kostatCode": "22020",
+      "regionId": "daegu",
+      "regionName": "대구광역시",
+      "lDongRegnCd": "27",
+      "lDongSignguCd": "140",
+      "name": "동구",
+      "hallName": "동구청",
+      "hallUrl": "https://www.dong.daegu.kr",
+      "promo1Name": "동구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.dong.daegu.kr/main/tour/main.do",
+      "promo2Name": "대구트립로드 (문화관광·축제)",
+      "promo2Url": "https://tour.daegu.go.kr",
+      "organizerKeywords": [
+        "동구",
+        "동구",
+        "동구청",
+        "동구"
+      ]
+    },
+    "27-170": {
+      "kostatCode": "22030",
+      "regionId": "daegu",
+      "regionName": "대구광역시",
+      "lDongRegnCd": "27",
+      "lDongSignguCd": "170",
+      "name": "서구",
+      "hallName": "서구청",
+      "hallUrl": "https://www.dgs.go.kr",
+      "promo1Name": "서구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.dgs.go.kr/tour/",
+      "promo2Name": "대구트립로드 (문화관광·축제)",
+      "promo2Url": "https://tour.daegu.go.kr",
+      "organizerKeywords": [
+        "서구",
+        "서구",
+        "서구청",
+        "서구"
+      ]
+    },
+    "27-200": {
+      "kostatCode": "22040",
+      "regionId": "daegu",
+      "regionName": "대구광역시",
+      "lDongRegnCd": "27",
+      "lDongSignguCd": "200",
+      "name": "남구",
+      "hallName": "남구청",
+      "hallUrl": "https://www.nam.daegu.kr",
+      "promo1Name": "남구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.nam.daegu.kr/tour/index.do",
+      "promo2Name": "대구트립로드 (문화관광·축제)",
+      "promo2Url": "https://tour.daegu.go.kr",
+      "organizerKeywords": [
+        "남구",
+        "남구",
+        "남구청",
+        "남구"
+      ]
+    },
+    "27-230": {
+      "kostatCode": "22050",
+      "regionId": "daegu",
+      "regionName": "대구광역시",
+      "lDongRegnCd": "27",
+      "lDongSignguCd": "230",
+      "name": "북구",
+      "hallName": "북구청",
+      "hallUrl": "https://www.buk.daegu.kr",
+      "promo1Name": "북구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.buk.daegu.kr/tour/index.do",
+      "promo2Name": "대구트립로드 (문화관광·축제)",
+      "promo2Url": "https://tour.daegu.go.kr",
+      "organizerKeywords": [
+        "북구",
+        "북구",
+        "북구청",
+        "북구"
+      ]
+    },
+    "27-260": {
+      "kostatCode": "22060",
+      "regionId": "daegu",
+      "regionName": "대구광역시",
+      "lDongRegnCd": "27",
+      "lDongSignguCd": "260",
+      "name": "수성구",
+      "hallName": "수성구청",
+      "hallUrl": "https://www.suseong.kr",
+      "promo1Name": "수성구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.suseong.kr/tour/index.do",
+      "promo2Name": "대구트립로드 (문화관광·축제)",
+      "promo2Url": "https://tour.daegu.go.kr",
+      "organizerKeywords": [
+        "수성구",
+        "수성구",
+        "수성구청",
+        "수성구"
+      ]
+    },
+    "27-290": {
+      "kostatCode": "22070",
+      "regionId": "daegu",
+      "regionName": "대구광역시",
+      "lDongRegnCd": "27",
+      "lDongSignguCd": "290",
+      "name": "달서구",
+      "hallName": "달서구청",
+      "hallUrl": "https://www.dalseo.daegu.kr",
+      "promo1Name": "달서구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.dalseo.daegu.kr/tour/index.do",
+      "promo2Name": "대구트립로드 (문화관광·축제)",
+      "promo2Url": "https://tour.daegu.go.kr",
+      "organizerKeywords": [
+        "달서구",
+        "달서구",
+        "달서구청",
+        "달서구"
+      ]
+    },
+    "27-710": {
+      "kostatCode": "22310",
+      "regionId": "daegu",
+      "regionName": "대구광역시",
+      "lDongRegnCd": "27",
+      "lDongSignguCd": "710",
+      "name": "달성군",
+      "hallName": "달성군청",
+      "hallUrl": "https://www.dalseong.daegu.kr",
+      "promo1Name": "달성군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.dalseong.daegu.kr/tour/index.do",
+      "promo2Name": "대구트립로드 (문화관광·축제)",
+      "promo2Url": "https://tour.daegu.go.kr",
+      "organizerKeywords": [
+        "달성군",
+        "달성군",
+        "달성군청",
+        "달성군"
+      ]
+    },
+    "28-155": {
+      "kostatCode": "23010",
+      "regionId": "incheon",
+      "regionName": "인천광역시",
+      "lDongRegnCd": "28",
+      "lDongSignguCd": "155",
+      "name": "중구·영종구",
+      "hallName": "중구·영종구청",
+      "hallUrl": "https://www.icjg.go.kr",
+      "promo1Name": "중구·영종구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.icjg.go.kr/tour/index",
+      "promo2Name": "인천투어 (축제·행사포털)",
+      "promo2Url": "https://itour.incheon.go.kr",
+      "organizerKeywords": [
+        "중구·영종구",
+        "중구·영종구",
+        "중구·영종구청",
+        "중구·영종구"
+      ]
+    },
+    "28-125": {
+      "kostatCode": "23020",
+      "regionId": "incheon",
+      "regionName": "인천광역시",
+      "lDongRegnCd": "28",
+      "lDongSignguCd": "125",
+      "name": "동구·제물포구",
+      "hallName": "동구·제물포구청",
+      "hallUrl": "https://www.icdonggu.go.kr",
+      "promo1Name": "동구·제물포구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.icdonggu.go.kr/tour/",
+      "promo2Name": "인천투어 (축제·행사포털)",
+      "promo2Url": "https://itour.incheon.go.kr",
+      "organizerKeywords": [
+        "동구·제물포구",
+        "동구·제물포구",
+        "동구·제물포구청",
+        "동구·제물포구"
+      ]
+    },
+    "28-177": {
+      "kostatCode": "23030",
+      "regionId": "incheon",
+      "regionName": "인천광역시",
+      "lDongRegnCd": "28",
+      "lDongSignguCd": "177",
+      "name": "미추홀구",
+      "hallName": "미추홀구청",
+      "hallUrl": "https://www.michuhol.go.kr",
+      "promo1Name": "미추홀구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.michuhol.go.kr/main/",
+      "promo2Name": "인천투어 (축제·행사포털)",
+      "promo2Url": "https://itour.incheon.go.kr",
+      "organizerKeywords": [
+        "미추홀구",
+        "미추홀구",
+        "미추홀구청",
+        "미추홀구"
+      ]
+    },
+    "28-185": {
+      "kostatCode": "23040",
+      "regionId": "incheon",
+      "regionName": "인천광역시",
+      "lDongRegnCd": "28",
+      "lDongSignguCd": "185",
+      "name": "연수구",
+      "hallName": "연수구청",
+      "hallUrl": "https://www.yeonsu.go.kr",
+      "promo1Name": "연수구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yeonsu.go.kr/tour/",
+      "promo2Name": "인천투어 (축제·행사포털)",
+      "promo2Url": "https://itour.incheon.go.kr",
+      "organizerKeywords": [
+        "연수구",
+        "연수구",
+        "연수구청",
+        "연수구"
+      ]
+    },
+    "28-200": {
+      "kostatCode": "23050",
+      "regionId": "incheon",
+      "regionName": "인천광역시",
+      "lDongRegnCd": "28",
+      "lDongSignguCd": "200",
+      "name": "남동구",
+      "hallName": "남동구청",
+      "hallUrl": "https://www.namdong.go.kr",
+      "promo1Name": "남동구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.namdong.go.kr/main/",
+      "promo2Name": "인천투어 (축제·행사포털)",
+      "promo2Url": "https://itour.incheon.go.kr",
+      "organizerKeywords": [
+        "남동구",
+        "남동구",
+        "남동구청",
+        "남동구"
+      ]
+    },
+    "28-237": {
+      "kostatCode": "23060",
+      "regionId": "incheon",
+      "regionName": "인천광역시",
+      "lDongRegnCd": "28",
+      "lDongSignguCd": "237",
+      "name": "부평구",
+      "hallName": "부평구청",
+      "hallUrl": "https://www.icbp.go.kr",
+      "promo1Name": "부평구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.icbp.go.kr/tour/",
+      "promo2Name": "인천투어 (축제·행사포털)",
+      "promo2Url": "https://itour.incheon.go.kr",
+      "organizerKeywords": [
+        "부평구",
+        "부평구",
+        "부평구청",
+        "부평구"
+      ]
+    },
+    "28-245": {
+      "kostatCode": "23070",
+      "regionId": "incheon",
+      "regionName": "인천광역시",
+      "lDongRegnCd": "28",
+      "lDongSignguCd": "245",
+      "name": "계양구",
+      "hallName": "계양구청",
+      "hallUrl": "https://www.gyeyang.go.kr",
+      "promo1Name": "계양구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gyeyang.go.kr/tour/",
+      "promo2Name": "인천투어 (축제·행사포털)",
+      "promo2Url": "https://itour.incheon.go.kr",
+      "organizerKeywords": [
+        "계양구",
+        "계양구",
+        "계양구청",
+        "계양구"
+      ]
+    },
+    "28-275": {
+      "kostatCode": "23080",
+      "regionId": "incheon",
+      "regionName": "인천광역시",
+      "lDongRegnCd": "28",
+      "lDongSignguCd": "275",
+      "name": "서구·서해·검단구",
+      "hallName": "서구·서해·검단구청",
+      "hallUrl": "https://www.seo.incheon.kr",
+      "promo1Name": "서구·서해·검단구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.seo.incheon.kr/open_content/tour/",
+      "promo2Name": "인천투어 (축제·행사포털)",
+      "promo2Url": "https://itour.incheon.go.kr",
+      "organizerKeywords": [
+        "서구·서해·검단구",
+        "서구·서해·검단구",
+        "서구·서해·검단구청",
+        "서구·서해·검단구"
+      ]
+    },
+    "28-710": {
+      "kostatCode": "23310",
+      "regionId": "incheon",
+      "regionName": "인천광역시",
+      "lDongRegnCd": "28",
+      "lDongSignguCd": "710",
+      "name": "강화군",
+      "hallName": "강화군청",
+      "hallUrl": "https://www.ganghwa.go.kr",
+      "promo1Name": "강화군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.ganghwa.go.kr/open_content/tour/",
+      "promo2Name": "인천투어 (축제·행사포털)",
+      "promo2Url": "https://itour.incheon.go.kr",
+      "organizerKeywords": [
+        "강화군",
+        "강화군",
+        "강화군청",
+        "강화군"
+      ]
+    },
+    "28-720": {
+      "kostatCode": "23320",
+      "regionId": "incheon",
+      "regionName": "인천광역시",
+      "lDongRegnCd": "28",
+      "lDongSignguCd": "720",
+      "name": "옹진군",
+      "hallName": "옹진군청",
+      "hallUrl": "https://www.ongjin.go.kr",
+      "promo1Name": "옹진군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.ongjin.go.kr/open_content/tour/",
+      "promo2Name": "인천투어 (축제·행사포털)",
+      "promo2Url": "https://itour.incheon.go.kr",
+      "organizerKeywords": [
+        "옹진군",
+        "옹진군",
+        "옹진군청",
+        "옹진군"
+      ]
+    },
+    "12-210": {
+      "kostatCode": "24010",
+      "regionId": "gwangju",
+      "regionName": "광주광역시",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "210",
+      "name": "동구",
+      "hallName": "동구청",
+      "hallUrl": "https://www.donggu.kr",
+      "promo1Name": "동구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.donggu.kr/index.es?sid=a9",
+      "promo2Name": "오매광주 (문화관광·축제포털)",
+      "promo2Url": "https://tour.gwangju.go.kr",
+      "organizerKeywords": [
+        "동구",
+        "동구",
+        "동구청",
+        "동구"
+      ]
+    },
+    "12-240": {
+      "kostatCode": "24020",
+      "regionId": "gwangju",
+      "regionName": "광주광역시",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "240",
+      "name": "서구",
+      "hallName": "서구청",
+      "hallUrl": "https://www.seogu.gwangju.kr",
+      "promo1Name": "서구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.seogu.gwangju.kr/tour/",
+      "promo2Name": "오매광주 (문화관광·축제포털)",
+      "promo2Url": "https://tour.gwangju.go.kr",
+      "organizerKeywords": [
+        "서구",
+        "서구",
+        "서구청",
+        "서구"
+      ]
+    },
+    "12-270": {
+      "kostatCode": "24030",
+      "regionId": "gwangju",
+      "regionName": "광주광역시",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "270",
+      "name": "남구",
+      "hallName": "남구청",
+      "hallUrl": "https://www.namgu.gwangju.kr",
+      "promo1Name": "남구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.namgu.gwangju.kr/index.es?sid=a6",
+      "promo2Name": "오매광주 (문화관광·축제포털)",
+      "promo2Url": "https://tour.gwangju.go.kr",
+      "organizerKeywords": [
+        "남구",
+        "남구",
+        "남구청",
+        "남구"
+      ]
+    },
+    "12-300": {
+      "kostatCode": "24040",
+      "regionId": "gwangju",
+      "regionName": "광주광역시",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "300",
+      "name": "북구",
+      "hallName": "북구청",
+      "hallUrl": "https://www.bukgu.gwangju.kr",
+      "promo1Name": "북구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.bukgu.gwangju.kr/index.es?sid=a5",
+      "promo2Name": "오매광주 (문화관광·축제포털)",
+      "promo2Url": "https://tour.gwangju.go.kr",
+      "organizerKeywords": [
+        "북구",
+        "북구",
+        "북구청",
+        "북구"
+      ]
+    },
+    "12-330": {
+      "kostatCode": "24050",
+      "regionId": "gwangju",
+      "regionName": "광주광역시",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "330",
+      "name": "광산구",
+      "hallName": "광산구청",
+      "hallUrl": "https://www.gwangsan.go.kr",
+      "promo1Name": "광산구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gwangsan.go.kr/tour/",
+      "promo2Name": "오매광주 (문화관광·축제포털)",
+      "promo2Url": "https://tour.gwangju.go.kr",
+      "organizerKeywords": [
+        "광산구",
+        "광산구",
+        "광산구청",
+        "광산구"
+      ]
+    },
+    "30-110": {
+      "kostatCode": "25010",
+      "regionId": "daejeon",
+      "regionName": "대전광역시",
+      "lDongRegnCd": "30",
+      "lDongSignguCd": "110",
+      "name": "동구",
+      "hallName": "동구청",
+      "hallUrl": "https://www.donggu.go.kr",
+      "promo1Name": "동구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.donggu.go.kr/dg/tour",
+      "promo2Name": "대전문화관광 축제포털",
+      "promo2Url": "https://www.daejeon.go.kr/tou/index.do",
+      "organizerKeywords": [
+        "동구",
+        "동구",
+        "동구청",
+        "동구"
+      ]
+    },
+    "30-140": {
+      "kostatCode": "25020",
+      "regionId": "daejeon",
+      "regionName": "대전광역시",
+      "lDongRegnCd": "30",
+      "lDongSignguCd": "140",
+      "name": "중구",
+      "hallName": "중구청",
+      "hallUrl": "https://www.djjunggu.go.kr",
+      "promo1Name": "중구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.djjunggu.go.kr/tour/index.do",
+      "promo2Name": "대전문화관광 축제포털",
+      "promo2Url": "https://www.daejeon.go.kr/tou/index.do",
+      "organizerKeywords": [
+        "중구",
+        "중구",
+        "중구청",
+        "중구"
+      ]
+    },
+    "30-170": {
+      "kostatCode": "25030",
+      "regionId": "daejeon",
+      "regionName": "대전광역시",
+      "lDongRegnCd": "30",
+      "lDongSignguCd": "170",
+      "name": "서구",
+      "hallName": "서구청",
+      "hallUrl": "https://www.seogu.go.kr",
+      "promo1Name": "서구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.seogu.go.kr/tour/index.do",
+      "promo2Name": "대전문화관광 축제포털",
+      "promo2Url": "https://www.daejeon.go.kr/tou/index.do",
+      "organizerKeywords": [
+        "서구",
+        "서구",
+        "서구청",
+        "서구"
+      ]
+    },
+    "30-200": {
+      "kostatCode": "25040",
+      "regionId": "daejeon",
+      "regionName": "대전광역시",
+      "lDongRegnCd": "30",
+      "lDongSignguCd": "200",
+      "name": "유성구",
+      "hallName": "유성구청",
+      "hallUrl": "https://www.yuseong.go.kr",
+      "promo1Name": "유성구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yuseong.go.kr/tour/",
+      "promo2Name": "대전문화관광 축제포털",
+      "promo2Url": "https://www.daejeon.go.kr/tou/index.do",
+      "organizerKeywords": [
+        "유성구",
+        "유성구",
+        "유성구청",
+        "유성구"
+      ]
+    },
+    "30-230": {
+      "kostatCode": "25050",
+      "regionId": "daejeon",
+      "regionName": "대전광역시",
+      "lDongRegnCd": "30",
+      "lDongSignguCd": "230",
+      "name": "대덕구",
+      "hallName": "대덕구청",
+      "hallUrl": "https://www.daedeok.go.kr",
+      "promo1Name": "대덕구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.daedeok.go.kr/tour/",
+      "promo2Name": "대전문화관광 축제포털",
+      "promo2Url": "https://www.daejeon.go.kr/tou/index.do",
+      "organizerKeywords": [
+        "대덕구",
+        "대덕구",
+        "대덕구청",
+        "대덕구"
+      ]
+    },
+    "31-110": {
+      "kostatCode": "26010",
+      "regionId": "ulsan",
+      "regionName": "울산광역시",
+      "lDongRegnCd": "31",
+      "lDongSignguCd": "110",
+      "name": "중구",
+      "hallName": "중구청",
+      "hallUrl": "https://www.junggu.ulsan.kr",
+      "promo1Name": "중구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.junggu.ulsan.kr/tour/",
+      "promo2Name": "울산관광 (축제·문화행사)",
+      "promo2Url": "https://tour.ulsan.go.kr",
+      "organizerKeywords": [
+        "중구",
+        "중구",
+        "중구청",
+        "중구"
+      ]
+    },
+    "31-140": {
+      "kostatCode": "26020",
+      "regionId": "ulsan",
+      "regionName": "울산광역시",
+      "lDongRegnCd": "31",
+      "lDongSignguCd": "140",
+      "name": "남구",
+      "hallName": "남구청",
+      "hallUrl": "https://www.ulsannamgu.go.kr",
+      "promo1Name": "남구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.ulsannamgu.go.kr/tour/main.do",
+      "promo2Name": "울산관광 (축제·문화행사)",
+      "promo2Url": "https://tour.ulsan.go.kr",
+      "organizerKeywords": [
+        "남구",
+        "남구",
+        "남구청",
+        "남구"
+      ]
+    },
+    "31-170": {
+      "kostatCode": "26030",
+      "regionId": "ulsan",
+      "regionName": "울산광역시",
+      "lDongRegnCd": "31",
+      "lDongSignguCd": "170",
+      "name": "동구",
+      "hallName": "동구청",
+      "hallUrl": "https://www.donggu.ulsan.kr",
+      "promo1Name": "동구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.donggu.ulsan.kr/tour/",
+      "promo2Name": "울산관광 (축제·문화행사)",
+      "promo2Url": "https://tour.ulsan.go.kr",
+      "organizerKeywords": [
+        "동구",
+        "동구",
+        "동구청",
+        "동구"
+      ]
+    },
+    "31-200": {
+      "kostatCode": "26040",
+      "regionId": "ulsan",
+      "regionName": "울산광역시",
+      "lDongRegnCd": "31",
+      "lDongSignguCd": "200",
+      "name": "북구",
+      "hallName": "북구청",
+      "hallUrl": "https://www.bukgu.ulsan.kr",
+      "promo1Name": "북구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.bukgu.ulsan.kr/tour/index.do",
+      "promo2Name": "울산관광 (축제·문화행사)",
+      "promo2Url": "https://tour.ulsan.go.kr",
+      "organizerKeywords": [
+        "북구",
+        "북구",
+        "북구청",
+        "북구"
+      ]
+    },
+    "31-710": {
+      "kostatCode": "26310",
+      "regionId": "ulsan",
+      "regionName": "울산광역시",
+      "lDongRegnCd": "31",
+      "lDongSignguCd": "710",
+      "name": "울주군",
+      "hallName": "울주군청",
+      "hallUrl": "https://www.ulju.ulsan.kr",
+      "promo1Name": "울주군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.ulju.ulsan.kr/tour/",
+      "promo2Name": "울산관광 (축제·문화행사)",
+      "promo2Url": "https://tour.ulsan.go.kr",
+      "organizerKeywords": [
+        "울주군",
+        "울주군",
+        "울주군청",
+        "울주군"
+      ]
+    },
+    "36110-36110": {
+      "kostatCode": "29010",
+      "regionId": "sejong",
+      "regionName": "세종특별자치시",
+      "lDongRegnCd": "36110",
+      "lDongSignguCd": "36110",
+      "name": "세종특별자치시",
+      "hallName": "세종특별자치시청",
+      "hallUrl": "https://www.sejong.go.kr",
+      "promo1Name": "세종특별자치시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.sejong.go.kr/tour/index.do",
+      "promo2Name": "세종시 문화관광·축제포털",
+      "promo2Url": "https://www.sejong.go.kr/tour/index.do",
+      "organizerKeywords": [
+        "세종특별자치시",
+        "세종특별자치시",
+        "세종특별자치시청",
+        "세종특별자치시"
+      ]
+    },
+    "41-111": {
+      "kostatCode": "31011",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "111",
+      "name": "수원시 장안구",
+      "hallName": "수원시 장안구청",
+      "hallUrl": "https://www.suwon.go.kr",
+      "promo1Name": "수원시 장안구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.suwon.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "수원시 장안구",
+        "수원시장안구",
+        "수원시 장안구청",
+        "수원시"
+      ]
+    },
+    "41-113": {
+      "kostatCode": "31012",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "113",
+      "name": "수원시 권선구",
+      "hallName": "수원시 권선구청",
+      "hallUrl": "https://www.suwon.go.kr",
+      "promo1Name": "수원시 권선구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.suwon.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "수원시 권선구",
+        "수원시권선구",
+        "수원시 권선구청",
+        "수원시"
+      ]
+    },
+    "41-115": {
+      "kostatCode": "31013",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "115",
+      "name": "수원시 팔달구",
+      "hallName": "수원시 팔달구청",
+      "hallUrl": "https://www.suwon.go.kr",
+      "promo1Name": "수원시 팔달구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.suwon.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "수원시 팔달구",
+        "수원시팔달구",
+        "수원시 팔달구청",
+        "수원시"
+      ]
+    },
+    "41-117": {
+      "kostatCode": "31014",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "117",
+      "name": "수원시 영통구",
+      "hallName": "수원시 영통구청",
+      "hallUrl": "https://www.suwon.go.kr",
+      "promo1Name": "수원시 영통구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.suwon.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "수원시 영통구",
+        "수원시영통구",
+        "수원시 영통구청",
+        "수원시"
+      ]
+    },
+    "41-131": {
+      "kostatCode": "31021",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "131",
+      "name": "성남시 수정구",
+      "hallName": "성남시 수정구청",
+      "hallUrl": "https://www.seongnam.go.kr",
+      "promo1Name": "성남시 수정구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.seongnam.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "성남시 수정구",
+        "성남시수정구",
+        "성남시 수정구청",
+        "성남시"
+      ]
+    },
+    "41-133": {
+      "kostatCode": "31022",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "133",
+      "name": "성남시 중원구",
+      "hallName": "성남시 중원구청",
+      "hallUrl": "https://www.seongnam.go.kr",
+      "promo1Name": "성남시 중원구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.seongnam.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "성남시 중원구",
+        "성남시중원구",
+        "성남시 중원구청",
+        "성남시"
+      ]
+    },
+    "41-135": {
+      "kostatCode": "31023",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "135",
+      "name": "성남시 분당구",
+      "hallName": "성남시 분당구청",
+      "hallUrl": "https://www.seongnam.go.kr",
+      "promo1Name": "성남시 분당구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.seongnam.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "성남시 분당구",
+        "성남시분당구",
+        "성남시 분당구청",
+        "성남시"
+      ]
+    },
+    "41-150": {
+      "kostatCode": "31030",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "150",
+      "name": "의정부시",
+      "hallName": "의정부시청",
+      "hallUrl": "https://www.ui4u.go.kr",
+      "promo1Name": "의정부시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.ui4u.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "의정부시",
+        "의정부시",
+        "의정부시청",
+        "의정부시"
+      ]
+    },
+    "41-171": {
+      "kostatCode": "31041",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "171",
+      "name": "안양시 만안구",
+      "hallName": "안양시 만안구청",
+      "hallUrl": "https://www.anyang.go.kr",
+      "promo1Name": "안양시 만안구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.anyang.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "안양시 만안구",
+        "안양시만안구",
+        "안양시 만안구청",
+        "안양시"
+      ]
+    },
+    "41-173": {
+      "kostatCode": "31042",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "173",
+      "name": "안양시 동안구",
+      "hallName": "안양시 동안구청",
+      "hallUrl": "https://www.anyang.go.kr",
+      "promo1Name": "안양시 동안구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.anyang.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "안양시 동안구",
+        "안양시동안구",
+        "안양시 동안구청",
+        "안양시"
+      ]
+    },
+    "41-190": {
+      "kostatCode": "31050",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "190",
+      "name": "부천시",
+      "hallName": "부천시청",
+      "hallUrl": "https://www.bucheon.go.kr",
+      "promo1Name": "부천시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.bucheon.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "부천시",
+        "부천시",
+        "부천시청",
+        "부천시"
+      ]
+    },
+    "41-210": {
+      "kostatCode": "31060",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "210",
+      "name": "광명시",
+      "hallName": "광명시청",
+      "hallUrl": "https://www.gm.go.kr",
+      "promo1Name": "광명시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gm.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "광명시",
+        "광명시",
+        "광명시청",
+        "광명시"
+      ]
+    },
+    "41-220": {
+      "kostatCode": "31070",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "220",
+      "name": "평택시",
+      "hallName": "평택시청",
+      "hallUrl": "https://www.pyeongtaek.go.kr",
+      "promo1Name": "평택시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.pyeongtaek.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "평택시",
+        "평택시",
+        "평택시청",
+        "평택시"
+      ]
+    },
+    "41-250": {
+      "kostatCode": "31080",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "250",
+      "name": "동두천시",
+      "hallName": "동두천시청",
+      "hallUrl": "https://www.ddc.go.kr",
+      "promo1Name": "동두천시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.ddc.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "동두천시",
+        "동두천시",
+        "동두천시청",
+        "동두천시"
+      ]
+    },
+    "41-271": {
+      "kostatCode": "31091",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "271",
+      "name": "안산시 상록구",
+      "hallName": "안산시 상록구청",
+      "hallUrl": "https://www.ansan.go.kr",
+      "promo1Name": "안산시 상록구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.ansan.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "안산시 상록구",
+        "안산시상록구",
+        "안산시 상록구청",
+        "안산시"
+      ]
+    },
+    "41-273": {
+      "kostatCode": "31092",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "273",
+      "name": "안산시 단원구",
+      "hallName": "안산시 단원구청",
+      "hallUrl": "https://www.ansan.go.kr",
+      "promo1Name": "안산시 단원구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.ansan.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "안산시 단원구",
+        "안산시단원구",
+        "안산시 단원구청",
+        "안산시"
+      ]
+    },
+    "41-281": {
+      "kostatCode": "31101",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "281",
+      "name": "고양시 덕양구",
+      "hallName": "고양시 덕양구청",
+      "hallUrl": "https://www.goyang.go.kr",
+      "promo1Name": "고양시 덕양구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.goyang.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "고양시 덕양구",
+        "고양시덕양구",
+        "고양시 덕양구청",
+        "고양시"
+      ]
+    },
+    "41-285": {
+      "kostatCode": "31103",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "285",
+      "name": "고양시 일산동구",
+      "hallName": "고양시 일산동구청",
+      "hallUrl": "https://www.goyang.go.kr",
+      "promo1Name": "고양시 일산동구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.goyang.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "고양시 일산동구",
+        "고양시일산동구",
+        "고양시 일산동구청",
+        "고양시"
+      ]
+    },
+    "41-287": {
+      "kostatCode": "31104",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "287",
+      "name": "고양시 일산서구",
+      "hallName": "고양시 일산서구청",
+      "hallUrl": "https://www.goyang.go.kr",
+      "promo1Name": "고양시 일산서구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.goyang.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "고양시 일산서구",
+        "고양시일산서구",
+        "고양시 일산서구청",
+        "고양시"
+      ]
+    },
+    "41-290": {
+      "kostatCode": "31110",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "290",
+      "name": "과천시",
+      "hallName": "과천시청",
+      "hallUrl": "https://www.gccity.go.kr",
+      "promo1Name": "과천시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gccity.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "과천시",
+        "과천시",
+        "과천시청",
+        "과천시"
+      ]
+    },
+    "41-310": {
+      "kostatCode": "31120",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "310",
+      "name": "구리시",
+      "hallName": "구리시청",
+      "hallUrl": "https://www.guri.go.kr",
+      "promo1Name": "구리시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.guri.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "구리시",
+        "구리시",
+        "구리시청",
+        "구리시"
+      ]
+    },
+    "41-360": {
+      "kostatCode": "31130",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "360",
+      "name": "남양주시",
+      "hallName": "남양주시청",
+      "hallUrl": "https://www.nyj.go.kr",
+      "promo1Name": "남양주시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.nyj.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "남양주시",
+        "남양주시",
+        "남양주시청",
+        "남양주시"
+      ]
+    },
+    "41-370": {
+      "kostatCode": "31140",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "370",
+      "name": "오산시",
+      "hallName": "오산시청",
+      "hallUrl": "https://www.osan.go.kr",
+      "promo1Name": "오산시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.osan.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "오산시",
+        "오산시",
+        "오산시청",
+        "오산시"
+      ]
+    },
+    "41-390": {
+      "kostatCode": "31150",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "390",
+      "name": "시흥시",
+      "hallName": "시흥시청",
+      "hallUrl": "https://www.siheung.go.kr",
+      "promo1Name": "시흥시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.siheung.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "시흥시",
+        "시흥시",
+        "시흥시청",
+        "시흥시"
+      ]
+    },
+    "41-410": {
+      "kostatCode": "31160",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "410",
+      "name": "군포시",
+      "hallName": "군포시청",
+      "hallUrl": "https://www.gunpo.go.kr",
+      "promo1Name": "군포시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gunpo.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "군포시",
+        "군포시",
+        "군포시청",
+        "군포시"
+      ]
+    },
+    "41-430": {
+      "kostatCode": "31170",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "430",
+      "name": "의왕시",
+      "hallName": "의왕시청",
+      "hallUrl": "https://www.uiwang.go.kr",
+      "promo1Name": "의왕시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.uiwang.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "의왕시",
+        "의왕시",
+        "의왕시청",
+        "의왕시"
+      ]
+    },
+    "41-450": {
+      "kostatCode": "31180",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "450",
+      "name": "하남시",
+      "hallName": "하남시청",
+      "hallUrl": "https://www.hanam.go.kr",
+      "promo1Name": "하남시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.hanam.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "하남시",
+        "하남시",
+        "하남시청",
+        "하남시"
+      ]
+    },
+    "41-461": {
+      "kostatCode": "31191",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "461",
+      "name": "용인시 처인구",
+      "hallName": "용인시 처인구청",
+      "hallUrl": "https://www.yongin.go.kr",
+      "promo1Name": "용인시 처인구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yongin.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "용인시 처인구",
+        "용인시처인구",
+        "용인시 처인구청",
+        "용인시"
+      ]
+    },
+    "41-463": {
+      "kostatCode": "31192",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "463",
+      "name": "용인시 기흥구",
+      "hallName": "용인시 기흥구청",
+      "hallUrl": "https://www.yongin.go.kr",
+      "promo1Name": "용인시 기흥구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yongin.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "용인시 기흥구",
+        "용인시기흥구",
+        "용인시 기흥구청",
+        "용인시"
+      ]
+    },
+    "41-465": {
+      "kostatCode": "31193",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "465",
+      "name": "용인시 수지구",
+      "hallName": "용인시 수지구청",
+      "hallUrl": "https://www.yongin.go.kr",
+      "promo1Name": "용인시 수지구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yongin.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "용인시 수지구",
+        "용인시수지구",
+        "용인시 수지구청",
+        "용인시"
+      ]
+    },
+    "41-480": {
+      "kostatCode": "31200",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "480",
+      "name": "파주시",
+      "hallName": "파주시청",
+      "hallUrl": "https://www.paju.go.kr",
+      "promo1Name": "파주시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.paju.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "파주시",
+        "파주시",
+        "파주시청",
+        "파주시"
+      ]
+    },
+    "41-500": {
+      "kostatCode": "31210",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "500",
+      "name": "이천시",
+      "hallName": "이천시청",
+      "hallUrl": "https://www.icheon.go.kr",
+      "promo1Name": "이천시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.icheon.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "이천시",
+        "이천시",
+        "이천시청",
+        "이천시"
+      ]
+    },
+    "41-550": {
+      "kostatCode": "31220",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "550",
+      "name": "안성시",
+      "hallName": "안성시청",
+      "hallUrl": "https://www.anseong.go.kr",
+      "promo1Name": "안성시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.anseong.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "안성시",
+        "안성시",
+        "안성시청",
+        "안성시"
+      ]
+    },
+    "41-570": {
+      "kostatCode": "31230",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "570",
+      "name": "김포시",
+      "hallName": "김포시청",
+      "hallUrl": "https://www.gimpo.go.kr",
+      "promo1Name": "김포시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gimpo.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "김포시",
+        "김포시",
+        "김포시청",
+        "김포시"
+      ]
+    },
+    "41-590": {
+      "kostatCode": "31240",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "590",
+      "name": "화성시",
+      "hallName": "화성시청",
+      "hallUrl": "https://www.hscity.go.kr",
+      "promo1Name": "화성시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.hscity.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "화성시",
+        "화성시",
+        "화성시청",
+        "화성시"
+      ]
+    },
+    "41-610": {
+      "kostatCode": "31250",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "610",
+      "name": "광주시",
+      "hallName": "광주시청",
+      "hallUrl": "https://www.gjcity.go.kr",
+      "promo1Name": "광주시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gjcity.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "광주시",
+        "광주시",
+        "광주시청",
+        "광주시"
+      ]
+    },
+    "41-630": {
+      "kostatCode": "31260",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "630",
+      "name": "양주시",
+      "hallName": "양주시청",
+      "hallUrl": "https://www.yangju.go.kr",
+      "promo1Name": "양주시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yangju.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "양주시",
+        "양주시",
+        "양주시청",
+        "양주시"
+      ]
+    },
+    "41-650": {
+      "kostatCode": "31270",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "650",
+      "name": "포천시",
+      "hallName": "포천시청",
+      "hallUrl": "https://www.pocheon.go.kr",
+      "promo1Name": "포천시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.pocheon.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "포천시",
+        "포천시",
+        "포천시청",
+        "포천시"
+      ]
+    },
+    "41-670": {
+      "kostatCode": "31280",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "670",
+      "name": "여주시",
+      "hallName": "여주시청",
+      "hallUrl": "https://www.yeoju.go.kr",
+      "promo1Name": "여주시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yeoju.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "여주시",
+        "여주시",
+        "여주시청",
+        "여주시"
+      ]
+    },
+    "41-800": {
+      "kostatCode": "31350",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "800",
+      "name": "연천군",
+      "hallName": "연천군청",
+      "hallUrl": "https://www.yeoncheon.go.kr",
+      "promo1Name": "연천군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yeoncheon.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "연천군",
+        "연천군",
+        "연천군청",
+        "연천군"
+      ]
+    },
+    "41-820": {
+      "kostatCode": "31370",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "820",
+      "name": "가평군",
+      "hallName": "가평군청",
+      "hallUrl": "https://www.gp.go.kr",
+      "promo1Name": "가평군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gp.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "가평군",
+        "가평군",
+        "가평군청",
+        "가평군"
+      ]
+    },
+    "41-830": {
+      "kostatCode": "31380",
+      "regionId": "gyeonggi",
+      "regionName": "경기도",
+      "lDongRegnCd": "41",
+      "lDongSignguCd": "830",
+      "name": "양평군",
+      "hallName": "양평군청",
+      "hallUrl": "https://www.yp21.go.kr",
+      "promo1Name": "양평군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yp21.go.kr/tour",
+      "promo2Name": "경기관광포털 (축제·행사)",
+      "promo2Url": "https://ggtour.or.kr",
+      "organizerKeywords": [
+        "양평군",
+        "양평군",
+        "양평군청",
+        "양평군"
+      ]
+    },
+    "51-110": {
+      "kostatCode": "32010",
+      "regionId": "gangwon",
+      "regionName": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "110",
+      "name": "춘천시",
+      "hallName": "춘천시청",
+      "hallUrl": "https://www.chuncheon.go.kr",
+      "promo1Name": "춘천시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.chuncheon.go.kr/tour",
+      "promo2Name": "강원관광 (축제·행사포털)",
+      "promo2Url": "https://www.gangwon.to",
+      "organizerKeywords": [
+        "춘천시",
+        "춘천시",
+        "춘천시청",
+        "춘천시"
+      ]
+    },
+    "51-130": {
+      "kostatCode": "32020",
+      "regionId": "gangwon",
+      "regionName": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "130",
+      "name": "원주시",
+      "hallName": "원주시청",
+      "hallUrl": "https://www.wonju.go.kr",
+      "promo1Name": "원주시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.wonju.go.kr/tour",
+      "promo2Name": "강원관광 (축제·행사포털)",
+      "promo2Url": "https://www.gangwon.to",
+      "organizerKeywords": [
+        "원주시",
+        "원주시",
+        "원주시청",
+        "원주시"
+      ]
+    },
+    "51-150": {
+      "kostatCode": "32030",
+      "regionId": "gangwon",
+      "regionName": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "150",
+      "name": "강릉시",
+      "hallName": "강릉시청",
+      "hallUrl": "https://www.gn.go.kr",
+      "promo1Name": "강릉시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gn.go.kr/tour",
+      "promo2Name": "강원관광 (축제·행사포털)",
+      "promo2Url": "https://www.gangwon.to",
+      "organizerKeywords": [
+        "강릉시",
+        "강릉시",
+        "강릉시청",
+        "강릉시"
+      ]
+    },
+    "51-170": {
+      "kostatCode": "32040",
+      "regionId": "gangwon",
+      "regionName": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "170",
+      "name": "동해시",
+      "hallName": "동해시청",
+      "hallUrl": "https://www.dh.go.kr",
+      "promo1Name": "동해시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.dh.go.kr/tour",
+      "promo2Name": "강원관광 (축제·행사포털)",
+      "promo2Url": "https://www.gangwon.to",
+      "organizerKeywords": [
+        "동해시",
+        "동해시",
+        "동해시청",
+        "동해시"
+      ]
+    },
+    "51-190": {
+      "kostatCode": "32050",
+      "regionId": "gangwon",
+      "regionName": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "190",
+      "name": "태백시",
+      "hallName": "태백시청",
+      "hallUrl": "https://www.taebaek.go.kr",
+      "promo1Name": "태백시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.taebaek.go.kr/tour",
+      "promo2Name": "강원관광 (축제·행사포털)",
+      "promo2Url": "https://www.gangwon.to",
+      "organizerKeywords": [
+        "태백시",
+        "태백시",
+        "태백시청",
+        "태백시"
+      ]
+    },
+    "51-210": {
+      "kostatCode": "32060",
+      "regionId": "gangwon",
+      "regionName": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "210",
+      "name": "속초시",
+      "hallName": "속초시청",
+      "hallUrl": "https://www.sokcho.go.kr",
+      "promo1Name": "속초시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.sokcho.go.kr/tour",
+      "promo2Name": "강원관광 (축제·행사포털)",
+      "promo2Url": "https://www.gangwon.to",
+      "organizerKeywords": [
+        "속초시",
+        "속초시",
+        "속초시청",
+        "속초시"
+      ]
+    },
+    "51-230": {
+      "kostatCode": "32070",
+      "regionId": "gangwon",
+      "regionName": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "230",
+      "name": "삼척시",
+      "hallName": "삼척시청",
+      "hallUrl": "https://www.samcheok.go.kr",
+      "promo1Name": "삼척시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.samcheok.go.kr/tour",
+      "promo2Name": "강원관광 (축제·행사포털)",
+      "promo2Url": "https://www.gangwon.to",
+      "organizerKeywords": [
+        "삼척시",
+        "삼척시",
+        "삼척시청",
+        "삼척시"
+      ]
+    },
+    "51-720": {
+      "kostatCode": "32310",
+      "regionId": "gangwon",
+      "regionName": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "720",
+      "name": "홍천군",
+      "hallName": "홍천군청",
+      "hallUrl": "https://www.hongcheon.go.kr",
+      "promo1Name": "홍천군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.hongcheon.go.kr/tour",
+      "promo2Name": "강원관광 (축제·행사포털)",
+      "promo2Url": "https://www.gangwon.to",
+      "organizerKeywords": [
+        "홍천군",
+        "홍천군",
+        "홍천군청",
+        "홍천군"
+      ]
+    },
+    "51-730": {
+      "kostatCode": "32320",
+      "regionId": "gangwon",
+      "regionName": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "730",
+      "name": "횡성군",
+      "hallName": "횡성군청",
+      "hallUrl": "https://www.hsg.go.kr",
+      "promo1Name": "횡성군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.hsg.go.kr/tour",
+      "promo2Name": "강원관광 (축제·행사포털)",
+      "promo2Url": "https://www.gangwon.to",
+      "organizerKeywords": [
+        "횡성군",
+        "횡성군",
+        "횡성군청",
+        "횡성군"
+      ]
+    },
+    "51-750": {
+      "kostatCode": "32330",
+      "regionId": "gangwon",
+      "regionName": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "750",
+      "name": "영월군",
+      "hallName": "영월군청",
+      "hallUrl": "https://www.yw.go.kr",
+      "promo1Name": "영월군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yw.go.kr/tour",
+      "promo2Name": "강원관광 (축제·행사포털)",
+      "promo2Url": "https://www.gangwon.to",
+      "organizerKeywords": [
+        "영월군",
+        "영월군",
+        "영월군청",
+        "영월군"
+      ]
+    },
+    "51-760": {
+      "kostatCode": "32340",
+      "regionId": "gangwon",
+      "regionName": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "760",
+      "name": "평창군",
+      "hallName": "평창군청",
+      "hallUrl": "https://www.pc.go.kr",
+      "promo1Name": "평창군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.pc.go.kr/tour",
+      "promo2Name": "강원관광 (축제·행사포털)",
+      "promo2Url": "https://www.gangwon.to",
+      "organizerKeywords": [
+        "평창군",
+        "평창군",
+        "평창군청",
+        "평창군"
+      ]
+    },
+    "51-770": {
+      "kostatCode": "32350",
+      "regionId": "gangwon",
+      "regionName": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "770",
+      "name": "정선군",
+      "hallName": "정선군청",
+      "hallUrl": "https://www.jeongseon.go.kr",
+      "promo1Name": "정선군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.jeongseon.go.kr/tour",
+      "promo2Name": "강원관광 (축제·행사포털)",
+      "promo2Url": "https://www.gangwon.to",
+      "organizerKeywords": [
+        "정선군",
+        "정선군",
+        "정선군청",
+        "정선군"
+      ]
+    },
+    "51-780": {
+      "kostatCode": "32360",
+      "regionId": "gangwon",
+      "regionName": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "780",
+      "name": "철원군",
+      "hallName": "철원군청",
+      "hallUrl": "https://www.cwg.go.kr",
+      "promo1Name": "철원군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.cwg.go.kr/tour",
+      "promo2Name": "강원관광 (축제·행사포털)",
+      "promo2Url": "https://www.gangwon.to",
+      "organizerKeywords": [
+        "철원군",
+        "철원군",
+        "철원군청",
+        "철원군"
+      ]
+    },
+    "51-790": {
+      "kostatCode": "32370",
+      "regionId": "gangwon",
+      "regionName": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "790",
+      "name": "화천군",
+      "hallName": "화천군청",
+      "hallUrl": "https://www.ihc.go.kr",
+      "promo1Name": "화천군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.ihc.go.kr/tour",
+      "promo2Name": "강원관광 (축제·행사포털)",
+      "promo2Url": "https://www.gangwon.to",
+      "organizerKeywords": [
+        "화천군",
+        "화천군",
+        "화천군청",
+        "화천군"
+      ]
+    },
+    "51-800": {
+      "kostatCode": "32380",
+      "regionId": "gangwon",
+      "regionName": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "800",
+      "name": "양구군",
+      "hallName": "양구군청",
+      "hallUrl": "https://www.yanggu.go.kr",
+      "promo1Name": "양구군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yanggu.go.kr/tour",
+      "promo2Name": "강원관광 (축제·행사포털)",
+      "promo2Url": "https://www.gangwon.to",
+      "organizerKeywords": [
+        "양구군",
+        "양구군",
+        "양구군청",
+        "양구군"
+      ]
+    },
+    "51-810": {
+      "kostatCode": "32390",
+      "regionId": "gangwon",
+      "regionName": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "810",
+      "name": "인제군",
+      "hallName": "인제군청",
+      "hallUrl": "https://www.inje.go.kr",
+      "promo1Name": "인제군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.inje.go.kr/tour",
+      "promo2Name": "강원관광 (축제·행사포털)",
+      "promo2Url": "https://www.gangwon.to",
+      "organizerKeywords": [
+        "인제군",
+        "인제군",
+        "인제군청",
+        "인제군"
+      ]
+    },
+    "51-820": {
+      "kostatCode": "32400",
+      "regionId": "gangwon",
+      "regionName": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "820",
+      "name": "고성군",
+      "hallName": "고성군청",
+      "hallUrl": "https://www.gwgs.go.kr",
+      "promo1Name": "고성군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gwgs.go.kr/tour",
+      "promo2Name": "강원관광 (축제·행사포털)",
+      "promo2Url": "https://www.gangwon.to",
+      "organizerKeywords": [
+        "고성군",
+        "고성군",
+        "고성군청",
+        "고성군"
+      ]
+    },
+    "51-830": {
+      "kostatCode": "32410",
+      "regionId": "gangwon",
+      "regionName": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "830",
+      "name": "양양군",
+      "hallName": "양양군청",
+      "hallUrl": "https://www.yangyang.go.kr",
+      "promo1Name": "양양군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yangyang.go.kr/tour",
+      "promo2Name": "강원관광 (축제·행사포털)",
+      "promo2Url": "https://www.gangwon.to",
+      "organizerKeywords": [
+        "양양군",
+        "양양군",
+        "양양군청",
+        "양양군"
+      ]
+    },
+    "43-130": {
+      "kostatCode": "33020",
+      "regionId": "chungbuk",
+      "regionName": "충청북도",
+      "lDongRegnCd": "43",
+      "lDongSignguCd": "130",
+      "name": "충주시",
+      "hallName": "충주시청",
+      "hallUrl": "https://www.chungju.go.kr",
+      "promo1Name": "충주시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.chungju.go.kr/tour",
+      "promo2Name": "충북나드리 (축제·문화관광)",
+      "promo2Url": "https://tour.chungbuk.go.kr",
+      "organizerKeywords": [
+        "충주시",
+        "충주시",
+        "충주시청",
+        "충주시"
+      ]
+    },
+    "43-150": {
+      "kostatCode": "33030",
+      "regionId": "chungbuk",
+      "regionName": "충청북도",
+      "lDongRegnCd": "43",
+      "lDongSignguCd": "150",
+      "name": "제천시",
+      "hallName": "제천시청",
+      "hallUrl": "https://www.jecheon.go.kr",
+      "promo1Name": "제천시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.jecheon.go.kr/tour",
+      "promo2Name": "충북나드리 (축제·문화관광)",
+      "promo2Url": "https://tour.chungbuk.go.kr",
+      "organizerKeywords": [
+        "제천시",
+        "제천시",
+        "제천시청",
+        "제천시"
+      ]
+    },
+    "43-111": {
+      "kostatCode": "33041",
+      "regionId": "chungbuk",
+      "regionName": "충청북도",
+      "lDongRegnCd": "43",
+      "lDongSignguCd": "111",
+      "name": "청주시 상당구",
+      "hallName": "청주시 상당구청",
+      "hallUrl": "https://www.cheongju.go.kr",
+      "promo1Name": "청주시 상당구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.cheongju.go.kr/tour",
+      "promo2Name": "충북나드리 (축제·문화관광)",
+      "promo2Url": "https://tour.chungbuk.go.kr",
+      "organizerKeywords": [
+        "청주시 상당구",
+        "청주시상당구",
+        "청주시 상당구청",
+        "청주시"
+      ]
+    },
+    "43-112": {
+      "kostatCode": "33042",
+      "regionId": "chungbuk",
+      "regionName": "충청북도",
+      "lDongRegnCd": "43",
+      "lDongSignguCd": "112",
+      "name": "청주시 서원구",
+      "hallName": "청주시 서원구청",
+      "hallUrl": "https://www.cheongju.go.kr",
+      "promo1Name": "청주시 서원구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.cheongju.go.kr/tour",
+      "promo2Name": "충북나드리 (축제·문화관광)",
+      "promo2Url": "https://tour.chungbuk.go.kr",
+      "organizerKeywords": [
+        "청주시 서원구",
+        "청주시서원구",
+        "청주시 서원구청",
+        "청주시"
+      ]
+    },
+    "43-113": {
+      "kostatCode": "33043",
+      "regionId": "chungbuk",
+      "regionName": "충청북도",
+      "lDongRegnCd": "43",
+      "lDongSignguCd": "113",
+      "name": "청주시 흥덕구",
+      "hallName": "청주시 흥덕구청",
+      "hallUrl": "https://www.cheongju.go.kr",
+      "promo1Name": "청주시 흥덕구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.cheongju.go.kr/tour",
+      "promo2Name": "충북나드리 (축제·문화관광)",
+      "promo2Url": "https://tour.chungbuk.go.kr",
+      "organizerKeywords": [
+        "청주시 흥덕구",
+        "청주시흥덕구",
+        "청주시 흥덕구청",
+        "청주시"
+      ]
+    },
+    "43-114": {
+      "kostatCode": "33044",
+      "regionId": "chungbuk",
+      "regionName": "충청북도",
+      "lDongRegnCd": "43",
+      "lDongSignguCd": "114",
+      "name": "청주시 청원구",
+      "hallName": "청주시 청원구청",
+      "hallUrl": "https://www.cheongju.go.kr",
+      "promo1Name": "청주시 청원구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.cheongju.go.kr/tour",
+      "promo2Name": "충북나드리 (축제·문화관광)",
+      "promo2Url": "https://tour.chungbuk.go.kr",
+      "organizerKeywords": [
+        "청주시 청원구",
+        "청주시청원구",
+        "청주시 청원구청",
+        "청주시"
+      ]
+    },
+    "43-720": {
+      "kostatCode": "33320",
+      "regionId": "chungbuk",
+      "regionName": "충청북도",
+      "lDongRegnCd": "43",
+      "lDongSignguCd": "720",
+      "name": "보은군",
+      "hallName": "보은군청",
+      "hallUrl": "https://www.boeun.go.kr",
+      "promo1Name": "보은군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.boeun.go.kr/tour",
+      "promo2Name": "충북나드리 (축제·문화관광)",
+      "promo2Url": "https://tour.chungbuk.go.kr",
+      "organizerKeywords": [
+        "보은군",
+        "보은군",
+        "보은군청",
+        "보은군"
+      ]
+    },
+    "43-730": {
+      "kostatCode": "33330",
+      "regionId": "chungbuk",
+      "regionName": "충청북도",
+      "lDongRegnCd": "43",
+      "lDongSignguCd": "730",
+      "name": "옥천군",
+      "hallName": "옥천군청",
+      "hallUrl": "https://www.oc.go.kr",
+      "promo1Name": "옥천군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.oc.go.kr/tour",
+      "promo2Name": "충북나드리 (축제·문화관광)",
+      "promo2Url": "https://tour.chungbuk.go.kr",
+      "organizerKeywords": [
+        "옥천군",
+        "옥천군",
+        "옥천군청",
+        "옥천군"
+      ]
+    },
+    "43-740": {
+      "kostatCode": "33340",
+      "regionId": "chungbuk",
+      "regionName": "충청북도",
+      "lDongRegnCd": "43",
+      "lDongSignguCd": "740",
+      "name": "영동군",
+      "hallName": "영동군청",
+      "hallUrl": "https://www.yd21.go.kr",
+      "promo1Name": "영동군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yd21.go.kr/tour",
+      "promo2Name": "충북나드리 (축제·문화관광)",
+      "promo2Url": "https://tour.chungbuk.go.kr",
+      "organizerKeywords": [
+        "영동군",
+        "영동군",
+        "영동군청",
+        "영동군"
+      ]
+    },
+    "43-750": {
+      "kostatCode": "33350",
+      "regionId": "chungbuk",
+      "regionName": "충청북도",
+      "lDongRegnCd": "43",
+      "lDongSignguCd": "750",
+      "name": "진천군",
+      "hallName": "진천군청",
+      "hallUrl": "https://www.jincheon.go.kr",
+      "promo1Name": "진천군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.jincheon.go.kr/tour",
+      "promo2Name": "충북나드리 (축제·문화관광)",
+      "promo2Url": "https://tour.chungbuk.go.kr",
+      "organizerKeywords": [
+        "진천군",
+        "진천군",
+        "진천군청",
+        "진천군"
+      ]
+    },
+    "43-760": {
+      "kostatCode": "33360",
+      "regionId": "chungbuk",
+      "regionName": "충청북도",
+      "lDongRegnCd": "43",
+      "lDongSignguCd": "760",
+      "name": "괴산군",
+      "hallName": "괴산군청",
+      "hallUrl": "https://www.goesan.go.kr",
+      "promo1Name": "괴산군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.goesan.go.kr/tour",
+      "promo2Name": "충북나드리 (축제·문화관광)",
+      "promo2Url": "https://tour.chungbuk.go.kr",
+      "organizerKeywords": [
+        "괴산군",
+        "괴산군",
+        "괴산군청",
+        "괴산군"
+      ]
+    },
+    "43-770": {
+      "kostatCode": "33370",
+      "regionId": "chungbuk",
+      "regionName": "충청북도",
+      "lDongRegnCd": "43",
+      "lDongSignguCd": "770",
+      "name": "음성군",
+      "hallName": "음성군청",
+      "hallUrl": "https://www.eumseong.go.kr",
+      "promo1Name": "음성군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.eumseong.go.kr/tour",
+      "promo2Name": "충북나드리 (축제·문화관광)",
+      "promo2Url": "https://tour.chungbuk.go.kr",
+      "organizerKeywords": [
+        "음성군",
+        "음성군",
+        "음성군청",
+        "음성군"
+      ]
+    },
+    "43-800": {
+      "kostatCode": "33380",
+      "regionId": "chungbuk",
+      "regionName": "충청북도",
+      "lDongRegnCd": "43",
+      "lDongSignguCd": "800",
+      "name": "단양군",
+      "hallName": "단양군청",
+      "hallUrl": "https://www.danyang.go.kr",
+      "promo1Name": "단양군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.danyang.go.kr/tour",
+      "promo2Name": "충북나드리 (축제·문화관광)",
+      "promo2Url": "https://tour.chungbuk.go.kr",
+      "organizerKeywords": [
+        "단양군",
+        "단양군",
+        "단양군청",
+        "단양군"
+      ]
+    },
+    "43-745": {
+      "kostatCode": "33390",
+      "regionId": "chungbuk",
+      "regionName": "충청북도",
+      "lDongRegnCd": "43",
+      "lDongSignguCd": "745",
+      "name": "증평군",
+      "hallName": "증평군청",
+      "hallUrl": "https://www.jp.go.kr",
+      "promo1Name": "증평군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.jp.go.kr/tour",
+      "promo2Name": "충북나드리 (축제·문화관광)",
+      "promo2Url": "https://tour.chungbuk.go.kr",
+      "organizerKeywords": [
+        "증평군",
+        "증평군",
+        "증평군청",
+        "증평군"
+      ]
+    },
+    "44-131": {
+      "kostatCode": "34011",
+      "regionId": "chungnam",
+      "regionName": "충청남도",
+      "lDongRegnCd": "44",
+      "lDongSignguCd": "131",
+      "name": "천안시 동남구",
+      "hallName": "천안시 동남구청",
+      "hallUrl": "https://www.cheonan.go.kr",
+      "promo1Name": "천안시 동남구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.cheonan.go.kr/tour",
+      "promo2Name": "충남문화관광 (축제·행사)",
+      "promo2Url": "https://tour.chungnam.go.kr",
+      "organizerKeywords": [
+        "천안시 동남구",
+        "천안시동남구",
+        "천안시 동남구청",
+        "천안시"
+      ]
+    },
+    "44-133": {
+      "kostatCode": "34012",
+      "regionId": "chungnam",
+      "regionName": "충청남도",
+      "lDongRegnCd": "44",
+      "lDongSignguCd": "133",
+      "name": "천안시 서북구",
+      "hallName": "천안시 서북구청",
+      "hallUrl": "https://www.cheonan.go.kr",
+      "promo1Name": "천안시 서북구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.cheonan.go.kr/tour",
+      "promo2Name": "충남문화관광 (축제·행사)",
+      "promo2Url": "https://tour.chungnam.go.kr",
+      "organizerKeywords": [
+        "천안시 서북구",
+        "천안시서북구",
+        "천안시 서북구청",
+        "천안시"
+      ]
+    },
+    "44-150": {
+      "kostatCode": "34020",
+      "regionId": "chungnam",
+      "regionName": "충청남도",
+      "lDongRegnCd": "44",
+      "lDongSignguCd": "150",
+      "name": "공주시",
+      "hallName": "공주시청",
+      "hallUrl": "https://www.gongju.go.kr",
+      "promo1Name": "공주시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gongju.go.kr/tour",
+      "promo2Name": "충남문화관광 (축제·행사)",
+      "promo2Url": "https://tour.chungnam.go.kr",
+      "organizerKeywords": [
+        "공주시",
+        "공주시",
+        "공주시청",
+        "공주시"
+      ]
+    },
+    "44-180": {
+      "kostatCode": "34030",
+      "regionId": "chungnam",
+      "regionName": "충청남도",
+      "lDongRegnCd": "44",
+      "lDongSignguCd": "180",
+      "name": "보령시",
+      "hallName": "보령시청",
+      "hallUrl": "https://www.brcn.go.kr",
+      "promo1Name": "보령시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.brcn.go.kr/tour",
+      "promo2Name": "충남문화관광 (축제·행사)",
+      "promo2Url": "https://tour.chungnam.go.kr",
+      "organizerKeywords": [
+        "보령시",
+        "보령시",
+        "보령시청",
+        "보령시"
+      ]
+    },
+    "44-200": {
+      "kostatCode": "34040",
+      "regionId": "chungnam",
+      "regionName": "충청남도",
+      "lDongRegnCd": "44",
+      "lDongSignguCd": "200",
+      "name": "아산시",
+      "hallName": "아산시청",
+      "hallUrl": "https://www.asan.go.kr",
+      "promo1Name": "아산시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.asan.go.kr/tour",
+      "promo2Name": "충남문화관광 (축제·행사)",
+      "promo2Url": "https://tour.chungnam.go.kr",
+      "organizerKeywords": [
+        "아산시",
+        "아산시",
+        "아산시청",
+        "아산시"
+      ]
+    },
+    "44-210": {
+      "kostatCode": "34050",
+      "regionId": "chungnam",
+      "regionName": "충청남도",
+      "lDongRegnCd": "44",
+      "lDongSignguCd": "210",
+      "name": "서산시",
+      "hallName": "서산시청",
+      "hallUrl": "https://www.seosan.go.kr",
+      "promo1Name": "서산시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.seosan.go.kr/tour",
+      "promo2Name": "충남문화관광 (축제·행사)",
+      "promo2Url": "https://tour.chungnam.go.kr",
+      "organizerKeywords": [
+        "서산시",
+        "서산시",
+        "서산시청",
+        "서산시"
+      ]
+    },
+    "44-230": {
+      "kostatCode": "34060",
+      "regionId": "chungnam",
+      "regionName": "충청남도",
+      "lDongRegnCd": "44",
+      "lDongSignguCd": "230",
+      "name": "논산시",
+      "hallName": "논산시청",
+      "hallUrl": "https://www.nonsan.go.kr",
+      "promo1Name": "논산시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.nonsan.go.kr/tour",
+      "promo2Name": "충남문화관광 (축제·행사)",
+      "promo2Url": "https://tour.chungnam.go.kr",
+      "organizerKeywords": [
+        "논산시",
+        "논산시",
+        "논산시청",
+        "논산시"
+      ]
+    },
+    "44-250": {
+      "kostatCode": "34070",
+      "regionId": "chungnam",
+      "regionName": "충청남도",
+      "lDongRegnCd": "44",
+      "lDongSignguCd": "250",
+      "name": "계룡시",
+      "hallName": "계룡시청",
+      "hallUrl": "https://www.gyeryong.go.kr",
+      "promo1Name": "계룡시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gyeryong.go.kr/tour",
+      "promo2Name": "충남문화관광 (축제·행사)",
+      "promo2Url": "https://tour.chungnam.go.kr",
+      "organizerKeywords": [
+        "계룡시",
+        "계룡시",
+        "계룡시청",
+        "계룡시"
+      ]
+    },
+    "44-270": {
+      "kostatCode": "34080",
+      "regionId": "chungnam",
+      "regionName": "충청남도",
+      "lDongRegnCd": "44",
+      "lDongSignguCd": "270",
+      "name": "당진시",
+      "hallName": "당진시청",
+      "hallUrl": "https://www.dangjin.go.kr",
+      "promo1Name": "당진시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.dangjin.go.kr/tour",
+      "promo2Name": "충남문화관광 (축제·행사)",
+      "promo2Url": "https://tour.chungnam.go.kr",
+      "organizerKeywords": [
+        "당진시",
+        "당진시",
+        "당진시청",
+        "당진시"
+      ]
+    },
+    "44-710": {
+      "kostatCode": "34310",
+      "regionId": "chungnam",
+      "regionName": "충청남도",
+      "lDongRegnCd": "44",
+      "lDongSignguCd": "710",
+      "name": "금산군",
+      "hallName": "금산군청",
+      "hallUrl": "https://www.geumsan.go.kr",
+      "promo1Name": "금산군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.geumsan.go.kr/tour",
+      "promo2Name": "충남문화관광 (축제·행사)",
+      "promo2Url": "https://tour.chungnam.go.kr",
+      "organizerKeywords": [
+        "금산군",
+        "금산군",
+        "금산군청",
+        "금산군"
+      ]
+    },
+    "44-760": {
+      "kostatCode": "34330",
+      "regionId": "chungnam",
+      "regionName": "충청남도",
+      "lDongRegnCd": "44",
+      "lDongSignguCd": "760",
+      "name": "부여군",
+      "hallName": "부여군청",
+      "hallUrl": "https://www.buyeo.go.kr",
+      "promo1Name": "부여군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.buyeo.go.kr/tour",
+      "promo2Name": "충남문화관광 (축제·행사)",
+      "promo2Url": "https://tour.chungnam.go.kr",
+      "organizerKeywords": [
+        "부여군",
+        "부여군",
+        "부여군청",
+        "부여군"
+      ]
+    },
+    "44-770": {
+      "kostatCode": "34340",
+      "regionId": "chungnam",
+      "regionName": "충청남도",
+      "lDongRegnCd": "44",
+      "lDongSignguCd": "770",
+      "name": "서천군",
+      "hallName": "서천군청",
+      "hallUrl": "https://www.seocheon.go.kr",
+      "promo1Name": "서천군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.seocheon.go.kr/tour",
+      "promo2Name": "충남문화관광 (축제·행사)",
+      "promo2Url": "https://tour.chungnam.go.kr",
+      "organizerKeywords": [
+        "서천군",
+        "서천군",
+        "서천군청",
+        "서천군"
+      ]
+    },
+    "44-790": {
+      "kostatCode": "34350",
+      "regionId": "chungnam",
+      "regionName": "충청남도",
+      "lDongRegnCd": "44",
+      "lDongSignguCd": "790",
+      "name": "청양군",
+      "hallName": "청양군청",
+      "hallUrl": "https://www.cheongyang.go.kr",
+      "promo1Name": "청양군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.cheongyang.go.kr/tour",
+      "promo2Name": "충남문화관광 (축제·행사)",
+      "promo2Url": "https://tour.chungnam.go.kr",
+      "organizerKeywords": [
+        "청양군",
+        "청양군",
+        "청양군청",
+        "청양군"
+      ]
+    },
+    "44-800": {
+      "kostatCode": "34360",
+      "regionId": "chungnam",
+      "regionName": "충청남도",
+      "lDongRegnCd": "44",
+      "lDongSignguCd": "800",
+      "name": "홍성군",
+      "hallName": "홍성군청",
+      "hallUrl": "https://www.hongseong.go.kr",
+      "promo1Name": "홍성군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.hongseong.go.kr/tour",
+      "promo2Name": "충남문화관광 (축제·행사)",
+      "promo2Url": "https://tour.chungnam.go.kr",
+      "organizerKeywords": [
+        "홍성군",
+        "홍성군",
+        "홍성군청",
+        "홍성군"
+      ]
+    },
+    "44-810": {
+      "kostatCode": "34370",
+      "regionId": "chungnam",
+      "regionName": "충청남도",
+      "lDongRegnCd": "44",
+      "lDongSignguCd": "810",
+      "name": "예산군",
+      "hallName": "예산군청",
+      "hallUrl": "https://www.yesan.go.kr",
+      "promo1Name": "예산군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yesan.go.kr/tour",
+      "promo2Name": "충남문화관광 (축제·행사)",
+      "promo2Url": "https://tour.chungnam.go.kr",
+      "organizerKeywords": [
+        "예산군",
+        "예산군",
+        "예산군청",
+        "예산군"
+      ]
+    },
+    "44-825": {
+      "kostatCode": "34380",
+      "regionId": "chungnam",
+      "regionName": "충청남도",
+      "lDongRegnCd": "44",
+      "lDongSignguCd": "825",
+      "name": "태안군",
+      "hallName": "태안군청",
+      "hallUrl": "https://www.taean.go.kr",
+      "promo1Name": "태안군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.taean.go.kr/tour",
+      "promo2Name": "충남문화관광 (축제·행사)",
+      "promo2Url": "https://tour.chungnam.go.kr",
+      "organizerKeywords": [
+        "태안군",
+        "태안군",
+        "태안군청",
+        "태안군"
+      ]
+    },
+    "52-111": {
+      "kostatCode": "35011",
+      "regionId": "jeonbuk",
+      "regionName": "전북특별자치도",
+      "lDongRegnCd": "52",
+      "lDongSignguCd": "111",
+      "name": "전주시 완산구",
+      "hallName": "전주시 완산구청",
+      "hallUrl": "https://www.jeonju.go.kr",
+      "promo1Name": "전주시 완산구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.jeonju.go.kr/tour",
+      "promo2Name": "전북문화관광 (축제·행사)",
+      "promo2Url": "https://tour.jb.go.kr",
+      "organizerKeywords": [
+        "전주시 완산구",
+        "전주시완산구",
+        "전주시 완산구청",
+        "전주시"
+      ]
+    },
+    "52-113": {
+      "kostatCode": "35012",
+      "regionId": "jeonbuk",
+      "regionName": "전북특별자치도",
+      "lDongRegnCd": "52",
+      "lDongSignguCd": "113",
+      "name": "전주시 덕진구",
+      "hallName": "전주시 덕진구청",
+      "hallUrl": "https://www.jeonju.go.kr",
+      "promo1Name": "전주시 덕진구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.jeonju.go.kr/tour",
+      "promo2Name": "전북문화관광 (축제·행사)",
+      "promo2Url": "https://tour.jb.go.kr",
+      "organizerKeywords": [
+        "전주시 덕진구",
+        "전주시덕진구",
+        "전주시 덕진구청",
+        "전주시"
+      ]
+    },
+    "52-130": {
+      "kostatCode": "35020",
+      "regionId": "jeonbuk",
+      "regionName": "전북특별자치도",
+      "lDongRegnCd": "52",
+      "lDongSignguCd": "130",
+      "name": "군산시",
+      "hallName": "군산시청",
+      "hallUrl": "https://www.gunsan.go.kr",
+      "promo1Name": "군산시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gunsan.go.kr/tour",
+      "promo2Name": "전북문화관광 (축제·행사)",
+      "promo2Url": "https://tour.jb.go.kr",
+      "organizerKeywords": [
+        "군산시",
+        "군산시",
+        "군산시청",
+        "군산시"
+      ]
+    },
+    "52-140": {
+      "kostatCode": "35030",
+      "regionId": "jeonbuk",
+      "regionName": "전북특별자치도",
+      "lDongRegnCd": "52",
+      "lDongSignguCd": "140",
+      "name": "익산시",
+      "hallName": "익산시청",
+      "hallUrl": "https://www.iksan.go.kr",
+      "promo1Name": "익산시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.iksan.go.kr/tour",
+      "promo2Name": "전북문화관광 (축제·행사)",
+      "promo2Url": "https://tour.jb.go.kr",
+      "organizerKeywords": [
+        "익산시",
+        "익산시",
+        "익산시청",
+        "익산시"
+      ]
+    },
+    "52-180": {
+      "kostatCode": "35040",
+      "regionId": "jeonbuk",
+      "regionName": "전북특별자치도",
+      "lDongRegnCd": "52",
+      "lDongSignguCd": "180",
+      "name": "정읍시",
+      "hallName": "정읍시청",
+      "hallUrl": "https://www.jeongeup.go.kr",
+      "promo1Name": "정읍시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.jeongeup.go.kr/tour",
+      "promo2Name": "전북문화관광 (축제·행사)",
+      "promo2Url": "https://tour.jb.go.kr",
+      "organizerKeywords": [
+        "정읍시",
+        "정읍시",
+        "정읍시청",
+        "정읍시"
+      ]
+    },
+    "52-190": {
+      "kostatCode": "35050",
+      "regionId": "jeonbuk",
+      "regionName": "전북특별자치도",
+      "lDongRegnCd": "52",
+      "lDongSignguCd": "190",
+      "name": "남원시",
+      "hallName": "남원시청",
+      "hallUrl": "https://www.namwon.go.kr",
+      "promo1Name": "남원시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.namwon.go.kr/tour",
+      "promo2Name": "전북문화관광 (축제·행사)",
+      "promo2Url": "https://tour.jb.go.kr",
+      "organizerKeywords": [
+        "남원시",
+        "남원시",
+        "남원시청",
+        "남원시"
+      ]
+    },
+    "52-210": {
+      "kostatCode": "35060",
+      "regionId": "jeonbuk",
+      "regionName": "전북특별자치도",
+      "lDongRegnCd": "52",
+      "lDongSignguCd": "210",
+      "name": "김제시",
+      "hallName": "김제시청",
+      "hallUrl": "https://www.gimje.go.kr",
+      "promo1Name": "김제시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gimje.go.kr/tour",
+      "promo2Name": "전북문화관광 (축제·행사)",
+      "promo2Url": "https://tour.jb.go.kr",
+      "organizerKeywords": [
+        "김제시",
+        "김제시",
+        "김제시청",
+        "김제시"
+      ]
+    },
+    "52-710": {
+      "kostatCode": "35310",
+      "regionId": "jeonbuk",
+      "regionName": "전북특별자치도",
+      "lDongRegnCd": "52",
+      "lDongSignguCd": "710",
+      "name": "완주군",
+      "hallName": "완주군청",
+      "hallUrl": "https://www.wanju.go.kr",
+      "promo1Name": "완주군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.wanju.go.kr/tour",
+      "promo2Name": "전북문화관광 (축제·행사)",
+      "promo2Url": "https://tour.jb.go.kr",
+      "organizerKeywords": [
+        "완주군",
+        "완주군",
+        "완주군청",
+        "완주군"
+      ]
+    },
+    "52-720": {
+      "kostatCode": "35320",
+      "regionId": "jeonbuk",
+      "regionName": "전북특별자치도",
+      "lDongRegnCd": "52",
+      "lDongSignguCd": "720",
+      "name": "진안군",
+      "hallName": "진안군청",
+      "hallUrl": "https://www.jinan.go.kr",
+      "promo1Name": "진안군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.jinan.go.kr/tour",
+      "promo2Name": "전북문화관광 (축제·행사)",
+      "promo2Url": "https://tour.jb.go.kr",
+      "organizerKeywords": [
+        "진안군",
+        "진안군",
+        "진안군청",
+        "진안군"
+      ]
+    },
+    "52-730": {
+      "kostatCode": "35330",
+      "regionId": "jeonbuk",
+      "regionName": "전북특별자치도",
+      "lDongRegnCd": "52",
+      "lDongSignguCd": "730",
+      "name": "무주군",
+      "hallName": "무주군청",
+      "hallUrl": "https://www.muju.go.kr",
+      "promo1Name": "무주군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.muju.go.kr/tour",
+      "promo2Name": "전북문화관광 (축제·행사)",
+      "promo2Url": "https://tour.jb.go.kr",
+      "organizerKeywords": [
+        "무주군",
+        "무주군",
+        "무주군청",
+        "무주군"
+      ]
+    },
+    "52-740": {
+      "kostatCode": "35340",
+      "regionId": "jeonbuk",
+      "regionName": "전북특별자치도",
+      "lDongRegnCd": "52",
+      "lDongSignguCd": "740",
+      "name": "장수군",
+      "hallName": "장수군청",
+      "hallUrl": "https://www.jangsu.go.kr",
+      "promo1Name": "장수군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.jangsu.go.kr/tour",
+      "promo2Name": "전북문화관광 (축제·행사)",
+      "promo2Url": "https://tour.jb.go.kr",
+      "organizerKeywords": [
+        "장수군",
+        "장수군",
+        "장수군청",
+        "장수군"
+      ]
+    },
+    "52-750": {
+      "kostatCode": "35350",
+      "regionId": "jeonbuk",
+      "regionName": "전북특별자치도",
+      "lDongRegnCd": "52",
+      "lDongSignguCd": "750",
+      "name": "임실군",
+      "hallName": "임실군청",
+      "hallUrl": "https://www.imsil.go.kr",
+      "promo1Name": "임실군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.imsil.go.kr/tour",
+      "promo2Name": "전북문화관광 (축제·행사)",
+      "promo2Url": "https://tour.jb.go.kr",
+      "organizerKeywords": [
+        "임실군",
+        "임실군",
+        "임실군청",
+        "임실군"
+      ]
+    },
+    "52-770": {
+      "kostatCode": "35360",
+      "regionId": "jeonbuk",
+      "regionName": "전북특별자치도",
+      "lDongRegnCd": "52",
+      "lDongSignguCd": "770",
+      "name": "순창군",
+      "hallName": "순창군청",
+      "hallUrl": "https://www.sunchang.go.kr",
+      "promo1Name": "순창군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.sunchang.go.kr/tour",
+      "promo2Name": "전북문화관광 (축제·행사)",
+      "promo2Url": "https://tour.jb.go.kr",
+      "organizerKeywords": [
+        "순창군",
+        "순창군",
+        "순창군청",
+        "순창군"
+      ]
+    },
+    "52-790": {
+      "kostatCode": "35370",
+      "regionId": "jeonbuk",
+      "regionName": "전북특별자치도",
+      "lDongRegnCd": "52",
+      "lDongSignguCd": "790",
+      "name": "고창군",
+      "hallName": "고창군청",
+      "hallUrl": "https://www.gochang.go.kr",
+      "promo1Name": "고창군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gochang.go.kr/tour",
+      "promo2Name": "전북문화관광 (축제·행사)",
+      "promo2Url": "https://tour.jb.go.kr",
+      "organizerKeywords": [
+        "고창군",
+        "고창군",
+        "고창군청",
+        "고창군"
+      ]
+    },
+    "52-800": {
+      "kostatCode": "35380",
+      "regionId": "jeonbuk",
+      "regionName": "전북특별자치도",
+      "lDongRegnCd": "52",
+      "lDongSignguCd": "800",
+      "name": "부안군",
+      "hallName": "부안군청",
+      "hallUrl": "https://www.buan.go.kr",
+      "promo1Name": "부안군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.buan.go.kr/tour",
+      "promo2Name": "전북문화관광 (축제·행사)",
+      "promo2Url": "https://tour.jb.go.kr",
+      "organizerKeywords": [
+        "부안군",
+        "부안군",
+        "부안군청",
+        "부안군"
+      ]
+    },
+    "12-110": {
+      "kostatCode": "36010",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "110",
+      "name": "목포시",
+      "hallName": "목포시청",
+      "hallUrl": "https://www.mokpo.go.kr",
+      "promo1Name": "목포시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.mokpo.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "목포시",
+        "목포시",
+        "목포시청",
+        "목포시"
+      ]
+    },
+    "12-130": {
+      "kostatCode": "36020",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "130",
+      "name": "여수시",
+      "hallName": "여수시청",
+      "hallUrl": "https://www.yeosu.go.kr",
+      "promo1Name": "여수시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yeosu.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "여수시",
+        "여수시",
+        "여수시청",
+        "여수시"
+      ]
+    },
+    "12-150": {
+      "kostatCode": "36030",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "150",
+      "name": "순천시",
+      "hallName": "순천시청",
+      "hallUrl": "https://www.suncheon.go.kr",
+      "promo1Name": "순천시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.suncheon.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "순천시",
+        "순천시",
+        "순천시청",
+        "순천시"
+      ]
+    },
+    "12-170": {
+      "kostatCode": "36040",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "170",
+      "name": "나주시",
+      "hallName": "나주시청",
+      "hallUrl": "https://www.naju.go.kr",
+      "promo1Name": "나주시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.naju.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "나주시",
+        "나주시",
+        "나주시청",
+        "나주시"
+      ]
+    },
+    "12-190": {
+      "kostatCode": "36060",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "190",
+      "name": "광양시",
+      "hallName": "광양시청",
+      "hallUrl": "https://www.gwangyang.go.kr",
+      "promo1Name": "광양시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gwangyang.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "광양시",
+        "광양시",
+        "광양시청",
+        "광양시"
+      ]
+    },
+    "12-710": {
+      "kostatCode": "36310",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "710",
+      "name": "담양군",
+      "hallName": "담양군청",
+      "hallUrl": "https://www.damyang.go.kr",
+      "promo1Name": "담양군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.damyang.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "담양군",
+        "담양군",
+        "담양군청",
+        "담양군"
+      ]
+    },
+    "12-720": {
+      "kostatCode": "36320",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "720",
+      "name": "곡성군",
+      "hallName": "곡성군청",
+      "hallUrl": "https://www.gokseong.go.kr",
+      "promo1Name": "곡성군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gokseong.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "곡성군",
+        "곡성군",
+        "곡성군청",
+        "곡성군"
+      ]
+    },
+    "12-730": {
+      "kostatCode": "36330",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "730",
+      "name": "구례군",
+      "hallName": "구례군청",
+      "hallUrl": "https://www.gurye.go.kr",
+      "promo1Name": "구례군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gurye.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "구례군",
+        "구례군",
+        "구례군청",
+        "구례군"
+      ]
+    },
+    "12-740": {
+      "kostatCode": "36350",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "740",
+      "name": "고흥군",
+      "hallName": "고흥군청",
+      "hallUrl": "https://www.goheung.go.kr",
+      "promo1Name": "고흥군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.goheung.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "고흥군",
+        "고흥군",
+        "고흥군청",
+        "고흥군"
+      ]
+    },
+    "12-750": {
+      "kostatCode": "36360",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "750",
+      "name": "보성군",
+      "hallName": "보성군청",
+      "hallUrl": "https://www.boseong.go.kr",
+      "promo1Name": "보성군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.boseong.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "보성군",
+        "보성군",
+        "보성군청",
+        "보성군"
+      ]
+    },
+    "12-760": {
+      "kostatCode": "36370",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "760",
+      "name": "화순군",
+      "hallName": "화순군청",
+      "hallUrl": "https://www.hwasun.go.kr",
+      "promo1Name": "화순군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.hwasun.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "화순군",
+        "화순군",
+        "화순군청",
+        "화순군"
+      ]
+    },
+    "12-770": {
+      "kostatCode": "36380",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "770",
+      "name": "장흥군",
+      "hallName": "장흥군청",
+      "hallUrl": "https://www.jangheung.go.kr",
+      "promo1Name": "장흥군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.jangheung.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "장흥군",
+        "장흥군",
+        "장흥군청",
+        "장흥군"
+      ]
+    },
+    "12-780": {
+      "kostatCode": "36390",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "780",
+      "name": "강진군",
+      "hallName": "강진군청",
+      "hallUrl": "https://www.gangjin.go.kr",
+      "promo1Name": "강진군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gangjin.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "강진군",
+        "강진군",
+        "강진군청",
+        "강진군"
+      ]
+    },
+    "12-790": {
+      "kostatCode": "36400",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "790",
+      "name": "해남군",
+      "hallName": "해남군청",
+      "hallUrl": "https://www.haenam.go.kr",
+      "promo1Name": "해남군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.haenam.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "해남군",
+        "해남군",
+        "해남군청",
+        "해남군"
+      ]
+    },
+    "12-800": {
+      "kostatCode": "36410",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "800",
+      "name": "영암군",
+      "hallName": "영암군청",
+      "hallUrl": "https://www.yeongam.go.kr",
+      "promo1Name": "영암군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yeongam.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "영암군",
+        "영암군",
+        "영암군청",
+        "영암군"
+      ]
+    },
+    "12-810": {
+      "kostatCode": "36420",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "810",
+      "name": "무안군",
+      "hallName": "무안군청",
+      "hallUrl": "https://www.muan.go.kr",
+      "promo1Name": "무안군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.muan.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "무안군",
+        "무안군",
+        "무안군청",
+        "무안군"
+      ]
+    },
+    "12-820": {
+      "kostatCode": "36430",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "820",
+      "name": "함평군",
+      "hallName": "함평군청",
+      "hallUrl": "https://www.hampyeong.go.kr",
+      "promo1Name": "함평군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.hampyeong.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "함평군",
+        "함평군",
+        "함평군청",
+        "함평군"
+      ]
+    },
+    "12-830": {
+      "kostatCode": "36440",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "830",
+      "name": "영광군",
+      "hallName": "영광군청",
+      "hallUrl": "https://www.yeonggwang.go.kr",
+      "promo1Name": "영광군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yeonggwang.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "영광군",
+        "영광군",
+        "영광군청",
+        "영광군"
+      ]
+    },
+    "12-840": {
+      "kostatCode": "36450",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "840",
+      "name": "장성군",
+      "hallName": "장성군청",
+      "hallUrl": "https://www.jangseong.go.kr",
+      "promo1Name": "장성군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.jangseong.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "장성군",
+        "장성군",
+        "장성군청",
+        "장성군"
+      ]
+    },
+    "12-850": {
+      "kostatCode": "36460",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "850",
+      "name": "완도군",
+      "hallName": "완도군청",
+      "hallUrl": "https://www.wando.go.kr",
+      "promo1Name": "완도군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.wando.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "완도군",
+        "완도군",
+        "완도군청",
+        "완도군"
+      ]
+    },
+    "12-860": {
+      "kostatCode": "36470",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "860",
+      "name": "진도군",
+      "hallName": "진도군청",
+      "hallUrl": "https://www.jindo.go.kr",
+      "promo1Name": "진도군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.jindo.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "진도군",
+        "진도군",
+        "진도군청",
+        "진도군"
+      ]
+    },
+    "12-870": {
+      "kostatCode": "36480",
+      "regionId": "jeonnam",
+      "regionName": "전라남도",
+      "lDongRegnCd": "12",
+      "lDongSignguCd": "870",
+      "name": "신안군",
+      "hallName": "신안군청",
+      "hallUrl": "https://www.shinan.go.kr",
+      "promo1Name": "신안군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.shinan.go.kr/tour",
+      "promo2Name": "남도여행길잡이 (전남축제포털)",
+      "promo2Url": "https://www.namdokorea.com",
+      "organizerKeywords": [
+        "신안군",
+        "신안군",
+        "신안군청",
+        "신안군"
+      ]
+    },
+    "47-111": {
+      "kostatCode": "37011",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "111",
+      "name": "포항시 남구",
+      "hallName": "포항시 남구청",
+      "hallUrl": "https://www.pohang.go.kr",
+      "promo1Name": "포항시 남구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.pohang.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "포항시 남구",
+        "포항시남구",
+        "포항시 남구청",
+        "포항시"
+      ]
+    },
+    "47-113": {
+      "kostatCode": "37012",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "113",
+      "name": "포항시 북구",
+      "hallName": "포항시 북구청",
+      "hallUrl": "https://www.pohang.go.kr",
+      "promo1Name": "포항시 북구 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.pohang.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "포항시 북구",
+        "포항시북구",
+        "포항시 북구청",
+        "포항시"
+      ]
+    },
+    "47-130": {
+      "kostatCode": "37020",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "130",
+      "name": "경주시",
+      "hallName": "경주시청",
+      "hallUrl": "https://www.gyeongju.go.kr",
+      "promo1Name": "경주시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gyeongju.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "경주시",
+        "경주시",
+        "경주시청",
+        "경주시"
+      ]
+    },
+    "47-150": {
+      "kostatCode": "37030",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "150",
+      "name": "김천시",
+      "hallName": "김천시청",
+      "hallUrl": "https://www.gc.go.kr",
+      "promo1Name": "김천시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gc.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "김천시",
+        "김천시",
+        "김천시청",
+        "김천시"
+      ]
+    },
+    "47-170": {
+      "kostatCode": "37040",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "170",
+      "name": "안동시",
+      "hallName": "안동시청",
+      "hallUrl": "https://www.andong.go.kr",
+      "promo1Name": "안동시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.andong.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "안동시",
+        "안동시",
+        "안동시청",
+        "안동시"
+      ]
+    },
+    "47-190": {
+      "kostatCode": "37050",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "190",
+      "name": "구미시",
+      "hallName": "구미시청",
+      "hallUrl": "https://www.gumi.go.kr",
+      "promo1Name": "구미시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gumi.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "구미시",
+        "구미시",
+        "구미시청",
+        "구미시"
+      ]
+    },
+    "47-210": {
+      "kostatCode": "37060",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "210",
+      "name": "영주시",
+      "hallName": "영주시청",
+      "hallUrl": "https://www.yeongju.go.kr",
+      "promo1Name": "영주시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yeongju.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "영주시",
+        "영주시",
+        "영주시청",
+        "영주시"
+      ]
+    },
+    "47-230": {
+      "kostatCode": "37070",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "230",
+      "name": "영천시",
+      "hallName": "영천시청",
+      "hallUrl": "https://www.yc.go.kr",
+      "promo1Name": "영천시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yc.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "영천시",
+        "영천시",
+        "영천시청",
+        "영천시"
+      ]
+    },
+    "47-250": {
+      "kostatCode": "37080",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "250",
+      "name": "상주시",
+      "hallName": "상주시청",
+      "hallUrl": "https://www.sangju.go.kr",
+      "promo1Name": "상주시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.sangju.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "상주시",
+        "상주시",
+        "상주시청",
+        "상주시"
+      ]
+    },
+    "47-280": {
+      "kostatCode": "37090",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "280",
+      "name": "문경시",
+      "hallName": "문경시청",
+      "hallUrl": "https://www.gbmg.go.kr",
+      "promo1Name": "문경시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gbmg.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "문경시",
+        "문경시",
+        "문경시청",
+        "문경시"
+      ]
+    },
+    "47-290": {
+      "kostatCode": "37100",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "290",
+      "name": "경산시",
+      "hallName": "경산시청",
+      "hallUrl": "https://www.gbgs.go.kr",
+      "promo1Name": "경산시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gbgs.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "경산시",
+        "경산시",
+        "경산시청",
+        "경산시"
+      ]
+    },
+    "27-720": {
+      "kostatCode": "37310",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "27",
+      "lDongSignguCd": "720",
+      "name": "군위군",
+      "hallName": "군위군청",
+      "hallUrl": "https://www.gunwi.go.kr",
+      "promo1Name": "군위군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gunwi.go.kr/tour/main.do",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "군위군",
+        "군위군",
+        "군위군청",
+        "군위군"
+      ]
+    },
+    "47-730": {
+      "kostatCode": "37320",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "730",
+      "name": "의성군",
+      "hallName": "의성군청",
+      "hallUrl": "https://www.usc.go.kr",
+      "promo1Name": "의성군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.usc.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "의성군",
+        "의성군",
+        "의성군청",
+        "의성군"
+      ]
+    },
+    "47-750": {
+      "kostatCode": "37330",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "750",
+      "name": "청송군",
+      "hallName": "청송군청",
+      "hallUrl": "https://www.cs.go.kr",
+      "promo1Name": "청송군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.cs.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "청송군",
+        "청송군",
+        "청송군청",
+        "청송군"
+      ]
+    },
+    "47-760": {
+      "kostatCode": "37340",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "760",
+      "name": "영양군",
+      "hallName": "영양군청",
+      "hallUrl": "https://www.yyg.go.kr",
+      "promo1Name": "영양군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yyg.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "영양군",
+        "영양군",
+        "영양군청",
+        "영양군"
+      ]
+    },
+    "47-770": {
+      "kostatCode": "37350",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "770",
+      "name": "영덕군",
+      "hallName": "영덕군청",
+      "hallUrl": "https://www.yd.go.kr",
+      "promo1Name": "영덕군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yd.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "영덕군",
+        "영덕군",
+        "영덕군청",
+        "영덕군"
+      ]
+    },
+    "47-820": {
+      "kostatCode": "37360",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "820",
+      "name": "청도군",
+      "hallName": "청도군청",
+      "hallUrl": "https://www.cd.go.kr",
+      "promo1Name": "청도군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.cd.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "청도군",
+        "청도군",
+        "청도군청",
+        "청도군"
+      ]
+    },
+    "47-830": {
+      "kostatCode": "37370",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "830",
+      "name": "고령군",
+      "hallName": "고령군청",
+      "hallUrl": "https://www.goryeong.go.kr",
+      "promo1Name": "고령군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.goryeong.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "고령군",
+        "고령군",
+        "고령군청",
+        "고령군"
+      ]
+    },
+    "47-840": {
+      "kostatCode": "37380",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "840",
+      "name": "성주군",
+      "hallName": "성주군청",
+      "hallUrl": "https://www.sj.go.kr",
+      "promo1Name": "성주군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.sj.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "성주군",
+        "성주군",
+        "성주군청",
+        "성주군"
+      ]
+    },
+    "47-850": {
+      "kostatCode": "37390",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "850",
+      "name": "칠곡군",
+      "hallName": "칠곡군청",
+      "hallUrl": "https://www.chilgok.go.kr",
+      "promo1Name": "칠곡군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.chilgok.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "칠곡군",
+        "칠곡군",
+        "칠곡군청",
+        "칠곡군"
+      ]
+    },
+    "47-900": {
+      "kostatCode": "37400",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "900",
+      "name": "예천군",
+      "hallName": "예천군청",
+      "hallUrl": "https://www.ycg.kr",
+      "promo1Name": "예천군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.ycg.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "예천군",
+        "예천군",
+        "예천군청",
+        "예천군"
+      ]
+    },
+    "47-920": {
+      "kostatCode": "37410",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "920",
+      "name": "봉화군",
+      "hallName": "봉화군청",
+      "hallUrl": "https://www.bonghwa.go.kr",
+      "promo1Name": "봉화군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.bonghwa.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "봉화군",
+        "봉화군",
+        "봉화군청",
+        "봉화군"
+      ]
+    },
+    "47-930": {
+      "kostatCode": "37420",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "930",
+      "name": "울진군",
+      "hallName": "울진군청",
+      "hallUrl": "https://www.uljin.go.kr",
+      "promo1Name": "울진군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.uljin.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "울진군",
+        "울진군",
+        "울진군청",
+        "울진군"
+      ]
+    },
+    "47-940": {
+      "kostatCode": "37430",
+      "regionId": "gyeongbuk",
+      "regionName": "경상북도",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "940",
+      "name": "울릉군",
+      "hallName": "울릉군청",
+      "hallUrl": "https://www.ulleung.go.kr",
+      "promo1Name": "울릉군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.ulleung.go.kr/tour",
+      "promo2Name": "경북나드리 (축제·문화행사)",
+      "promo2Url": "https://tour.gb.go.kr",
+      "organizerKeywords": [
+        "울릉군",
+        "울릉군",
+        "울릉군청",
+        "울릉군"
+      ]
+    },
+    "48-170": {
+      "kostatCode": "38030",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "170",
+      "name": "진주시",
+      "hallName": "진주시청",
+      "hallUrl": "https://www.jinju.go.kr",
+      "promo1Name": "진주시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.jinju.go.kr/02793/02258.web",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "진주시",
+        "진주시",
+        "진주시청",
+        "진주시"
+      ]
+    },
+    "48-220": {
+      "kostatCode": "38050",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "220",
+      "name": "통영시",
+      "hallName": "통영시청",
+      "hallUrl": "https://www.tongyeong.go.kr",
+      "promo1Name": "통영시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.utour.go.kr",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "통영시",
+        "통영시",
+        "통영시청",
+        "통영시"
+      ]
+    },
+    "48-240": {
+      "kostatCode": "38060",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "240",
+      "name": "사천시",
+      "hallName": "사천시청",
+      "hallUrl": "https://www.sacheon.go.kr",
+      "promo1Name": "사천시 문화관광·축제 홍보포털",
+      "promo1Url": "https://toursacheon.net",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "사천시",
+        "사천시",
+        "사천시청",
+        "사천시"
+      ]
+    },
+    "48-250": {
+      "kostatCode": "38070",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "250",
+      "name": "김해시",
+      "hallName": "김해시청",
+      "hallUrl": "https://www.gimhae.go.kr",
+      "promo1Name": "김해시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.gimhae.go.kr/tour.web",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "김해시",
+        "김해시",
+        "김해시청",
+        "김해시"
+      ]
+    },
+    "48-270": {
+      "kostatCode": "38080",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "270",
+      "name": "밀양시",
+      "hallName": "밀양시청",
+      "hallUrl": "https://www.miryang.go.kr",
+      "promo1Name": "밀양시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.miryang.go.kr/tur/index.do",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "밀양시",
+        "밀양시",
+        "밀양시청",
+        "밀양시"
+      ]
+    },
+    "48-310": {
+      "kostatCode": "38090",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "310",
+      "name": "거제시",
+      "hallName": "거제시청",
+      "hallUrl": "https://www.geoje.go.kr",
+      "promo1Name": "거제시 문화관광·축제 홍보포털",
+      "promo1Url": "https://tour.geoje.go.kr",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "거제시",
+        "거제시",
+        "거제시청",
+        "거제시"
+      ]
+    },
+    "48-330": {
+      "kostatCode": "38100",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "330",
+      "name": "양산시",
+      "hallName": "양산시청",
+      "hallUrl": "https://www.yangsan.go.kr",
+      "promo1Name": "양산시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.yangsan.go.kr/tour/main.do",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "양산시",
+        "양산시",
+        "양산시청",
+        "양산시"
+      ]
+    },
+    "48-121": {
+      "kostatCode": "38111",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "121",
+      "name": "창원시 의창구",
+      "hallName": "창원시 의창구청",
+      "hallUrl": "https://www.changwon.go.kr/gu/uichang.do",
+      "promo1Name": "창원시 의창구 문화관광·축제 홍보포털",
+      "promo1Url": "https://culture.changwon.go.kr",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "창원시 의창구",
+        "창원시의창구",
+        "창원시 의창구청",
+        "창원시"
+      ]
+    },
+    "48-123": {
+      "kostatCode": "38112",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "123",
+      "name": "창원시 성산구",
+      "hallName": "창원시 성산구청",
+      "hallUrl": "https://www.changwon.go.kr/gu/seongsan.do",
+      "promo1Name": "창원시 성산구 문화관광·축제 홍보포털",
+      "promo1Url": "https://culture.changwon.go.kr",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "창원시 성산구",
+        "창원시성산구",
+        "창원시 성산구청",
+        "창원시"
+      ]
+    },
+    "48-125": {
+      "kostatCode": "38113",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "125",
+      "name": "창원시 마산합포구",
+      "hallName": "창원시 마산합포구청",
+      "hallUrl": "https://www.changwon.go.kr/gu/happo.do",
+      "promo1Name": "창원시 마산합포구 문화관광·축제 홍보포털",
+      "promo1Url": "https://culture.changwon.go.kr",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "창원시 마산합포구",
+        "창원시마산합포구",
+        "창원시 마산합포구청",
+        "창원시"
+      ]
+    },
+    "48-127": {
+      "kostatCode": "38114",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "127",
+      "name": "창원시 마산회원구",
+      "hallName": "창원시 마산회원구청",
+      "hallUrl": "https://www.changwon.go.kr/gu/hoewon.do",
+      "promo1Name": "창원시 마산회원구 문화관광·축제 홍보포털",
+      "promo1Url": "https://culture.changwon.go.kr",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "창원시 마산회원구",
+        "창원시마산회원구",
+        "창원시 마산회원구청",
+        "창원시"
+      ]
+    },
+    "48-129": {
+      "kostatCode": "38115",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "129",
+      "name": "창원시 진해구",
+      "hallName": "창원시 진해구청",
+      "hallUrl": "https://www.changwon.go.kr/gu/jinhae.do",
+      "promo1Name": "창원시 진해구 문화관광·축제 홍보포털",
+      "promo1Url": "https://culture.changwon.go.kr",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "창원시 진해구",
+        "창원시진해구",
+        "창원시 진해구청",
+        "창원시"
+      ]
+    },
+    "48-720": {
+      "kostatCode": "38310",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "720",
+      "name": "의령군",
+      "hallName": "의령군청",
+      "hallUrl": "https://www.uiryeong.go.kr",
+      "promo1Name": "의령군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.uiryeong.go.kr/tour.web",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "의령군",
+        "의령군",
+        "의령군청",
+        "의령군"
+      ]
+    },
+    "48-730": {
+      "kostatCode": "38320",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "730",
+      "name": "함안군",
+      "hallName": "함안군청",
+      "hallUrl": "https://www.haman.go.kr",
+      "promo1Name": "함안군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.haman.go.kr/tour.web",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "함안군",
+        "함안군",
+        "함안군청",
+        "함안군"
+      ]
+    },
+    "48-740": {
+      "kostatCode": "38330",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "740",
+      "name": "창녕군",
+      "hallName": "창녕군청",
+      "hallUrl": "https://www.cng.go.kr",
+      "promo1Name": "창녕군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.cng.go.kr/tour.web",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "창녕군",
+        "창녕군",
+        "창녕군청",
+        "창녕군"
+      ]
+    },
+    "48-820": {
+      "kostatCode": "38340",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "820",
+      "name": "고성군",
+      "hallName": "고성군청",
+      "hallUrl": "https://www.goseong.go.kr",
+      "promo1Name": "고성군 문화관광·축제 홍보포털",
+      "promo1Url": "https://visit.goseong.go.kr",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "고성군",
+        "고성군",
+        "고성군청",
+        "고성군"
+      ]
+    },
+    "48-840": {
+      "kostatCode": "38350",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "840",
+      "name": "남해군",
+      "hallName": "남해군청",
+      "hallUrl": "https://www.namhae.go.kr",
+      "promo1Name": "남해군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.namhae.go.kr/tour/main.do",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "남해군",
+        "남해군",
+        "남해군청",
+        "남해군"
+      ]
+    },
+    "48-850": {
+      "kostatCode": "38360",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "850",
+      "name": "하동군",
+      "hallName": "하동군청",
+      "hallUrl": "https://www.hadong.go.kr",
+      "promo1Name": "하동군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.hadong.go.kr/tour.web",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "하동군",
+        "하동군",
+        "하동군청",
+        "하동군"
+      ]
+    },
+    "48-860": {
+      "kostatCode": "38370",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "860",
+      "name": "산청군",
+      "hallName": "산청군청",
+      "hallUrl": "https://www.sancheong.go.kr",
+      "promo1Name": "산청군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.sancheong.go.kr/tour/index.do",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "산청군",
+        "산청군",
+        "산청군청",
+        "산청군"
+      ]
+    },
+    "48-870": {
+      "kostatCode": "38380",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "870",
+      "name": "함양군",
+      "hallName": "함양군청",
+      "hallUrl": "https://www.hygn.go.kr",
+      "promo1Name": "함양군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.hygn.go.kr/tour.web",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "함양군",
+        "함양군",
+        "함양군청",
+        "함양군"
+      ]
+    },
+    "48-880": {
+      "kostatCode": "38390",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "880",
+      "name": "거창군",
+      "hallName": "거창군청",
+      "hallUrl": "https://www.geochang.go.kr",
+      "promo1Name": "거창군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.geochang.go.kr/tour/index.do",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "거창군",
+        "거창군",
+        "거창군청",
+        "거창군"
+      ]
+    },
+    "48-890": {
+      "kostatCode": "38400",
+      "regionId": "gyeongnam",
+      "regionName": "경상남도",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "890",
+      "name": "합천군",
+      "hallName": "합천군청",
+      "hallUrl": "https://www.hc.go.kr",
+      "promo1Name": "합천군 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.hc.go.kr/tour.web",
+      "promo2Name": "경남관광길잡이 (축제·행사)",
+      "promo2Url": "https://tour.gyeongnam.go.kr",
+      "organizerKeywords": [
+        "합천군",
+        "합천군",
+        "합천군청",
+        "합천군"
+      ]
+    },
+    "50-110": {
+      "kostatCode": "39010",
+      "regionId": "jeju",
+      "regionName": "제주특별자치도",
+      "lDongRegnCd": "50",
+      "lDongSignguCd": "110",
+      "name": "제주시",
+      "hallName": "제주시청",
+      "hallUrl": "https://www.jejusi.go.kr",
+      "promo1Name": "제주시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.visitjeju.net",
+      "promo2Name": "비짓제주 (Visit Jeju 축제·행사)",
+      "promo2Url": "https://www.visitjeju.net/kr/festival/list",
+      "organizerKeywords": [
+        "제주시",
+        "제주시",
+        "제주시청",
+        "제주시"
+      ]
+    },
+    "50-130": {
+      "kostatCode": "39020",
+      "regionId": "jeju",
+      "regionName": "제주특별자치도",
+      "lDongRegnCd": "50",
+      "lDongSignguCd": "130",
+      "name": "서귀포시",
+      "hallName": "서귀포시청",
+      "hallUrl": "https://www.seogwipo.go.kr",
+      "promo1Name": "서귀포시 문화관광·축제 홍보포털",
+      "promo1Url": "https://www.visitjeju.net",
+      "promo2Name": "비짓제주 (Visit Jeju 축제·행사)",
+      "promo2Url": "https://www.visitjeju.net/kr/festival/list",
+      "organizerKeywords": [
+        "서귀포시",
+        "서귀포시",
+        "서귀포시청",
+        "서귀포시"
+      ]
+    }
+  }
+}
