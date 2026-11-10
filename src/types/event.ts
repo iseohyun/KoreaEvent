@@ -13,6 +13,7 @@ export type MainMenuView =
   | 'EVENT_REGISTER'
   | 'PROMO_DIRECTORY'
   | 'SPECIAL_PROMO'
+  | 'SETTINGS'
   | 'ABOUT';
 
 /**
@@ -32,9 +33,32 @@ export type DbCrawlTabCategory =
   | 'TRIATHLON';
 
 /**
- * 상단 메뉴바 보기 방식 (목록보기 / 달력보기 / 지도보기)
+ * 상단 메뉴바 보기 방식
+ * - 일반/종목 이벤트: 'LIST' | 'CALENDAR' | 'MAP'
+ * - 수영장 보기 전용(분리 아이콘): 'POOLS'(일람 표) | 'POOLS_MAP'(수영장 점 지도)
  */
-export type ViewMode = 'LIST' | 'CALENDAR' | 'MAP';
+export type ViewMode = 'LIST' | 'CALENDAR' | 'MAP' | 'POOLS' | 'POOLS_MAP';
+
+export interface PoolCourseSelection {
+  '50m': boolean;
+  '25m': boolean;
+}
+
+export interface EventStatusSelection {
+  ONGOING: boolean; // 진행중
+  UPCOMING: boolean; // 예정
+  ENDED: boolean; // 종료
+}
+
+/**
+ * 특별 홍보관 > 수영 > 수영장 보기(일람·지도) 전용 필터 상태
+ */
+export interface PoolFilterState {
+  regionName: string; // 'ALL' 또는 광역시·도 정식 명칭 (예: '서울특별시')
+  sigunguName: string; // 'ALL' 또는 시·군·구 명칭
+  courses: PoolCourseSelection; // 50m, 25m 복수 선택
+  keyword: string; // 대회명, 수영장 이름, 소재지, 비고 통합 검색
+}
 
 /**
  * 행사 범위 구분 코드 (3: 세계/대한연맹, 2: 광역시도, 1: 시군구, 0: 동네)
@@ -160,6 +184,7 @@ export interface UnifiedEventItem {
   contentId?: string;
   contentTypeId?: string;
   title: string;
+  rawTitle?: string;
   source: DataSourceType;
   sourceLabel: string;
   sourceOrgUrl?: string;
@@ -275,6 +300,7 @@ export interface EventFilterState {
   subCategory: string; // 'ALL' or lclsSystm3
   specialPromoFormats?: Record<string, boolean>; // 특별 홍보관 종목별 행사 형태 복수 선택 (기본: 모두 true)
   status: 'ALL' | EventProgressStatus;
+  statusLevels?: EventStatusSelection; // 행사 상태 복수 선택 (진행중, 예정, 종료)
   scopeLevels: ScopeFilterState; // 범위 on/off ("세계/대한연맹", "광역시도", "시군구", "동네")
   selectedYear: string; // 'ALL' or '2026', '2025', ...
   selectedMonthPeriod: MonthPeriodFilter; // 'ALL', 'H1', 'H2', 'Q1'~'Q4', 'M01'~'M12'
@@ -294,6 +320,8 @@ export interface EventFilterState {
  * 달력으로 행사보기: 표시 방식 아이콘 체크 옵션
  */
 export interface CalendarDisplayOptions {
+  continuousYearView: boolean; // 월 구분 없이 1년치를 이어서 보기 (기본 checked)
+  collapseEmptyWeeks: boolean; // 검색 등으로 행사가 없는 주는 묶어서 축약 표시 (기본 checked)
   showRegion: boolean; // 행정구역명(시군구)
   showCategoryBadge: boolean; // 행사분류 배지
   showEventTime: boolean; // 행사시각

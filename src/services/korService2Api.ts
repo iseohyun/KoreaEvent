@@ -144,7 +144,7 @@ async function callKorService2(
   }
   queryParts.push(`serviceKey=${cleanKey}`);
   queryParts.push(`MobileOS=ETC`);
-  queryParts.push(`MobileApp=${encodeURIComponent('KoreaEventList')}`);
+  queryParts.push(`MobileApp=${encodeURIComponent('KoreaEvent')}`);
 
   if (formatMode === 'JSON') {
     queryParts.push(`_type=json`);

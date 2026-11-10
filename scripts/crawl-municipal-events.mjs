@@ -1084,7 +1084,7 @@ async function callKorService2Json(operation, params = {}) {
   const query = new URLSearchParams({
     serviceKey: KORSERVICE2_KEY,
     MobileOS: 'ETC',
-    MobileApp: 'KoreaEventListCrawler',
+    MobileApp: 'KoreaEventCrawler',
     _type: 'json',
     ...Object.fromEntries(
       Object.entries(params)

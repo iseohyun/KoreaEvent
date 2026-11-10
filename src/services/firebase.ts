@@ -246,13 +246,30 @@ export async function syncAndLoadFirestoreEvents(): Promise<{
     console.warn('[events] Firestore 보조 동기화 건너뜀:', err);
   }
 
-  // 공용 정규화(normalizeEventDoc) 적용: 더미 일정 제외/표시, 지자체 코드·범위 동기화
-  // (회차 시리즈 링크는 크롤러가 미리 계산해 JSON에 저장하므로 프런트에서 다시 계산하지 않음)
-  const finalDocs: FirestoreEventDoc[] = [];
+  // 공용 정규화(normalizeEventDoc) 적용 및 정제 후 동일 제목·시작일 중복 병합
+  const dedupedByKey = new Map<string, FirestoreEventDoc>();
   mergedMap.forEach((d) => {
     const normalized = normalizeEventDoc(d);
-    if (normalized) finalDocs.push(normalized);
+    if (!normalized) return;
+
+    const cleanTitle = String(normalized.title || '')
+      .replace(/\s+/g, '')
+      .toLowerCase();
+    const dedupeKey = [
+      normalized.lDongRegnCd || '',
+      normalized.lDongSignguCd || '',
+      normalized.category?.lclsSystm3 || '',
+      cleanTitle,
+      normalized.eventDate?.startDate || '',
+    ].join('|');
+
+    const prev = dedupedByKey.get(dedupeKey);
+    if (prev && !normalized.manualEdited) {
+      return;
+    }
+    dedupedByKey.set(dedupeKey, normalized);
   });
+  const finalDocs: FirestoreEventDoc[] = Array.from(dedupedByKey.values());
 
   // localStorage 용량 초과 방지를 위해 수동 편집 문서 위주로만 로컬 캐시 저장
   const manualOnly = finalDocs.filter((d) => d.manualEdited);

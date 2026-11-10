@@ -8,9 +8,11 @@ import {
   List,
   Map as MapIcon,
   Menu,
-  RotateCcw,
   Search,
+  Settings,
+  Share2,
   SlidersHorizontal,
+  Waves,
   X,
 } from 'lucide-react';
 import { ADMIN_REGIONS } from '../constants/regions';
@@ -34,6 +36,7 @@ import {
   ListColumnVisibility,
   MainMenuView,
   MonthPeriodFilter,
+  PoolFilterState,
   PromoLevel,
   SpecialPromoSport,
   ViewMode,
@@ -50,12 +53,17 @@ interface HeaderBarProps {
   activeDbTab: DbCrawlTabCategory;
   viewMode: ViewMode;
   filters: EventFilterState;
+  poolFilters?: PoolFilterState;
+  poolRegionOptions?: string[];
+  poolSigunguOptions?: string[];
   scopeEventCounts: Record<PromoLevel, number>;
   specialPromoFormatCounts: Record<string, number>;
   availableYears: number[];
   sigunguOptions: Array<{ code: string; name: string }>;
   calendarOptions: CalendarDisplayOptions;
   listColumns: ListColumnVisibility;
+  abbreviationEnabled: boolean;
+  activeAbbreviationRuleCount: number;
   onToggleSidebar: () => void;
   onChangeViewMode: (mode: ViewMode) => void;
   onChangeDbTab: (tab: DbCrawlTabCategory) => void;
@@ -64,8 +72,15 @@ interface HeaderBarProps {
     value: EventFilterState[K]
   ) => void;
   onResetFilters: () => void;
+  onUpdatePoolFilter?: <K extends keyof PoolFilterState>(
+    key: K,
+    value: PoolFilterState[K]
+  ) => void;
+  onResetPoolFilters?: () => void;
   onChangeCalendarOptions: (next: CalendarDisplayOptions) => void;
   onChangeListColumns: (next: ListColumnVisibility) => void;
+  onToggleAbbreviation: () => void;
+  onOpenSettings: () => void;
 }
 
 const MENU_PAGE_TITLES: Record<MainMenuView, string> = {
@@ -75,6 +90,7 @@ const MENU_PAGE_TITLES: Record<MainMenuView, string> = {
   EVENT_REGISTER: '행사 등록',
   PROMO_DIRECTORY: 'DB',
   SPECIAL_PROMO: '특별 홍보관',
+  SETTINGS: '세팅 · 축약보기 관리',
   ABOUT: '사이트 소개',
 };
 
@@ -139,24 +155,60 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
   activeDbTab,
   viewMode,
   filters,
+  poolFilters,
+  poolRegionOptions = [],
+  poolSigunguOptions = [],
   scopeEventCounts,
   specialPromoFormatCounts,
   availableYears,
   sigunguOptions,
   calendarOptions,
   listColumns,
+  abbreviationEnabled,
+  activeAbbreviationRuleCount,
   onToggleSidebar,
   onChangeViewMode,
   onChangeDbTab,
   onUpdateFilter,
-  onResetFilters,
+  onUpdatePoolFilter,
   onChangeCalendarOptions,
   onChangeListColumns,
+  onToggleAbbreviation,
+  onOpenSettings,
 }) => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [displayMenuOpen, setDisplayMenuOpen] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
+  const shareTimerRef = useRef<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
+
+  const handleShareCurrentUrl = async () => {
+    const shareUrl = window.location.href;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = shareUrl;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      setShareCopied(true);
+      if (shareTimerRef.current) {
+        window.clearTimeout(shareTimerRef.current);
+      }
+      shareTimerRef.current = window.setTimeout(() => {
+        setShareCopied(false);
+      }, 2200);
+    } catch (err) {
+      console.error('Failed to copy share URL:', err);
+    }
+  };
 
   useEffect(() => {
     const el = headerRef.current;
@@ -190,7 +242,9 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
   }, []);
 
   const showFilterToolbar =
-    activeMenu !== 'ABOUT' && activeMenu !== 'EVENT_REGISTER';
+    activeMenu !== 'ABOUT' &&
+    activeMenu !== 'EVENT_REGISTER' &&
+    activeMenu !== 'SETTINGS';
   const showViewModeIcons =
     activeMenu === 'SPECIAL_PROMO' ||
     activeMenu === 'MAP' ||
@@ -208,6 +262,15 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
     2: true,
     1: true,
     0: true,
+  };
+  const safeStatusLevels = filters.statusLevels || {
+    ONGOING: true,
+    UPCOMING: true,
+    ENDED: true,
+  };
+  const safePoolCourses = poolFilters?.courses || {
+    '50m': true,
+    '25m': true,
   };
   const safeSpecialPromoFormats =
     filters.specialPromoFormats || buildDefaultSpecialPromoFormats();
@@ -227,25 +290,46 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
     !safeScopeLevels[1] ||
     !safeScopeLevels[0];
 
+  const isStatusFiltered =
+    !safeStatusLevels.ONGOING ||
+    !safeStatusLevels.UPCOMING ||
+    !safeStatusLevels.ENDED;
+
   const isSpecialPromoFormatFiltered =
     activeMenu === 'SPECIAL_PROMO' &&
     (SPECIAL_PROMO_EVENT_FORMATS[activeSport] || []).some(
       (fmt) => safeSpecialPromoFormats[fmt.code] === false
     );
 
-  const hasActiveDetailFilters =
-    filters.regionId !== 'ALL' ||
-    filters.sigunguCode !== 'ALL' ||
-    (activeMenu === 'PROMO_DIRECTORY' && activeDbTab !== 'ALL') ||
-    safeSelectedYear !== 'ALL' ||
-    safeSelectedMonthPeriod !== 'ALL' ||
-    filters.majorCategory !== 'ALL' ||
-    filters.subCategory !== 'ALL' ||
-    isSpecialPromoFormatFiltered ||
-    filters.status !== 'ALL' ||
-    filters.source !== 'ALL' ||
-    isScopeFiltered ||
-    Boolean(safeDetailKeyword.trim());
+  const isPoolViewActive =
+    activeMenu === 'SPECIAL_PROMO' &&
+    activeSport === 'SWIMMING' &&
+    (viewMode === 'POOLS' || viewMode === 'POOLS_MAP');
+
+  const hasActivePoolFilters = Boolean(
+    poolFilters &&
+      (poolFilters.regionName !== 'ALL' ||
+        poolFilters.sigunguName !== 'ALL' ||
+        !safePoolCourses['50m'] ||
+        !safePoolCourses['25m'] ||
+        Boolean(poolFilters.keyword.trim()))
+  );
+
+  const defaultYearStr = String(new Date().getFullYear());
+  const hasActiveDetailFilters = isPoolViewActive
+    ? hasActivePoolFilters
+    : filters.regionId !== 'ALL' ||
+      filters.sigunguCode !== 'ALL' ||
+      (activeMenu === 'PROMO_DIRECTORY' && activeDbTab !== 'ALL') ||
+      (safeSelectedYear !== defaultYearStr && safeSelectedYear !== 'ALL') ||
+      safeSelectedMonthPeriod !== 'ALL' ||
+      filters.majorCategory !== 'ALL' ||
+      filters.subCategory !== 'ALL' ||
+      isSpecialPromoFormatFiltered ||
+      isStatusFiltered ||
+      filters.source !== 'ALL' ||
+      isScopeFiltered ||
+      Boolean(safeDetailKeyword.trim());
 
   const availableSubCategories = Object.values(SUB_CATEGORIES).filter(
     (sub) =>
@@ -294,6 +378,25 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
     onUpdateFilter('specialPromoFormats', nextFormats);
   };
 
+  const handleTogglePoolCourse = (courseKey: '50m' | '25m') => {
+    if (!onUpdatePoolFilter) return;
+    const nextCourses = {
+      ...safePoolCourses,
+      [courseKey]: !safePoolCourses[courseKey],
+    };
+    onUpdatePoolFilter('courses', nextCourses);
+  };
+
+  const handleToggleStatusLevel = (
+    statusKey: 'ONGOING' | 'UPCOMING' | 'ENDED'
+  ) => {
+    const nextStatusLevels = {
+      ...safeStatusLevels,
+      [statusKey]: !safeStatusLevels[statusKey],
+    };
+    onUpdateFilter('statusLevels', nextStatusLevels);
+  };
+
   return (
     <header ref={headerRef} className={styles.header}>
       {/* 상단 메뉴바: 좌측(메뉴·아이콘·제목) / 우측(목록보기·달력보기·지도보기 택1 아이콘 + 필터 아이콘 + 표시항목 아이콘) */}
@@ -316,6 +419,8 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
               <Database size={22} color="#1d4ed8" />
             ) : activeMenu === 'EVENT_REGISTER' ? (
               <CalendarPlus size={22} color="#1d4ed8" />
+            ) : activeMenu === 'SETTINGS' ? (
+              <Settings size={22} color="#1d4ed8" />
             ) : (
               <KoreaGovEventIcon size={26} />
             )}
@@ -324,9 +429,10 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
           <h1 className={styles.pageTitle}>{pageTitle}</h1>
         </div>
 
-        {showFilterToolbar && (
-          <div className={styles.toolbarSection}>
-            {/* 상단 메뉴바 보기 모드 아이콘 그룹 (목록보기 / 달력보기 / 지도보기 택1, 하이라이트) */}
+        <div className={styles.toolbarSection}>
+          {showFilterToolbar && (
+            <>
+              {/* 상단 메뉴바 보기 모드 아이콘 그룹 (목록보기 / 달력보기 / 지도보기 택1, 하이라이트) */}
             {showViewModeIcons && (
               <div
                 className={styles.viewModeIconGroup}
@@ -368,6 +474,44 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
                   title="지도보기"
                   aria-label="지도보기"
                   aria-pressed={viewMode === 'MAP'}
+                >
+                  <MapIcon size={17} />
+                </button>
+              </div>
+            )}
+
+            {/* 특별 홍보관 > 수영 전용: 기존 수영 이벤트 보기 아이콘과 분리된 「수영장 보기(일람 · 지도)」 아이콘 그룹 */}
+            {activeMenu === 'SPECIAL_PROMO' && activeSport === 'SWIMMING' && (
+              <div
+                className={`${styles.poolModeIconGroup} ${
+                  isPoolViewActive ? styles.poolModeIconGroupActive : ''
+                }`}
+                role="group"
+                aria-label="수영장 보기 방식 선택 (수영장 일람 표, 수영장 위치 지도)"
+              >
+                <span className={styles.poolGroupLabel}>수영장</span>
+                <button
+                  type="button"
+                  className={`${styles.iconOnlyBtn} ${
+                    viewMode === 'POOLS' ? styles.iconOnlyBtnActive : ''
+                  }`}
+                  onClick={() => onChangeViewMode('POOLS')}
+                  title="수영장 일람(표) 보기"
+                  aria-label="수영장 일람 보기"
+                  aria-pressed={viewMode === 'POOLS'}
+                >
+                  <Waves size={17} />
+                </button>
+
+                <button
+                  type="button"
+                  className={`${styles.iconOnlyBtn} ${
+                    viewMode === 'POOLS_MAP' ? styles.iconOnlyBtnActive : ''
+                  }`}
+                  onClick={() => onChangeViewMode('POOLS_MAP')}
+                  title="수영장 지도에서 보기 (점 표시)"
+                  aria-label="수영장 지도 보기"
+                  aria-pressed={viewMode === 'POOLS_MAP'}
                 >
                   <MapIcon size={17} />
                 </button>
@@ -431,6 +575,32 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
 
                     {isCalendarDisplayActive ? (
                       <>
+                        <label className={styles.checkRow}>
+                          <input
+                            type="checkbox"
+                            checked={calendarOptions.continuousYearView}
+                            onChange={(e) =>
+                              onChangeCalendarOptions({
+                                ...calendarOptions,
+                                continuousYearView: e.target.checked,
+                              })
+                            }
+                          />
+                          <span>월 구분 없이 1년치 이어보기</span>
+                        </label>
+                        <label className={styles.checkRow}>
+                          <input
+                            type="checkbox"
+                            checked={calendarOptions.collapseEmptyWeeks}
+                            onChange={(e) =>
+                              onChangeCalendarOptions({
+                                ...calendarOptions,
+                                collapseEmptyWeeks: e.target.checked,
+                              })
+                            }
+                          />
+                          <span>행사 없는 주 묶어서 축약</span>
+                        </label>
                         <label className={styles.checkRow}>
                           <input
                             type="checkbox"
@@ -531,8 +701,29 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
                 )}
               </div>
             )}
+            </>
+          )}
+
+          {/* 가장 오른쪽 배치: 현재 페이지 및 필터 파라미터 공유하기 버튼 */}
+          <div className={styles.shareBtnWrap}>
+            <button
+              type="button"
+              className={`${styles.iconOnlyBtn} ${
+                shareCopied ? styles.shareBtnCopied : ''
+              }`}
+              onClick={handleShareCurrentUrl}
+              title="현재 페이지 및 필터 파라미터 URL 복사(공유하기)"
+              aria-label="현재 페이지 및 필터 파라미터 공유하기"
+            >
+              {shareCopied ? <Check size={17} /> : <Share2 size={17} />}
+            </button>
+            {shareCopied && (
+              <span className={styles.shareCopiedToast} role="status">
+                공유 링크 복사됨!
+              </span>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       {/* 필터 펼치기/접기 애니메이션 드로어 */}
@@ -544,8 +735,129 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
         >
           <div className={styles.filterAnimInner}>
             <div className={styles.filterContent}>
-              {/* DB 화면에서 종목별 필터링 지원 */}
-              {activeMenu === 'PROMO_DIRECTORY' && (
+              {isPoolViewActive && poolFilters && onUpdatePoolFilter ? (
+                <>
+                  {/* 수영장 보기(일람 · 지도) 전용 필터 1: 소재지 (시·도 / 시·군·구) */}
+                  <div className={styles.topicRow}>
+                    <span className={styles.topicLabel}>소재지</span>
+                    <div className={styles.topicRight}>
+                      <div className={styles.primaryControlsLine}>
+                        <label className={styles.inlineSelectGroup}>
+                          <span className={styles.inlineControlLabel}>시·도</span>
+                          <select
+                            className={styles.detailSelect}
+                            value={poolFilters.regionName}
+                            aria-label="수영장 시도 선택"
+                            onChange={(e) => {
+                              onUpdatePoolFilter('regionName', e.target.value);
+                              onUpdatePoolFilter('sigunguName', 'ALL');
+                            }}
+                          >
+                            <option value="ALL">전국 (전체 시·도)</option>
+                            {poolRegionOptions.map((reg) => (
+                              <option key={reg} value={reg}>
+                                {reg}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+
+                        <label className={styles.inlineSelectGroup}>
+                          <span className={styles.inlineControlLabel}>시·군·구</span>
+                          <select
+                            className={styles.detailSelect}
+                            value={poolFilters.sigunguName}
+                            disabled={poolFilters.regionName === 'ALL'}
+                            aria-label="수영장 시군구 선택"
+                            onChange={(e) =>
+                              onUpdatePoolFilter('sigunguName', e.target.value)
+                            }
+                          >
+                            <option value="ALL">
+                              {poolFilters.regionName === 'ALL'
+                                ? '전체 (시·도 먼저 선택)'
+                                : `전체 (${poolSigunguOptions.length}개 시·군·구)`}
+                            </option>
+                            {poolSigunguOptions.map((sg) => (
+                              <option key={sg} value={sg}>
+                                {sg}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 수영장 보기(일람 · 지도) 전용 필터 2: 50m 여부 (복수 선택 가능) */}
+                  <div className={styles.topicRow}>
+                    <span className={styles.topicLabel}>50m 여부</span>
+                    <div className={styles.topicRight}>
+                      <div className={styles.primaryControlsLine}>
+                        {(
+                          [
+                            { value: '50m', label: '50m (장수로 정규풀)' },
+                            { value: '25m', label: '25m (단수로풀)' },
+                          ] as const
+                        ).map((opt) => {
+                          const isChecked = safePoolCourses[opt.value];
+                          return (
+                            <button
+                              key={opt.value}
+                              type="button"
+                              role="checkbox"
+                              aria-checked={isChecked}
+                              className={`${styles.scopeToggleBtn} ${
+                                isChecked ? styles.scopeToggleBtnChecked : ''
+                              }`}
+                              onClick={() => handleTogglePoolCourse(opt.value)}
+                            >
+                              <span className={styles.scopeCheckIndicator}>
+                                {isChecked && <Check size={12} strokeWidth={3} />}
+                              </span>
+                              <span>{opt.label}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 수영장 보기(일람 · 지도) 전용 필터 3: 검색 (대회명, 수영장 이름 등) */}
+                  <div className={styles.topicRow}>
+                    <span className={styles.topicLabel}>검색</span>
+                    <div className={styles.topicRight}>
+                      <div className={styles.primaryControlsLine}>
+                        <div className={styles.detailSearchInputWrap}>
+                          <Search size={14} className={styles.searchIcon} />
+                          <input
+                            type="text"
+                            className={styles.detailSearchInput}
+                            value={poolFilters.keyword}
+                            onChange={(e) =>
+                              onUpdatePoolFilter('keyword', e.target.value)
+                            }
+                            placeholder="대회명, 수영장 이름, 소재지(주소), 비고(공인급수 등) 검색..."
+                          />
+                          {poolFilters.keyword && (
+                            <button
+                              type="button"
+                              className={styles.clearBtn}
+                              onClick={() => onUpdatePoolFilter('keyword', '')}
+                              title="검색어 지우기"
+                            >
+                              <X size={13} />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* DB 화면에서 종목별 필터링 지원 */}
+                  {activeMenu === 'PROMO_DIRECTORY' && (
                 <div className={styles.topicRow}>
                   <span className={styles.topicLabel}>종목</span>
                   <div className={styles.topicRight}>
@@ -774,44 +1086,37 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
                 </div>
               </div>
 
-              {/* 5. 행사 상태 (행사 형태와 분리된 독립 행) */}
+              {/* 5. 행사 상태 (진행중 / 예정 / 종료 복수 선택 토글) */}
               <div className={styles.topicRow}>
                 <span className={styles.topicLabel}>행사 상태</span>
                 <div className={styles.topicRight}>
                   <div className={styles.primaryControlsLine}>
-                    <select
-                      className={styles.detailSelect}
-                      value={filters.status}
-                      aria-label="행사 상태 선택"
-                      onChange={(e) => onUpdateFilter('status', e.target.value as any)}
-                    >
-                      <option value="ALL">전체 상태</option>
-                      <option value="ONGOING">진행중</option>
-                      <option value="UPCOMING">개최예정</option>
-                      <option value="ENDED">종료</option>
-                    </select>
-
-                    <div className={styles.subControlsLine}>
-                      {(
-                        [
-                          { id: 'ALL', label: '전체 상태' },
-                          { id: 'ONGOING', label: '진행중' },
-                          { id: 'UPCOMING', label: '개최예정' },
-                          { id: 'ENDED', label: '종료' },
-                        ] as const
-                      ).map((st) => (
+                    {(
+                      [
+                        { id: 'ONGOING', label: '진행중' },
+                        { id: 'UPCOMING', label: '예정' },
+                        { id: 'ENDED', label: '종료' },
+                      ] as const
+                    ).map((st) => {
+                      const isChecked = safeStatusLevels[st.id];
+                      return (
                         <button
                           key={st.id}
                           type="button"
-                          className={`${styles.quickBtn} ${
-                            filters.status === st.id ? styles.quickBtnActive : ''
+                          role="checkbox"
+                          aria-checked={isChecked}
+                          className={`${styles.scopeToggleBtn} ${
+                            isChecked ? styles.scopeToggleBtnChecked : ''
                           }`}
-                          onClick={() => onUpdateFilter('status', st.id)}
+                          onClick={() => handleToggleStatusLevel(st.id)}
                         >
-                          {st.label}
+                          <span className={styles.scopeCheckIndicator}>
+                            {isChecked && <Check size={12} strokeWidth={3} />}
+                          </span>
+                          <span>{st.label}</span>
                         </button>
-                      ))}
-                    </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -883,15 +1188,105 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
                         <span>장소/주소</span>
                       </label>
                     </div>
+                  </div>
+                </div>
+              </div>
+                </>
+              )}
+
+              {/* 7. 필터 최하단: 축약보기 ON/OFF 토글 + 세팅 바로 이동 */}
+              <div className={styles.topicRow}>
+                <span className={styles.topicLabel}>축약보기</span>
+                <div className={styles.topicRight}>
+                  <div className={styles.primaryControlsLine}>
+                    <button
+                      type="button"
+                      role="checkbox"
+                      aria-checked={abbreviationEnabled}
+                      className={`${styles.scopeToggleBtn} ${
+                        abbreviationEnabled ? styles.scopeToggleBtnChecked : ''
+                      }`}
+                      onClick={onToggleAbbreviation}
+                      title="행사 제목 및 기관명 축약보기 켜기/끄기"
+                    >
+                      <span className={styles.scopeCheckIndicator}>
+                        {abbreviationEnabled && <Check size={12} strokeWidth={3} />}
+                      </span>
+                      <span>
+                        {abbreviationEnabled ? '축약보기 켜짐' : '축약보기 꺼짐'}
+                      </span>
+                      <span className={styles.toggleCountBadge}>
+                        {activeAbbreviationRuleCount}개 규칙
+                      </span>
+                    </button>
 
                     <button
                       type="button"
-                      className={styles.resetFilterBtn}
-                      onClick={onResetFilters}
+                      className={styles.openSettingsLinkBtn}
+                      onClick={() => {
+                        setFilterOpen(false);
+                        onOpenSettings();
+                      }}
                     >
-                      <RotateCcw size={12} />
-                      <span>초기화</span>
+                      <Settings size={13} />
+                      <span>세팅에서 확인·변경·추가</span>
                     </button>
+
+                    {isCalendarDisplayActive && (
+                      <>
+                        <button
+                          type="button"
+                          role="checkbox"
+                          aria-checked={calendarOptions.continuousYearView}
+                          className={`${styles.scopeToggleBtn} ${
+                            calendarOptions.continuousYearView
+                              ? styles.scopeToggleBtnChecked
+                              : ''
+                          }`}
+                          onClick={() =>
+                            onChangeCalendarOptions({
+                              ...calendarOptions,
+                              continuousYearView: !calendarOptions.continuousYearView,
+                            })
+                          }
+                        >
+                          <span className={styles.scopeCheckIndicator}>
+                            {calendarOptions.continuousYearView && (
+                              <Check size={12} strokeWidth={3} />
+                            )}
+                          </span>
+                          <span>월 구분 없이 1년치 이어보기</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          role="checkbox"
+                          aria-checked={calendarOptions.collapseEmptyWeeks}
+                          className={`${styles.scopeToggleBtn} ${
+                            calendarOptions.collapseEmptyWeeks
+                              ? styles.scopeToggleBtnChecked
+                              : ''
+                          }`}
+                          onClick={() =>
+                            onChangeCalendarOptions({
+                              ...calendarOptions,
+                              collapseEmptyWeeks: !calendarOptions.collapseEmptyWeeks,
+                            })
+                          }
+                        >
+                          <span className={styles.scopeCheckIndicator}>
+                            {calendarOptions.collapseEmptyWeeks && (
+                              <Check size={12} strokeWidth={3} />
+                            )}
+                          </span>
+                          <span>행사 없는 주 묶어서 축약</span>
+                        </button>
+                      </>
+                    )}
+
+                    <span className={styles.abbrPreviewHint}>
+                      예: 2026년 → 2026 · 제25회 → 25&apos; · 창원특례시장배 → 창원시장배
+                    </span>
                   </div>
                 </div>
               </div>

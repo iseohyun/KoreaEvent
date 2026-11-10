@@ -172,9 +172,9 @@ export const SPECIAL_PROMO_EVENT_FORMATS: Record<
  */
 export function classifySpecialPromoEventFormats(
   sport: SpecialPromoSport,
-  ev: Pick<UnifiedEventItem, 'title' | 'invitation' | 'scheduleNote' | 'organizer'>
+  ev: Pick<UnifiedEventItem, 'title' | 'rawTitle' | 'invitation' | 'scheduleNote' | 'organizer'>
 ): string[] {
-  const txt = [ev.title, ev.invitation, ev.scheduleNote, ev.organizer]
+  const txt = [ev.rawTitle || ev.title, ev.title, ev.invitation, ev.scheduleNote, ev.organizer]
     .filter(Boolean)
     .join(' ');
   const out: string[] = [];

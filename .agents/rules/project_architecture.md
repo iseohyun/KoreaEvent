@@ -1,4 +1,4 @@
-# Project Architecture & Development Rules (KoreaEventList)
+# Project Architecture & Development Rules (KoreaEvent)
 
 ## 1. CSS 스타일링 아키텍처 (Component-Scoped Modular CSS)
 - **방식**: 컴포넌트별 모듈형 CSS (**CSS Modules**, `*.module.css`)를 기본 스타일링 정책으로 사용한다.

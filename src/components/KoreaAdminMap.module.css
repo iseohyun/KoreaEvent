@@ -8,6 +8,16 @@
   overflow: hidden;
 }
 
+.mapCardFullscreen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  border-radius: 0;
+  border: none;
+}
+
 .mapBody {
   position: relative;
   min-height: 580px;
@@ -17,6 +27,17 @@
   justify-content: center;
   padding: 12px;
   overflow: hidden;
+}
+
+.mapBodyFullscreen {
+  flex: 1;
+  height: 100vh;
+  min-height: 100vh;
+}
+
+.mapBodyFullscreen .svgMap {
+  height: calc(100vh - 36px);
+  max-width: 100%;
 }
 
 /* 우상단 리모컨 (아이콘 전용 플로팅 컨트롤러) */

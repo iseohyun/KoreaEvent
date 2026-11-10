@@ -648,7 +648,7 @@ export function getEventCityShortName(ev = {}) {
 
   // 1) '광역시도'(level 2)인 경우: 지자체 코드의 1단계 광역시·도 단축명 반환
   if (lv === 2) {
-    const titleMatch = matchTitleMunicipalityByCode(ev.title || '');
+    const titleMatch = matchTitleMunicipalityByCode(ev.rawTitle || ev.title || '');
     if (titleMatch && titleMatch.level === 2 && titleMatch.metroShort) {
       return titleMatch.metroShort;
     }
@@ -662,7 +662,7 @@ export function getEventCityShortName(ev = {}) {
 
   // 2) '시군구'(level 1)인 경우: 지자체 코드의 2단계 시·군·구 단축명 반환
   if (lv === 1) {
-    const titleMatch = matchTitleMunicipalityByCode(ev.title || '');
+    const titleMatch = matchTitleMunicipalityByCode(ev.rawTitle || ev.title || '');
     if (titleMatch && titleMatch.level === 1 && titleMatch.sigunguName) {
       return titleMatch.sigunguName.replace(/(?:특례)?[시군]$/g, '').trim() || titleMatch.sigunguName;
     }
@@ -690,7 +690,7 @@ export function getEventCityShortName(ev = {}) {
  * - 같은 대회의 본 행사 게시글과 중복되거나, 대회 자체가 아니므로 스포츠 행사 목록에서 제외한다.
  */
 const SPORTS_NOTICE_TITLE_RE =
-  /경기\s*결과|대회\s*결과|결과\s*(?:및|공지|안내|발표|보고|알림)|결과지|종합\s*성적|일정\s*변경|변경\s*(?:통보|안내|공지|알림)|경기\s*순서|대진표|조\s*편성|기록\s*(?:공지|발표|결과)|순위\s*발표|시상\s*(?:결과|내역)|(?:취소|연기|순연)\s*(?:안내|공지|알림|통보)|무기한\s*연기|심판\s*배정|참가\s*(?:신청\s*)?현황|참가\s*신청(?:서)?\s*(?:열람|명단)|명단\s*(?:공지|발표|안내)|입상자|수상자\s*발표|레인\s*배정|엔트리\s*(?:공지|발표)|선착순\s*마감|접수\s*마감|마감되었습니다|\s마감(?:\s*수영대회)?$|(?:상장|사장|메달)\s*(?:,\s*메달\s*|및\s*메달\s*)?(?:배부|수령)|자리\s*순서|입장\s*순서|대표자\s*회의|감독자\s*회의|비등록선수\s*연습|적응\s*훈련|대비\s*훈련|광고\s*신청|최종\s*알림글/;
+  /경기\s*결과|대회\s*결과|결과\s*(?:및|공지|안내|발표|보고|알림)|결과지|종합\s*성적|일정\s*변경|변경\s*(?:통보|안내|공지|알림)|경기\s*순서|대진표|조\s*편성|기록\s*(?:공지|발표|결과|\()|대회\s*기록\(|기록표\(|순위\s*발표|시상\s*(?:결과|내역)|(?:취소|연기|순연)\s*(?:안내|공지|알림|통보)|무기한\s*연기|심판\s*배정|참가\s*(?:신청\s*)?현황|참가\s*신청(?:서)?\s*(?:열람|명단)|참가\s*신청서$|단체전\s*신청서|명단\s*(?:공지|발표|안내)|입상자|수상자\s*발표|레인\s*배정|엔트리\s*(?:공지|발표)|선착순\s*마감|접수\s*마감|마감되었습니다|\s마감(?:\s*수영대회)?$|(?:상장|사장|메달)\s*(?:,\s*메달\s*|및\s*메달\s*)?(?:배부|수령)|자리\s*순서|입장\s*순서|대표자\s*회의|감독자\s*회의|비등록선수\s*연습|적응\s*훈련|대비\s*훈련|광고\s*신청|최종\s*알림글|세부지침\s*알림|프로그램\s*공지|프로그램\s*\(|전체\s*프로그|관련\s*공지|주의\s*사항/;
 
 /** 일반 행사 중 결과 발표성 게시글 (예: '경연대회 결과') */
 const GENERAL_RESULT_NOTICE_RE = /결과$|결과\s*(?:공지|발표|알림)$/;
@@ -842,6 +842,105 @@ const BUSAN_SWIM_VERIFIED_FIXES = {
   },
 };
 
+const DISTRICT_SWIM_VENUE_OVERRIDES = {
+  '11-110': {
+    addr1: '서울특별시 종로구 인왕산로1길 21 종로구민회관 수영장',
+    mapX: 126.9794,
+    mapY: 37.5729,
+  },
+  '11-200': {
+    addr1: '서울특별시 성동구 왕십리로 89 성동구민종합체육센터 수영장',
+    mapX: 127.0369,
+    mapY: 37.5634,
+  },
+  '11-215': {
+    addr1: '서울특별시 광진구 능동로 76 광진구민체육센터 수영장',
+    mapX: 127.0823,
+    mapY: 37.5385,
+  },
+  '11-260': {
+    addr1: '서울특별시 중랑구 신내로15길 189 중랑구민체육센터 수영장',
+    mapX: 127.0931,
+    mapY: 37.6065,
+  },
+  '11-290': {
+    addr1: '서울특별시 성북구 한천로 58길 307 성북종합레포츠타운 수영장',
+    mapX: 127.0167,
+    mapY: 37.5894,
+  },
+  '11-305': {
+    addr1: '서울특별시 강북구 오현로31길 51 강북웰빙스포츠센터 수영장',
+    mapX: 127.0385,
+    mapY: 37.6248,
+  },
+  '11-350': {
+    addr1: '서울특별시 노원구 덕릉로 70가길 87 시립노원청소년센터 수영장',
+    mapX: 127.0605,
+    mapY: 37.6542,
+  },
+  '11-380': {
+    addr1: '서울특별시 은평구 진관1로 40 은평구민체육센터 수영장',
+    mapX: 126.9204,
+    mapY: 37.6382,
+  },
+  '11-410': {
+    addr1: '서울특별시 서대문구 백련사길 39 서대문문화체육회관 수영장',
+    mapX: 126.9352,
+    mapY: 37.5831,
+  },
+  '11-470': {
+    addr1: '서울특별시 양천구 목동동로 130 양천구민체육센터 수영장',
+    mapX: 126.8665,
+    mapY: 37.5171,
+  },
+  '11-500': {
+    addr1: '서울특별시 강서구 화곡로65길 62 강서구민올림픽체육센터 수영장',
+    mapX: 126.8511,
+    mapY: 37.5542,
+  },
+  '11-560': {
+    addr1: '서울특별시 영등포구 신길로 42길 15 영등포구민체육센터 수영장',
+    mapX: 126.8962,
+    mapY: 37.5264,
+  },
+  '11-590': {
+    addr1: '서울특별시 동작구 여의대방로16길 53 동작구민체육센터 수영장',
+    mapX: 126.9393,
+    mapY: 37.5124,
+  },
+  '11-680': {
+    addr1: '서울특별시 강남구 개포로 110길 15 강남스포츠문화센터 수영장',
+    mapX: 127.0473,
+    mapY: 37.5172,
+  },
+  '11-740': {
+    addr1: '서울특별시 강동구 고덕로 285 온조대왕문화체육관 수영장',
+    mapX: 127.1578,
+    mapY: 37.5567,
+  },
+};
+
+/**
+ * 대회 제목에서 전화번호·문의·[요강수정]·[개최요강수정]·[참가마감]·[다이빙 등록,비등록] 등 불필요한 부가 메타데이터를 제거하고 띄어쓰기 정규화
+ */
+export function cleanCompetitionTitleNoise(rawTitle = '') {
+  return String(rawTitle || '')
+    .replace(/^페이지\s*\|\s*경기도수영연맹[\s\S]*?조회\s+\d+\s+/, '')
+    .replace(/^\d{1,3}\s+[\s\S]*?경기도수영연맹\s+20\d{2}\.\d{2}\.\d{2}\s+\d+\s+\d{1,3}\s+/, '')
+    .replace(/^\d{3}\s+(?=(?:제\s*\d+|20\d{2}))/, '')
+    .replace(/\b0\d{1,2}-\d{3,4}-\d{4}\b\s*(?:\(\s*문의\s*\))?\s*/g, '')
+    .replace(/^(?:참가\s*(?:신청\s*)?마감\s*)*(?:\[[^\]]+\]\s*)+/g, '')
+    .replace(
+      /^(?:\(\s*(?:대회\s*)?(?:참가\s*(?:신청\s*)?마감|요강\s*수정|개최\s*요강\s*수정|수정|경영|다이빙(?:\s*\/\s*요강\s*수정)?|수구|아티스틱\s*스위밍)\s*\)\s*)+/g,
+      ''
+    )
+    .replace(/^참가\s*(?:신청\s*)?마감[\s)]*/g, '')
+    .replace(/제\s*(\d+)\s*회(?=[가-힣])/g, '제$1회 ')
+    .replace(/\s*(?:개최\s*통보|개최\s*안내|개최\s*공지|개최\s*알림|개최…|개최\s*\.\.\.)$/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
 /**
  * [단일 정규화 지점] 모든 크롤러 결과와 프런트엔드 로드 시 공통으로 적용하는 행사 문서 정규화
  * - 스포츠 행사:
@@ -875,6 +974,71 @@ export function normalizeEventDoc(doc) {
       },
       invitation: `[부산광역시수영연맹] ${busanFix.title} 개최 안내 (${busanFix.scheduleNote})`,
     };
+  } else if (!doc.manualEdited && typeof workingDoc.title === 'string') {
+    let cleanedTitle = cleanCompetitionTitleNoise(workingDoc.title);
+    if (workingDoc.id === 'swim-gangwon-35' && cleanedTitle === '제33회 도민생활체육대회') {
+      cleanedTitle = '제33회 강원특별자치도민생활체육대회';
+    }
+
+    if (cleanedTitle && cleanedTitle !== workingDoc.title) {
+      workingDoc = {
+        ...workingDoc,
+        title: cleanedTitle,
+        invitation:
+          typeof workingDoc.invitation === 'string' &&
+          workingDoc.invitation.includes('페이지 | 경기도수영연맹')
+            ? `[경기도수영연맹] ${cleanedTitle} 개최 안내 및 대회 일정표 공지입니다.`
+            : workingDoc.invitation,
+      };
+    }
+
+    // 서울수영연맹(swim-seoul-*) 및 강원수영연맹(swim-gangwon-*) 게시판에서
+    // 목록 날짜가 MM-DD로만 표기되어 2024·2025년 대회가 2026년으로 잘못 매핑된 건 보정
+    const seoulWrMatch = String(workingDoc.id).match(/^swim-seoul-(\d+)$/);
+    if (seoulWrMatch) {
+      const wrId = Number(seoulWrMatch[1]);
+      const explicitYr = (workingDoc.title.match(/\b(20\d{2})\b/) || [])[1];
+      const trueYear =
+        explicitYr ||
+        (wrId <= 308 ? '2024' : wrId <= 338 ? '2025' : '2026');
+      const curStart = String(workingDoc.eventDate?.startDate || '');
+      const curEnd = String(workingDoc.eventDate?.endDate || curStart);
+      if (curStart.length === 8 && curStart.slice(0, 4) !== trueYear) {
+        const nextStart = `${trueYear}${curStart.slice(4, 8)}`;
+        const nextEnd = `${trueYear}${curEnd.slice(4, 8)}`;
+        workingDoc = {
+          ...workingDoc,
+          eventYear: Number(trueYear),
+          eventDate: {
+            ...workingDoc.eventDate,
+            startDate: nextStart,
+            endDate: nextEnd,
+          },
+        };
+      }
+    }
+
+    const gangwonWrMatch = String(workingDoc.id).match(/^swim-gangwon-(\d+)$/);
+    if (gangwonWrMatch) {
+      const wrId = Number(gangwonWrMatch[1]);
+      const explicitYr = (workingDoc.title.match(/\b(20\d{2})\b/) || [])[1];
+      const trueYear = explicitYr || (wrId <= 35 ? '2025' : '2026');
+      const curStart = String(workingDoc.eventDate?.startDate || '');
+      const curEnd = String(workingDoc.eventDate?.endDate || curStart);
+      if (curStart.length === 8 && curStart.slice(0, 4) !== trueYear) {
+        const nextStart = `${trueYear}${curStart.slice(4, 8)}`;
+        const nextEnd = `${trueYear}${curEnd.slice(4, 8)}`;
+        workingDoc = {
+          ...workingDoc,
+          eventYear: Number(trueYear),
+          eventDate: {
+            ...workingDoc.eventDate,
+            startDate: nextStart,
+            endDate: nextEnd,
+          },
+        };
+      }
+    }
   }
 
   const startDate = workingDoc.eventDate?.startDate || '';
@@ -906,7 +1070,7 @@ export function normalizeEventDoc(doc) {
   }
 
   const titleMatch = matchTitleMunicipalityByCode(workingDoc.title);
-  const synced = titleMatch
+  let synced = titleMatch
     ? {
         ...workingDoc,
         lDongRegnCd: titleMatch.lDongRegnCd,
@@ -914,6 +1078,22 @@ export function normalizeEventDoc(doc) {
         sigunguName: titleMatch.sigunguName,
       }
     : workingDoc;
+
+  // 서울 자치구 수영대회인데 기본 올림픽수영장 주소로 남아있는 경우 해당 자치구 수영장 소재지로 보정
+  const districtKey = `${synced.lDongRegnCd}-${synced.lDongSignguCd}`;
+  const districtVenue = DISTRICT_SWIM_VENUE_OVERRIDES[districtKey];
+  if (
+    districtVenue &&
+    isSwimEvent(`${synced.title} ${synced.invitation || ''}`) &&
+    (!synced.addr1 || /올림픽수영장/.test(synced.addr1))
+  ) {
+    synced = {
+      ...synced,
+      addr1: districtVenue.addr1,
+      mapX: districtVenue.mapX,
+      mapY: districtVenue.mapY,
+    };
+  }
 
   return {
     ...synced,

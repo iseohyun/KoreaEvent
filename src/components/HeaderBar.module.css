@@ -135,6 +135,32 @@
   margin-right: 4px;
 }
 
+/* 특별 홍보관 > 수영 전용: 기존 수영 이벤트 아이콘과 분리된 「수영장 보기(일람 · 지도)」 아이콘 그룹 */
+.poolModeIconGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px 2px 8px;
+  border-radius: 10px;
+  background: rgba(240, 253, 250, 0.85);
+  border: 1px solid #5eead4;
+  margin-right: 4px;
+}
+
+.poolModeIconGroupActive {
+  background: #ccfbf1;
+  border-color: #0d9488;
+  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.16);
+}
+
+.poolGroupLabel {
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: #0f766e;
+  margin-right: 2px;
+  white-space: nowrap;
+}
+
 .iconBtnWrap {
   position: relative;
   flex-shrink: 0;
@@ -166,6 +192,36 @@
   border-color: #1d4ed8;
   color: #ffffff;
   box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+.shareBtnWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.shareBtnCopied {
+  background: #059669 !important;
+  border-color: #047857 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.28);
+}
+
+.shareCopiedToast {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  white-space: nowrap;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 0.73rem;
+  font-weight: 800;
+  padding: 5px 10px;
+  border-radius: 7px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.22);
+  z-index: 95;
+  pointer-events: none;
 }
 
 .filterBadgeDot {
@@ -527,4 +583,32 @@
   background: #fee2e2;
   border-color: #fca5a5;
   color: #b91c1c;
+}
+
+.openSettingsLinkBtn {
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 7px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #1d4ed8;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+}
+
+.openSettingsLinkBtn:hover {
+  background: #dbeafe;
+  border-color: #93c5fd;
+  color: #1e3a8a;
+}
+
+.abbrPreviewHint {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 600;
 }

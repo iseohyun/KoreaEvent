@@ -9,6 +9,7 @@ import {
   Info,
   List,
   Map,
+  Settings,
   X,
 } from 'lucide-react';
 import { MainMenuView, SpecialPromoSport } from '../types/event';
@@ -215,6 +216,17 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
           >
             <Database size={18} />
             <span>DB</span>
+          </button>
+
+          <button
+            type="button"
+            className={`${styles.navItem} ${
+              activeMenu === 'SETTINGS' ? styles.navItemActive : ''
+            }`}
+            onClick={() => handlePick('SETTINGS')}
+          >
+            <Settings size={18} />
+            <span>세팅</span>
           </button>
 
           <button

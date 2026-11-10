@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import L from 'leaflet';
-import { HelpCircle, Layers, MapPin, RotateCcw } from 'lucide-react';
+import { HelpCircle, Layers, MapPin, Maximize2, Minimize2, RotateCcw } from 'lucide-react';
 import { ADMIN_REGIONS, REGION_BY_ID } from '../constants/regions';
 import { UnifiedEventItem } from '../types/event';
 import styles from './KoreaAdminMap.module.css';
@@ -58,6 +58,7 @@ export const KoreaAdminMap: React.FC<KoreaAdminMapProps> = ({
 }) => {
   const [mapMode, setMapMode] = useState<'POLYGON' | 'LEAFLET'>('POLYGON');
   const [showLegend, setShowLegend] = useState<boolean>(true);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [provincesGeo, setProvincesGeo] = useState<GeoCollection | null>(null);
   const [municipalitiesGeo, setMunicipalitiesGeo] = useState<GeoCollection | null>(null);
   const [hoveredFeature, setHoveredFeature] = useState<GeoFeature | null>(null);
@@ -356,13 +357,48 @@ export const KoreaAdminMap: React.FC<KoreaAdminMapProps> = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (!isFullscreen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsFullscreen(false);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isFullscreen]);
+
+  useEffect(() => {
+    if (mapMode === 'LEAFLET' && leafletMapRef.current) {
+      setTimeout(() => {
+        leafletMapRef.current?.invalidateSize();
+      }, 60);
+    }
+  }, [isFullscreen, mapMode]);
+
   const activeRegion = selectedRegionId !== 'ALL' ? REGION_BY_ID[selectedRegionId] : null;
 
   return (
-    <section className={styles.mapCard}>
-      <div className={styles.mapBody}>
+    <section
+      className={`${styles.mapCard} ${isFullscreen ? styles.mapCardFullscreen : ''}`}
+    >
+      <div
+        className={`${styles.mapBody} ${isFullscreen ? styles.mapBodyFullscreen : ''}`}
+      >
         {/* 우상단 리모컨 컨트롤러 (아이콘만 노출) */}
         <div className={styles.remoteControl} aria-label="지도 보기 리모컨">
+          <button
+            type="button"
+            className={`${styles.remoteBtn} ${isFullscreen ? styles.remoteBtnActive : ''}`}
+            onClick={() => setIsFullscreen((prev) => !prev)}
+            title={isFullscreen ? '전체 화면 종료 (ESC)' : '전체 화면으로 보기'}
+            aria-label={isFullscreen ? '전체 화면 종료' : '전체 화면으로 보기'}
+          >
+            {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+          </button>
+
+          <div className={styles.remoteDivider} />
+
           <button
             type="button"
             className={`${styles.remoteBtn} ${

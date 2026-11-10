@@ -26,6 +26,8 @@ import {
   Globe,
   Layers,
   MapPin,
+  Maximize2,
+  Minimize2,
   RotateCcw,
   Share2,
   Ticket,
@@ -35,6 +37,7 @@ import {
 import {
   CalendarDisplayOptions,
   FirestorePromoLink,
+  PoolFilterState,
   PromoLevel,
   SpecialPromoSport,
   ViewMode,
@@ -51,6 +54,10 @@ import {
 } from '../shared/promoPolicy';
 import { EventCalendarView } from './EventCalendarView';
 import { getSpecialPromoFormatShortLabels } from '../constants/categories';
+import {
+  buildSwimmingPoolsWithStats,
+  SwimmingPoolWithStats,
+} from '../constants/swimmingPools';
 import { GeoCollection, GeoFeature } from './KoreaAdminMap';
 import styles from './SpecialPromoView.module.css';
 import { formatYmdRange } from '../shared/dateFormat';
@@ -59,9 +66,17 @@ interface SpecialPromoViewProps {
   sport: SpecialPromoSport;
   viewMode: ViewMode;
   events: UnifiedEventItem[];
+  allEvents?: UnifiedEventItem[];
   calendarOptions: CalendarDisplayOptions;
   targetYear?: number;
+  poolFilters?: PoolFilterState;
+  onUpdatePoolFilter?: <K extends keyof PoolFilterState>(
+    key: K,
+    value: PoolFilterState[K]
+  ) => void;
+  onResetPoolFilters?: () => void;
   onSelectEvent: (event: UnifiedEventItem) => void;
+  onChangeCalendarOptions?: (next: CalendarDisplayOptions) => void;
 }
 
 interface MapWeekRow {
@@ -288,15 +303,163 @@ function getDiffBadgeText(
   return `${Math.abs(diff)}주전 (파랑 ${pct}%)`;
 }
 
+function buildPoolMapLinks(pool: SwimmingPoolWithStats) {
+  const query = `${pool.regionName} ${pool.sigunguName} ${pool.name}`.trim();
+  const encoded = encodeURIComponent(query);
+  return {
+    naver: `https://map.naver.com/p/search/${encoded}`,
+    daum: `https://map.kakao.com/link/search/${encoded}`,
+    google: `https://www.google.com/maps/search/?api=1&query=${encoded}`,
+  };
+}
+
+function buildPoolOneLineSummary(pool: SwimmingPoolWithStats): string {
+  const parts: string[] = [];
+  if (pool.certification) {
+    parts.push(pool.certification);
+  }
+  if (pool.courseLength === '50m' && !pool.certification.includes('국제')) {
+    parts.push('50m 정규 경기장');
+  } else if (pool.totalEventCount > 0 && pool.courseLength === '25m') {
+    parts.push('생활체육 대회 경기장');
+  }
+  if (pool.hasDivingPool && !pool.certification.includes('다이빙')) {
+    parts.push('다이빙장 보유');
+  }
+  if (pool.notes) {
+    parts.push(pool.notes);
+  }
+  const joined = parts.join(' · ');
+  return joined || (pool.courseLength === '50m' ? '국제규격 50m 수영장' : '공공 실내수영장');
+}
+
+/**
+ * 수영장 이름 줄바꿈 분리:
+ * - 기본 수영장 이름은 줄바꿈 하지 않음 (white-space: nowrap)
+ * - `/`가 등장 시 `/`를 제거하고 줄바꿈하여 표시
+ * - 괄호 표기(...)가 있는 경우 괄호 표시는 다음 줄로 줄바꿈하여 표시
+ */
+function splitPoolNameAndParens(
+  name: string,
+  name2021?: string
+): { mainName: string; parenLines: string[] } {
+  const raw = (name || '').trim();
+  const slashParts = raw
+    .split('/')
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  const allLines: string[] = [];
+  for (const part of slashParts) {
+    const firstOpen = part.indexOf('(');
+    if (firstOpen > 0) {
+      const head = part.slice(0, firstOpen).trim();
+      const tail = part.slice(firstOpen).trim();
+      if (head) allLines.push(head);
+      if (tail) allLines.push(tail);
+    } else if (part) {
+      allLines.push(part);
+    }
+  }
+
+  const mainName = allLines[0] || raw;
+  const parenLines = allLines.slice(1);
+
+  if (name2021 && name2021.trim()) {
+    const normRaw = raw.replace(/\s+/g, '');
+    const norm2021 = name2021.trim().replace(/\s+/g, '');
+    if (norm2021 !== normRaw) {
+      const oldClean = name2021.replace(/\//g, ' ').trim();
+      const oldTag = `(구 명칭: ${oldClean})`;
+      if (!parenLines.includes(oldTag)) {
+        parenLines.push(oldTag);
+      }
+    }
+  }
+
+  return { mainName, parenLines };
+}
+
+/**
+ * 소재지 행정 2단계(시·도 + 시·군·구) 표기 생성
+ */
+function formatPoolAdmin2Addr(pool: SwimmingPoolWithStats): string {
+  const r = (pool.regionName || '').trim();
+  const s = (pool.sigunguName || '').trim();
+  if (!s || r === s || (r.includes('세종') && s.includes('세종'))) {
+    return r || s;
+  }
+  return `${r} ${s}`.trim();
+}
+
+type PoolDetailType = 'COURSE' | 'EVENTS' | 'ADDR';
+
 export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
   sport,
   viewMode,
   events,
+  allEvents,
   calendarOptions,
   targetYear,
+  poolFilters: externalPoolFilters,
   onSelectEvent,
+  onChangeCalendarOptions,
 }) => {
   const sportLabel = SPORT_LABELS[sport] || '수영';
+
+  const activePoolFilters: PoolFilterState = externalPoolFilters || {
+    regionName: 'ALL',
+    sigunguName: 'ALL',
+    courses: { '50m': true, '25m': true },
+    keyword: '',
+  };
+
+  // 세부정보는 한 번에 한 가지씩만 표시: 'COURSE'(50m 여부 규격 상세) | 'EVENTS'(개최 대회 목록) | 'ADDR'(상세주소 및 지도 링크)
+  const [activePoolDetail, setActivePoolDetail] = useState<{
+    poolId: string;
+    type: PoolDetailType;
+  } | null>(null);
+  const [fullyExpandedPoolIds, setFullyExpandedPoolIds] = useState<
+    Record<string, boolean>
+  >({});
+  // 대회 개최 횟수 열 토글: 'THIS_YEAR'(올해) | 'ALL'(전체)
+  const [poolCountMode, setPoolCountMode] = useState<'THIS_YEAR' | 'ALL'>('THIS_YEAR');
+  // 지도 전체 화면 보기 상태
+  const [isMapFullscreen, setIsMapFullscreen] = useState<boolean>(false);
+
+  // 수영장 지도(POOLS_MAP)에서 선택/호버된 수영장 상태
+  const [selectedPoolIdOnMap, setSelectedPoolIdOnMap] = useState<string | null>(null);
+  const [hoveredPoolOnMap, setHoveredPoolOnMap] =
+    useState<SwimmingPoolWithStats | null>(null);
+  const poolRowRefs = useRef<Record<string, HTMLTableRowElement | null>>({});
+
+  const togglePoolDetail = (poolId: string, type: PoolDetailType) => {
+    setActivePoolDetail((prev) => {
+      if (prev && prev.poolId === poolId && prev.type === type) {
+        return null;
+      }
+      return { poolId, type };
+    });
+  };
+
+  const togglePoolFullExpand = (poolId: string) => {
+    setFullyExpandedPoolIds((prev) => ({
+      ...prev,
+      [poolId]: !prev[poolId],
+    }));
+  };
+
+  // 전체 화면 모드에서 ESC 키로 해제
+  useEffect(() => {
+    if (!isMapFullscreen) return;
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsMapFullscreen(false);
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [isMapFullscreen]);
 
   // 각 범위("세계/대한연맹"=3, "광역시도"=2, "시군구"=1, "동네"=0) 펼치기/접기 상태
   const [expandedScopes, setExpandedScopes] = useState<Record<PromoLevel, boolean>>({
@@ -339,11 +502,60 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
   const sportEvents = useMemo(() => {
     return events.filter((ev) =>
       matchesSportCategory(
-        `${ev.title} ${ev.invitation || ''} ${ev.summary || ''} ${ev.organizer || ''}`,
+        `${ev.rawTitle || ev.title} ${ev.title} ${ev.invitation || ''} ${ev.summary || ''} ${ev.organizer || ''}`,
         sport
       )
     );
   }, [events, sport]);
+
+  // 전체 연도 수영 대회 (수영장별 누적 개최 횟수 산출용)
+  const allSwimEvents = useMemo(() => {
+    const sourceList = allEvents && allEvents.length > 0 ? allEvents : events;
+    return sourceList.filter((ev) =>
+      matchesSportCategory(
+        `${ev.rawTitle || ev.title} ${ev.title} ${ev.invitation || ''} ${ev.summary || ''} ${ev.organizer || ''}`,
+        'SWIMMING'
+      )
+    );
+  }, [allEvents, events]);
+
+  const swimmingPoolsWithStats = useMemo(() => {
+    return buildSwimmingPoolsWithStats(allSwimEvents, sportEvents);
+  }, [allSwimEvents, sportEvents]);
+
+  // 수영장 전용 필터(소재지 시·도/시·군·구, 50m/25m 복수 선택, 검색어[대회명·수영장 이름 등]) 적용
+  const filteredSwimmingPools = useMemo(() => {
+    const q = activePoolFilters.keyword.trim().toLowerCase();
+    const courses = activePoolFilters.courses || { '50m': true, '25m': true };
+    return swimmingPoolsWithStats.filter((p) => {
+      if (
+        activePoolFilters.regionName !== 'ALL' &&
+        p.regionName !== activePoolFilters.regionName
+      ) {
+        return false;
+      }
+      if (
+        activePoolFilters.sigunguName !== 'ALL' &&
+        p.sigunguName !== activePoolFilters.sigunguName
+      ) {
+        return false;
+      }
+      if (p.courseLength === '50m' && !courses['50m']) {
+        return false;
+      }
+      if (p.courseLength === '25m' && !courses['25m']) {
+        return false;
+      }
+      if (q) {
+        const eventTitlesHay = p.events
+          .map((ev) => `${ev.title} ${ev.rawTitle || ''} ${ev.organizer || ''}`)
+          .join(' ');
+        const hay = `${p.name} ${p.rawName || ''} ${p.name2021 || ''} ${p.regionName} ${p.sigunguName} ${p.address} ${p.lanes} ${p.certification || ''} ${p.notes || ''} ${eventTitlesHay}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [swimmingPoolsWithStats, activePoolFilters]);
 
   // 1. 목록보기용 범위별 그룹 ("세계/대한연맹" -> "광역시도" -> "시군구" -> "동네")
   const scopeGroups = useMemo(() => {
@@ -470,7 +682,7 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
 
   // 지도 위/아래 마우스 휠 스크롤로 확대/축소 (페이지 스크롤 간섭 방지를 위해 passive: false 등록)
   useEffect(() => {
-    if (viewMode !== 'MAP') return;
+    if (viewMode !== 'MAP' && viewMode !== 'POOLS_MAP') return;
     const el = mapCanvasRef.current;
     if (!el) return;
 
@@ -751,18 +963,789 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
 
   const activeWeekRow = mapWeekRows[activeWeekIdx] || null;
 
+  const isSwimmingPoolsList = sport === 'SWIMMING' && viewMode === 'POOLS';
+  const isSwimmingPoolsMap = sport === 'SWIMMING' && viewMode === 'POOLS_MAP';
+  const isSwimmingPoolsMode = isSwimmingPoolsList || isSwimmingPoolsMap;
+
+  const selectedPoolOnMap = useMemo(() => {
+    if (!selectedPoolIdOnMap) return null;
+    return (
+      filteredSwimmingPools.find((p) => p.id === selectedPoolIdOnMap) ||
+      swimmingPoolsWithStats.find((p) => p.id === selectedPoolIdOnMap) ||
+      null
+    );
+  }, [selectedPoolIdOnMap, filteredSwimmingPools, swimmingPoolsWithStats]);
+
+  // 수영장 일람 표 렌더링 (수영장 이름 | 🌐(홈페이지 아이콘) | 50m 여부 | 다이빙 | 대회 개최(올해/전체 토글) | 소재지(행정 2단계) | 비고)
+  const renderPoolsTable = () => {
+    const currentYrPrefix = String(todayYear);
+
+    return (
+      <div className={styles.poolTableContainer}>
+        <table className={styles.poolTable}>
+          <thead>
+            <tr>
+              <th className={styles.colPoolName}>수영장 이름</th>
+              <th
+                className={styles.colPoolHome}
+                title="수영장 공지사항·수강신청·강좌 안내 홈페이지"
+                aria-label="수영장 홈페이지"
+              >
+                <span className={styles.colPoolHomeHeaderIcon}>
+                  <Globe size={15} />
+                </span>
+              </th>
+              <th className={styles.colPoolCourse}>50m 여부</th>
+              <th className={styles.colPoolDiving}>다이빙</th>
+              <th className={styles.colPoolCount}>
+                <button
+                  type="button"
+                  className={styles.poolCountHeaderToggleBtn}
+                  onClick={() =>
+                    setPoolCountMode((prev) =>
+                      prev === 'THIS_YEAR' ? 'ALL' : 'THIS_YEAR'
+                    )
+                  }
+                  title="클릭하여 대회 개최 횟수 기준을 '올해'와 '전체'로 전환합니다"
+                >
+                  <span>대회 개최</span>
+                  <span className={styles.poolCountModeBadge}>
+                    ({poolCountMode === 'THIS_YEAR' ? '올해' : '전체'})
+                  </span>
+                </button>
+              </th>
+              <th className={styles.colPoolAddr}>소재지</th>
+              <th className={styles.colPoolNote}>비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredSwimmingPools.length === 0 ? (
+              <tr>
+                <td colSpan={7} className={styles.poolEmptyTd}>
+                  선택한 필터 조건(소재지·50m 여부·검색어)에 해당하는 수영장이 없습니다.
+                </td>
+              </tr>
+            ) : (
+              filteredSwimmingPools.map((pool) => {
+                const isCourseOpen =
+                  activePoolDetail?.poolId === pool.id &&
+                  activePoolDetail.type === 'COURSE';
+                const isEventsOpen =
+                  activePoolDetail?.poolId === pool.id &&
+                  activePoolDetail.type === 'EVENTS';
+                const isAddrOpen =
+                  activePoolDetail?.poolId === pool.id &&
+                  activePoolDetail.type === 'ADDR';
+                const isAnyDetailOpen = isCourseOpen || isEventsOpen || isAddrOpen;
+
+                const isFullyExpanded = Boolean(fullyExpandedPoolIds[pool.id]);
+                const isSelectedOnMap = selectedPoolIdOnMap === pool.id;
+                const mapLinks = buildPoolMapLinks(pool);
+                const oneLineSummary = buildPoolOneLineSummary(pool);
+                const admin2Addr = formatPoolAdmin2Addr(pool);
+                const { mainName, parenLines } = splitPoolNameAndParens(
+                  pool.name,
+                  pool.name2021
+                );
+
+                const normalizedHomepage = pool.homepage
+                  ? pool.homepage.startsWith('http')
+                    ? pool.homepage
+                    : `https://${pool.homepage}`
+                  : '';
+
+                // 올해 개최 대회 vs 전체 개최 대회
+                const thisYearEvents = pool.events.filter((ev) => {
+                  const s = (ev.startDate || '').slice(0, 4);
+                  const e = (ev.endDate || ev.startDate || '').slice(0, 4);
+                  return s === currentYrPrefix || e === currentYrPrefix;
+                });
+
+                const targetEvents =
+                  poolCountMode === 'THIS_YEAR' ? thisYearEvents : pool.events;
+                const displayEventCount = targetEvents.length;
+
+                const visibleEvents = isFullyExpanded
+                  ? targetEvents
+                  : targetEvents.slice(0, 5);
+                const hasMoreEvents = targetEvents.length > 5;
+
+                return (
+                  <React.Fragment key={pool.id}>
+                    <tr
+                      ref={(el) => {
+                        poolRowRefs.current[pool.id] = el;
+                      }}
+                      className={`${styles.poolTr} ${
+                        isAnyDetailOpen ? styles.poolTrExpanded : ''
+                      } ${isSelectedOnMap ? styles.poolTrMapSelected : ''}`}
+                      onClick={() => {
+                        if (isSwimmingPoolsMap) {
+                          setSelectedPoolIdOnMap(pool.id);
+                        }
+                      }}
+                    >
+                      {/* 1. 수영장 이름 (기본 이름은 줄바꿈 금지, `/` 제거 후 줄바꿈, 괄호 표시는 줄바꿈하여 표시) */}
+                      <td className={styles.colPoolNameTd}>
+                        <div className={styles.poolMainNameNoWrap}>{mainName}</div>
+                        {parenLines.map((pLine, pIdx) => (
+                          <div key={pIdx} className={styles.poolParenLineNoWrap}>
+                            {pLine}
+                          </div>
+                        ))}
+                      </td>
+
+                      {/* 2. 수영장 홈페이지 링크 (2번째 배치, 아이콘만 표시) */}
+                      <td
+                        className={styles.colPoolHomeTd}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {normalizedHomepage ? (
+                          <a
+                            href={normalizedHomepage}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={styles.poolHomeIconOnlyBtn}
+                            title={`수강신청·강좌·공지 홈페이지 (${pool.homepage})`}
+                            aria-label={`${pool.name} 홈페이지`}
+                          >
+                            <Globe size={15} />
+                          </a>
+                        ) : null}
+                      </td>
+
+                      {/* 3. 50m 여부 (50m/25m만 표시하고 클릭 시 세부정보 표시) */}
+                      <td className={styles.colPoolCourseTd}>
+                        <button
+                          type="button"
+                          className={`${styles.poolDetailTriggerBtn} ${
+                            pool.courseLength === '50m'
+                              ? styles.courseTrigger50m
+                              : styles.courseTrigger25m
+                          } ${isCourseOpen ? styles.poolDetailTriggerOpen : ''}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            togglePoolDetail(pool.id, 'COURSE');
+                          }}
+                          title="클릭하여 수조 규격·시설 세부정보 보기"
+                        >
+                          <span>{pool.courseLength}</span>
+                          {isCourseOpen ? (
+                            <ChevronDown size={13} />
+                          ) : (
+                            <ChevronRight size={13} />
+                          )}
+                        </button>
+                      </td>
+
+                      {/* 4. 다이빙 여부 (별도 열 할애, 줄바꿈 금지) */}
+                      <td className={styles.colPoolDivingTd}>
+                        {pool.hasDivingPool ? (
+                          <span
+                            className={styles.divingMiniBadge}
+                            title={pool.lanes || '다이빙장 보유'}
+                          >
+                            다이빙
+                          </span>
+                        ) : null}
+                      </td>
+
+                      {/* 5. 대회 개최 횟수 (올해/전체 토글 반영, 0회는 표시하지 않음) */}
+                      <td className={styles.colPoolCountTd}>
+                        {displayEventCount > 0 ? (
+                          <button
+                            type="button"
+                            className={`${styles.poolCountToggleBtn} ${
+                              styles.poolCountToggleBtnActive
+                            } ${isEventsOpen ? styles.poolCountToggleBtnOpen : ''}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              togglePoolDetail(pool.id, 'EVENTS');
+                            }}
+                            title="클릭하여 최근 열린 대회 목록 보기"
+                          >
+                            <span>🏆 {displayEventCount}회</span>
+                            {isEventsOpen ? (
+                              <ChevronDown size={13} />
+                            ) : (
+                              <ChevronRight size={13} />
+                            )}
+                          </button>
+                        ) : null}
+                      </td>
+
+                      {/* 6. 소재지 (행정 2단계까지만 표기, 클릭 시 상세주소 및 지도 링크 세부정보 표시) */}
+                      <td className={styles.colPoolAddrTd}>
+                        <button
+                          type="button"
+                          className={`${styles.poolAddrTriggerBtn} ${
+                            isAddrOpen ? styles.poolAddrTriggerBtnOpen : ''
+                          }`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            togglePoolDetail(pool.id, 'ADDR');
+                          }}
+                          title="클릭하여 상세주소 및 네이버·다음·구글 지도 링크 보기"
+                        >
+                          <span>{admin2Addr}</span>
+                          {isAddrOpen ? (
+                            <ChevronDown size={13} />
+                          ) : (
+                            <ChevronRight size={13} />
+                          )}
+                        </button>
+                      </td>
+
+                      {/* 7. 비고 (1줄 요약) */}
+                      <td className={styles.colPoolNoteTd} title={oneLineSummary}>
+                        <div className={styles.poolOneLineSummary}>
+                          {oneLineSummary}
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* 세부정보 행 (한 번에 한 가지씩만 표시: COURSE | EVENTS | ADDR) */}
+                    {isAnyDetailOpen && (
+                      <tr className={styles.poolExpandTr}>
+                        <td colSpan={7} className={styles.poolExpandTd}>
+                          {/* A. 50m 여부 클릭 시: 수조 규격 및 시설 세부정보 */}
+                          {isCourseOpen && (
+                            <div className={styles.poolEventsDrawer}>
+                              <div className={styles.poolEventsHeader}>
+                                <span>
+                                  🏊 <strong>{pool.name}</strong> 수조 규격 · 시설 세부정보
+                                </span>
+                                <span className={styles.poolEventsHint}>
+                                  {pool.certification}
+                                </span>
+                              </div>
+                              <div className={styles.poolDetailSpecGrid}>
+                                <div className={styles.poolDetailSpecItem}>
+                                  <span className={styles.poolDetailSpecLabel}>
+                                    수조 규격·레인
+                                  </span>
+                                  <span className={styles.poolDetailSpecValue}>
+                                    <strong>{pool.courseLength}</strong> · {pool.lanes}
+                                    {pool.indoorOutdoor
+                                      ? ` (${pool.indoorOutdoor})`
+                                      : ''}
+                                  </span>
+                                </div>
+                                {pool.hasDivingPool && (
+                                  <div className={styles.poolDetailSpecItem}>
+                                    <span className={styles.poolDetailSpecLabel}>
+                                      다이빙장 보유
+                                    </span>
+                                    <span className={styles.poolDetailSpecValue}>
+                                      다이빙풀 보유 ({pool.lanes})
+                                    </span>
+                                  </div>
+                                )}
+                                {(pool.builtYear ||
+                                  pool.totAreaSqm ||
+                                  pool.seats) && (
+                                  <div className={styles.poolDetailSpecItem}>
+                                    <span className={styles.poolDetailSpecLabel}>
+                                      준공·규모·관람석
+                                    </span>
+                                    <span className={styles.poolDetailSpecValue}>
+                                      {[
+                                        pool.builtYear
+                                          ? `준공 ${pool.builtYear}년${
+                                              pool.renovYear
+                                                ? ` (개보수 ${pool.renovYear}년)`
+                                                : ''
+                                            }`
+                                          : '',
+                                        pool.totAreaSqm
+                                          ? `연면적 ${pool.totAreaSqm.toLocaleString()}㎡`
+                                          : '',
+                                        pool.seats
+                                          ? `관람석 ${pool.seats.toLocaleString()}석`
+                                          : '',
+                                      ]
+                                        .filter(Boolean)
+                                        .join(' · ')}
+                                    </span>
+                                  </div>
+                                )}
+                                {(pool.manager || pool.operator || pool.owner) && (
+                                  <div className={styles.poolDetailSpecItem}>
+                                    <span className={styles.poolDetailSpecLabel}>
+                                      소유·관리기관
+                                    </span>
+                                    <span className={styles.poolDetailSpecValue}>
+                                      {[pool.owner, pool.operator, pool.manager]
+                                        .filter(Boolean)
+                                        .filter((v, i, a) => a.indexOf(v) === i)
+                                        .join(' / ')}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* B. 대회 개최횟수 클릭 시: 최근 열린 5개 대회 + 더 확장 */}
+                          {isEventsOpen && (
+                            <div className={styles.poolEventsDrawer}>
+                              <div className={styles.poolEventsHeader}>
+                                <span>
+                                  📋 <strong>{pool.name}</strong>{' '}
+                                  {poolCountMode === 'THIS_YEAR'
+                                    ? `${todayYear}년(올해) 개최 대회`
+                                    : '전체 개최 수영대회'}{' '}
+                                  (표시 {visibleEvents.length}건 / 총{' '}
+                                  {targetEvents.length}건)
+                                </span>
+                                <span className={styles.poolEventsHint}>
+                                  대회를 클릭하면 상세 요강 및 공지 원문을 볼 수 있습니다
+                                </span>
+                              </div>
+
+                              {targetEvents.length === 0 ? (
+                                <div className={styles.poolNoEvents}>
+                                  해당 기준에 매칭된 개최 대회가 없습니다.
+                                </div>
+                              ) : (
+                                <>
+                                  <div className={styles.poolEventsList}>
+                                    {visibleEvents.map((ev) => (
+                                      <button
+                                        key={ev.id}
+                                        type="button"
+                                        className={styles.poolEventRowBtn}
+                                        onClick={() => onSelectEvent(ev)}
+                                      >
+                                        <span
+                                          className={
+                                            SCOPE_PILL_CLASS[ev.promoLevel]
+                                          }
+                                        >
+                                          {PROMO_LEVEL_SHORT_LABELS[ev.promoLevel]}
+                                        </span>
+                                        <span className={styles.poolEventDate}>
+                                          {formatYmdRange(ev.startDate, ev.endDate)}
+                                        </span>
+                                        <span className={styles.poolEventTitle}>
+                                          {ev.title}
+                                        </span>
+                                        {ev.organizer && (
+                                          <span className={styles.poolEventOrg}>
+                                            {ev.organizer}
+                                          </span>
+                                        )}
+                                      </button>
+                                    ))}
+                                  </div>
+
+                                  {hasMoreEvents && (
+                                    <div className={styles.poolExpandMoreRow}>
+                                      <button
+                                        type="button"
+                                        className={styles.poolExpandMoreBtn}
+                                        onClick={() =>
+                                          togglePoolFullExpand(pool.id)
+                                        }
+                                      >
+                                        {isFullyExpanded
+                                          ? '▲ 최근 5개 대회만 보기 (접기)'
+                                          : `▼ 더 확장하여 전체 ${targetEvents.length}개 대회 모두 보기 (+${
+                                              targetEvents.length - 5
+                                            }개 더보기)`}
+                                      </button>
+                                    </div>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          )}
+
+                          {/* C. 소재지 클릭 시: 상세주소 및 지도 링크(네이버, 다음, 구글) */}
+                          {isAddrOpen && (
+                            <div className={styles.poolEventsDrawer}>
+                              <div className={styles.poolEventsHeader}>
+                                <span>
+                                  📍 <strong>{pool.name}</strong> 상세주소 및 지도 바로가기
+                                </span>
+                              </div>
+                              <div className={styles.poolAddrDetailBox}>
+                                <div className={styles.poolFullAddressText}>
+                                  <strong>[{admin2Addr}]</strong>{' '}
+                                  {pool.address || admin2Addr}
+                                </div>
+                                <div className={styles.mapLinksGroup}>
+                                  <a
+                                    href={mapLinks.naver}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className={`${styles.mapLinkChip} ${styles.mapLinkNaver}`}
+                                  >
+                                    네이버 지도에서 보기
+                                  </a>
+                                  <a
+                                    href={mapLinks.daum}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className={`${styles.mapLinkChip} ${styles.mapLinkDaum}`}
+                                  >
+                                    다음(카카오) 지도에서 보기
+                                  </a>
+                                  <a
+                                    href={mapLinks.google}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className={`${styles.mapLinkChip} ${styles.mapLinkGoogle}`}
+                                  >
+                                    구글 지도에서 보기
+                                  </a>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
   return (
     <div
       className={
-        viewMode === 'MAP'
-          ? styles.mapModeViewport
-          : viewMode === 'CALENDAR'
-            ? styles.calendarModeViewport
-            : styles.page
+        isSwimmingPoolsList
+          ? styles.page
+          : isSwimmingPoolsMap || viewMode === 'MAP'
+            ? styles.mapModeViewport
+            : viewMode === 'CALENDAR'
+              ? styles.calendarModeViewport
+              : styles.page
       }
     >
+      {/* 0-A. 수영장 일람(표) 보기 (viewMode === 'POOLS') */}
+      {isSwimmingPoolsList && (
+        <section
+          className={styles.poolsSection}
+          aria-label="전국 수영장 일람 및 대회 개최 현황"
+        >
+          {renderPoolsTable()}
+        </section>
+      )}
+
+      {/* 0-B. 수영장 지도에서 보기 (viewMode === 'POOLS_MAP': 지도 위에 수영장 위치를 점으로 표시 + 범례만 지도에 표시 + 하단 일람 표 연동) */}
+      {isSwimmingPoolsMap && (
+        <div className={styles.specialMapLayout}>
+          <section
+            className={`${styles.mapTopFixedPane} ${
+              isMapFullscreen ? styles.mapTopFixedPaneFullscreen : ''
+            }`}
+            aria-label="전국 수영장 위치 지도"
+          >
+            <div
+              ref={mapCanvasRef}
+              className={`${styles.mapCanvasWrap} ${
+                isDraggingMap ? styles.mapCanvasDragging : ''
+              } ${isMapFullscreen ? styles.mapCanvasWrapFullscreen : ''}`}
+              onMouseDown={handleMapMouseDown}
+              onMouseMove={handleMapMouseMove}
+              onMouseUp={handleMapMouseUp}
+              onMouseLeave={() => {
+                setIsDraggingMap(false);
+                setHoveredPoolOnMap(null);
+              }}
+            >
+              {/* 좌상단 수영장 호버/선택 상세 플로팅 카드 */}
+              {(hoveredPoolOnMap || selectedPoolOnMap) &&
+                (() => {
+                  const targetPool = hoveredPoolOnMap || selectedPoolOnMap!;
+                  const tLinks = buildPoolMapLinks(targetPool);
+                  const tSummary = buildPoolOneLineSummary(targetPool);
+                  return (
+                    <div
+                      className={styles.poolMapFloatingCard}
+                      data-map-ui="true"
+                    >
+                      <div className={styles.poolMapCardTop}>
+                        <span
+                          className={
+                            targetPool.courseLength === '50m'
+                              ? styles.courseBadge50m
+                              : styles.courseBadge25m
+                          }
+                        >
+                          {targetPool.courseLength}
+                        </span>
+                        <strong>{targetPool.name}</strong>
+                        {targetPool.totalEventCount > 0 && (
+                          <span className={styles.poolMapCardCount}>
+                            🏆 {targetPool.totalEventCount}회
+                          </span>
+                        )}
+                      </div>
+                      <div className={styles.poolMapCardAddr}>
+                        [{targetPool.regionName} {targetPool.sigunguName}]{' '}
+                        {targetPool.address}
+                      </div>
+                      <div className={styles.poolMapCardSummary}>{tSummary}</div>
+                      <div className={styles.mapLinksGroup}>
+                        <a
+                          href={tLinks.naver}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={`${styles.mapLinkChip} ${styles.mapLinkNaver}`}
+                        >
+                          네이버지도
+                        </a>
+                        <a
+                          href={tLinks.daum}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={`${styles.mapLinkChip} ${styles.mapLinkDaum}`}
+                        >
+                          다음지도
+                        </a>
+                        <a
+                          href={tLinks.google}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={`${styles.mapLinkChip} ${styles.mapLinkGoogle}`}
+                        >
+                          구글지도
+                        </a>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+              {/* 우상단 지도 확대/축소 + 범례 + 전체 화면 리모콘 */}
+              <div
+                className={styles.mapRemoteControl}
+                data-map-ui="true"
+                role="toolbar"
+                aria-label="수영장 지도 리모콘"
+              >
+                <button
+                  type="button"
+                  className={`${styles.remoteIconBtn} ${
+                    isMapFullscreen ? styles.remoteIconBtnActive : ''
+                  }`}
+                  onClick={() => setIsMapFullscreen((prev) => !prev)}
+                  title={
+                    isMapFullscreen ? '전체 화면 종료 (ESC)' : '전체 화면으로 보기'
+                  }
+                  aria-label={
+                    isMapFullscreen ? '전체 화면 종료' : '전체 화면으로 보기'
+                  }
+                >
+                  {isMapFullscreen ? (
+                    <Minimize2 size={16} />
+                  ) : (
+                    <Maximize2 size={16} />
+                  )}
+                </button>
+                <div className={styles.remoteDivider} />
+                <button
+                  type="button"
+                  className={`${styles.remoteIconBtn} ${
+                    showLegend ? styles.remoteIconBtnActive : ''
+                  }`}
+                  onClick={() => setShowLegend((prev) => !prev)}
+                  title={showLegend ? '범례 숨기기' : '범례 보이기'}
+                  aria-label={showLegend ? '범례 숨기기' : '범례 보이기'}
+                  aria-pressed={showLegend}
+                >
+                  <Layers size={16} />
+                </button>
+                <div className={styles.remoteDivider} />
+                <button
+                  type="button"
+                  className={styles.remoteIconBtn}
+                  onClick={() => handleZoomByFactor(1.25)}
+                  disabled={mapZoom >= MAX_MAP_ZOOM}
+                  title="지도 확대"
+                >
+                  <ZoomIn size={16} />
+                </button>
+                <button
+                  type="button"
+                  className={styles.remoteIconBtn}
+                  onClick={() => handleZoomByFactor(1 / 1.25)}
+                  disabled={mapZoom <= MIN_MAP_ZOOM}
+                  title="지도 축소"
+                >
+                  <ZoomOut size={16} />
+                </button>
+                <button
+                  type="button"
+                  className={styles.remoteIconBtn}
+                  onClick={handleResetMapZoom}
+                  disabled={mapZoom === 1 && mapPan.x === 0 && mapPan.y === 0}
+                  title="지도 배율·위치 초기화"
+                >
+                  <RotateCcw size={15} />
+                </button>
+              </div>
+
+              {/* 우하단 지도 내 수영장 분류 범례 */}
+              {showLegend && (
+                <aside
+                  className={styles.poolMapLegendOverlay}
+                  data-map-ui="true"
+                  aria-label="수영장 분류 범례"
+                >
+                  <span className={styles.poolDotLegendItem}>
+                    <span className={styles.poolDotSwatch50Hosted} />
+                    50m 대회개최 경기장
+                  </span>
+                  <span className={styles.poolDotLegendItem}>
+                    <span className={styles.poolDotSwatch50} />
+                    50m 정규풀
+                  </span>
+                  <span className={styles.poolDotLegendItem}>
+                    <span className={styles.poolDotSwatch25} />
+                    25m 수영장
+                  </span>
+                </aside>
+              )}
+
+              {mapProjection && municipalitiesGeo ? (
+                <svg
+                  ref={svgRef}
+                  viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
+                  className={styles.twoLevelSvgMap}
+                  role="img"
+                  aria-label="전국 수영장 위치 점 표시 지도"
+                >
+                  <g
+                    transform={`translate(${SVG_WIDTH / 2 + mapPan.x}, ${
+                      SVG_HEIGHT / 2 + mapPan.y
+                    }) scale(${mapZoom}) translate(${-SVG_WIDTH / 2}, ${
+                      -SVG_HEIGHT / 2
+                    })`}
+                  >
+                    {/* 2단계 시·군·구 배경 폴리곤 */}
+                    <g>
+                      {municipalitiesGeo.features.map((feat) => {
+                        const d = mapProjection.geometryToSvgPath(feat.geometry);
+                        const invScale = Math.pow(mapZoom, 0.65);
+                        return (
+                          <path
+                            key={feat.properties.kostatCode}
+                            d={d}
+                            fill="#f8fafc"
+                            stroke="#cbd5e1"
+                            strokeWidth={0.45 / invScale}
+                          />
+                        );
+                      })}
+                    </g>
+
+                    {/* 1단계 17개 시·도 경계선 */}
+                    {provincesGeo && (
+                      <g pointerEvents="none">
+                        {provincesGeo.features.map((prov) => (
+                          <path
+                            key={`prov-pool-${prov.properties.kostatCode}`}
+                            d={mapProjection.geometryToSvgPath(prov.geometry)}
+                            fill="none"
+                            stroke="#64748b"
+                            strokeWidth={1.0 / Math.pow(mapZoom, 0.65)}
+                            strokeOpacity={0.7}
+                          />
+                        ))}
+                      </g>
+                    )}
+
+                    {/* 수영장 위치 점(Dot) 오버레이 (25m 먼저 그리고 50m 및 대회개최 수영장을 위에 렌더링) */}
+                    <g>
+                      {[...filteredSwimmingPools]
+                        .sort((a, b) => {
+                          if (a.courseLength !== b.courseLength) {
+                            return a.courseLength === '50m' ? 1 : -1;
+                          }
+                          return a.totalEventCount - b.totalEventCount;
+                        })
+                        .map((pool) => {
+                          if (!pool.mapX || !pool.mapY) return null;
+                          const [px, py] = mapProjection.projectPoint(
+                            pool.mapX,
+                            pool.mapY
+                          );
+                          const invScale = Math.pow(mapZoom, 0.6);
+                          const isSelected = selectedPoolIdOnMap === pool.id;
+                          const isHosted50m =
+                            pool.courseLength === '50m' && pool.totalEventCount > 0;
+                          const is50m = pool.courseLength === '50m';
+
+                          const baseR = isSelected
+                            ? 6.2
+                            : isHosted50m
+                              ? 4.6
+                              : is50m
+                                ? 3.8
+                                : 2.6;
+                          const fill = isHosted50m
+                            ? '#dc2626'
+                            : is50m
+                              ? '#1d4ed8'
+                              : '#059669';
+
+                          return (
+                            <circle
+                              key={`dot-${pool.id}`}
+                              cx={px}
+                              cy={py}
+                              r={baseR / invScale}
+                              fill={fill}
+                              fillOpacity={is50m ? 0.92 : 0.78}
+                              stroke={isSelected ? '#facc15' : '#ffffff'}
+                              strokeWidth={(isSelected ? 2.2 : 0.9) / invScale}
+                              className={styles.poolMapDot}
+                              onMouseEnter={() => setHoveredPoolOnMap(pool)}
+                              onMouseLeave={() => setHoveredPoolOnMap(null)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedPoolIdOnMap(pool.id);
+                                const rowEl = poolRowRefs.current[pool.id];
+                                if (rowEl) {
+                                  rowEl.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'center',
+                                  });
+                                }
+                              }}
+                            />
+                          );
+                        })}
+                    </g>
+                  </g>
+                </svg>
+              ) : (
+                <div className={styles.mapLoadingText}>
+                  전국 수영장 위치 지도를 불러오는 중입니다...
+                </div>
+              )}
+            </div>
+          </section>
+
+          {/* 지도 하단: 수영장 일람 표 연동 */}
+          <section
+            className={styles.weeklyBottomScrollPane}
+            aria-label="수영장 일람 표"
+          >
+            {renderPoolsTable()}
+          </section>
+        </div>
+      )}
+
       {/* 1. 목록보기 ("세계/대한연맹", "광역시도", "시군구", "동네" 클릭 시 펼치기/접기 애니메이션) */}
-      {viewMode === 'LIST' && (
+      {!isSwimmingPoolsMode && viewMode === 'LIST' && (
         <>
           {scopeGroups.length === 0 ? (
             <div className={styles.emptyState}>
@@ -930,20 +1913,26 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
       )}
 
       {/* 2. 달력보기: 기존의 달력보기(일 ~ 월, EventCalendarView) 그대로 표시 */}
-      {viewMode === 'CALENDAR' && (
+      {!isSwimmingPoolsMode && viewMode === 'CALENDAR' && (
         <EventCalendarView
           events={sportEvents}
           displayOptions={calendarOptions}
           targetYear={activeCalendarYear}
           onSelectEvent={onSelectEvent}
+          onChangeDisplayOptions={onChangeCalendarOptions}
         />
       )}
 
       {/* 3. 지도보기: 상단 고정 2단계 전국 행정지도 + 하단 주차별 보기 리스트 (1열: 주차, 2열: 행사) */}
-      {viewMode === 'MAP' && (
+      {!isSwimmingPoolsMode && viewMode === 'MAP' && (
         <div className={styles.specialMapLayout}>
           {/* 상단 고정: 전국 2단계 시·군·구(250개) + 1단계 시·도(17개) 행정지도 */}
-          <section className={styles.mapTopFixedPane} aria-label="전국 2단계 행정지도">
+          <section
+            className={`${styles.mapTopFixedPane} ${
+              isMapFullscreen ? styles.mapTopFixedPaneFullscreen : ''
+            }`}
+            aria-label="전국 2단계 행정지도"
+          >
             <div className={styles.mapTopBarInfo}>
               <div className={styles.activeWeekBanner}>
                 <span className={styles.activeWeekPill}>
@@ -967,7 +1956,7 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
               ref={mapCanvasRef}
               className={`${styles.mapCanvasWrap} ${
                 isDraggingMap ? styles.mapCanvasDragging : ''
-              }`}
+              } ${isMapFullscreen ? styles.mapCanvasWrapFullscreen : ''}`}
               onMouseDown={handleMapMouseDown}
               onMouseMove={handleMapMouseMove}
               onMouseUp={handleMapMouseUp}
@@ -1002,13 +1991,33 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                 </div>
               )}
 
-              {/* 우상단 지도 리모콘: 범례 보이기/숨기기 아이콘 + 확대/축소/초기화 */}
+              {/* 우상단 지도 리모콘: 전체 화면 + 범례 보이기/숨기기 + 확대/축소/초기화 */}
               <div
                 className={styles.mapRemoteControl}
                 data-map-ui="true"
                 role="toolbar"
                 aria-label="지도 리모콘"
               >
+                <button
+                  type="button"
+                  className={`${styles.remoteIconBtn} ${
+                    isMapFullscreen ? styles.remoteIconBtnActive : ''
+                  }`}
+                  onClick={() => setIsMapFullscreen((prev) => !prev)}
+                  title={
+                    isMapFullscreen ? '전체 화면 종료 (ESC)' : '전체 화면으로 보기'
+                  }
+                  aria-label={
+                    isMapFullscreen ? '전체 화면 종료' : '전체 화면으로 보기'
+                  }
+                >
+                  {isMapFullscreen ? (
+                    <Minimize2 size={16} />
+                  ) : (
+                    <Maximize2 size={16} />
+                  )}
+                </button>
+                <div className={styles.remoteDivider} />
                 <button
                   type="button"
                   className={`${styles.remoteIconBtn} ${

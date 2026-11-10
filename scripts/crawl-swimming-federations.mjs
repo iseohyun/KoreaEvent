@@ -21,7 +21,7 @@ import path from 'node:path';
 import https from 'node:https';
 import http from 'node:http';
 import { fileURLToPath } from 'node:url';
-import { computePromoLevel, isSwimEvent } from '../src/shared/promoPolicy.js';
+import { cleanCompetitionTitleNoise, computePromoLevel, isSwimEvent } from '../src/shared/promoPolicy.js';
 import { linkEventSeries } from '../src/shared/seriesLinker.js';
 import {
   bootstrapCheckpointsFromExistingEvents,
@@ -442,6 +442,60 @@ const VENUE_GEO_MAP = [
     addr1: '서울특별시 성동구 왕십리로 89 성동구민종합체육센터 수영장',
     mapX: 127.0369,
     mapY: 37.5634,
+  },
+  {
+    re: /중랑/,
+    lDongRegnCd: '11',
+    lDongSignguCd: '260',
+    sigunguName: '중랑구',
+    addr1: '서울특별시 중랑구 신내로15길 189 중랑구민체육센터 수영장',
+    mapX: 127.0931,
+    mapY: 37.6065,
+  },
+  {
+    re: /강북/,
+    lDongRegnCd: '11',
+    lDongSignguCd: '305',
+    sigunguName: '강북구',
+    addr1: '서울특별시 강북구 오현로31길 51 강북웰빙스포츠센터 수영장',
+    mapX: 127.0385,
+    mapY: 37.6248,
+  },
+  {
+    re: /은평/,
+    lDongRegnCd: '11',
+    lDongSignguCd: '380',
+    sigunguName: '은평구',
+    addr1: '서울특별시 은평구 진관1로 40 은평구민체육센터 수영장',
+    mapX: 126.9204,
+    mapY: 37.6382,
+  },
+  {
+    re: /서대문/,
+    lDongRegnCd: '11',
+    lDongSignguCd: '410',
+    sigunguName: '서대문구',
+    addr1: '서울특별시 서대문구 백련사길 39 서대문문화체육회관 수영장',
+    mapX: 126.9352,
+    mapY: 37.5831,
+  },
+  {
+    re: /강서/,
+    lDongRegnCd: '11',
+    lDongSignguCd: '500',
+    sigunguName: '강서구',
+    addr1: '서울특별시 강서구 화곡로65길 62 강서구민올림픽체육센터 수영장',
+    mapX: 126.8511,
+    mapY: 37.5542,
+  },
+  {
+    re: /강동/,
+    lDongRegnCd: '11',
+    lDongSignguCd: '740',
+    sigunguName: '강동구',
+    addr1: '서울특별시 강동구 고덕로 285 온조대왕문화체육관 수영장',
+    mapX: 127.1578,
+    mapY: 37.5567,
   },
   {
     re: /올림픽|잠실|서울체고|서울/,
@@ -940,11 +994,14 @@ async function crawlSeoulSwimming() {
       if (!/수영|시장기|구청장배|체육회장배|교육감배|연맹회장배|마스터즈/.test(rawTitle)) continue;
 
       const rowText = cleanText(rowHtml);
-      // 날짜가 YYYY-MM-DD 또는 MM-DD 형식
-      let ymd = '20260901';
+      // 날짜가 YYYY-MM-DD 또는 MM-DD 형식 (wr_id 기반 연도 보정: <=308은 2024년, 309~338은 2025년, >=339는 2026년)
+      const wrIdNum = Number(wrId);
+      const inferredYear =
+        wrIdNum <= 308 ? '2024' : wrIdNum <= 338 ? '2025' : '2026';
+      let ymd = `${inferredYear}0901`;
       const fullDate = rowText.match(/(20\d{2})[-.](\d{2})[-.](\d{2})/);
       const shortDate = rowText.match(/\b(\d{2})-(\d{2})\b/);
-      const titleYear = (rawTitle.match(/\b(20\d{2})\b/) || [])[1] || '2026';
+      const titleYear = (rawTitle.match(/\b(20\d{2})\b/) || [])[1] || inferredYear;
 
       if (fullDate) {
         ymd = normalizeYmd(fullDate[1], fullDate[2], fullDate[3]);
@@ -952,12 +1009,7 @@ async function crawlSeoulSwimming() {
         ymd = normalizeYmd(titleYear, shortDate[1], shortDate[2]);
       }
 
-      let cleanTitle = rawTitle
-        .replace(/^참가\s*마감\s*\[개최요강\]\s*/g, '')
-        .replace(/^참가\s*마감\)\s*/g, '')
-        .replace(/^\(수정\)\s*/g, '')
-        .replace(/\s*(개최\s*알림|개최\s*안내|개최\s*공지)$/g, '')
-        .trim();
+      let cleanTitle = cleanCompetitionTitleNoise(rawTitle);
 
       const dedupKey = `${ymd.slice(0, 4)}:${cleanTitle.replace(/\s+/g, '')}`;
       if (seen.has(dedupKey)) continue;
@@ -1037,11 +1089,18 @@ async function crawlGyeonggiSwimming() {
     const res = await fetchPage(url);
     if (!res.ok) continue;
 
-    const cleaned34 = cleanText(res.html);
-    const regex34 =
-      /(\d{1,3})\s+([^\n]+?(?:개최\s*통보|참가요강\s*공지))\s+경기도수영연맹\s+(20\d{2})\.(\d{2})\.(\d{2})/g;
-    let m;
-    while ((m = regex34.exec(cleaned34)) !== null) {
+    // 조회수 뒤에서 끊어지도록 매칭하여 상단 헤더('1페이지 | 경기도수영연맹...')나 이전 행이 제목에 섞이지 않게 처리
+    const tableBodyHtml = res.html.includes('번호')
+      ? res.html.slice(res.html.indexOf('번호'))
+      : res.html;
+    const trMatches = tableBodyHtml.match(/<tr[\s\S]*?<\/tr>/gi) || [tableBodyHtml];
+
+    for (const trHtml of trMatches) {
+      const rowText = cleanText(trHtml);
+      const m = rowText.match(
+        /^(\d{1,3})\s+(.+?(?:개최\s*통보|참가요강\s*공지))\s+경기도수영연맹\s+(20\d{2})\.(\d{2})\.(\d{2})/
+      );
+      if (!m) continue;
       const postId = m[1];
       let cleanTitle = m[2]
         .replace(/\s*(개최\s*통보|참가요강\s*공지|개최\s*안내|개최\s*알림)$/g, '')
@@ -1097,15 +1156,18 @@ async function crawlOtherFederationsAndPools() {
       if (/현황|대회\s*일정$/.test(rawTitle)) continue;
 
       const rowText = cleanText(rowHtml);
+      const wrIdNum = Number(wrId);
       const yearMatch = rawTitle.match(/\b(20\d{2})\b/);
-      const year = yearMatch ? yearMatch[1] : '2026';
+      const year = yearMatch ? yearMatch[1] : wrIdNum <= 35 ? '2025' : '2026';
       const mmdd = rowText.match(/\b(\d{2})-(\d{2})\b/);
       const ymd = mmdd ? normalizeYmd(year, mmdd[1], mmdd[2]) : `${year}0615`;
 
       docs.push(
         buildSwimDoc({
           id: `swim-gangwon-${wrId}`,
-          title: rawTitle.replace(/^\(최종\)\s*/, '').replace(/\s*대진표$/, ''),
+          title: cleanCompetitionTitleNoise(
+            rawTitle.replace(/^\(최종\)\s*/, '').replace(/\s*대진표$/, '')
+          ),
           startDate: ymd,
           endDate: ymd,
           host: '강원특별자치도수영연맹',

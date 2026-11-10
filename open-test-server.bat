@@ -5,7 +5,7 @@ setlocal EnableDelayedExpansion
 cd /d "%~dp0"
 
 echo ===============================================================
-echo   KoreaEventList 로컬 테스트 서버 실행기 (Auto Port Finder)
+echo   KoreaEvent 로컬 테스트 서버 실행기 (Auto Port Finder)
 echo ===============================================================
 echo.
 

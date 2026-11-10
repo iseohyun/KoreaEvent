@@ -30,6 +30,7 @@ import {
   ListColumnVisibility,
   MainMenuView,
   MonthPeriodFilter,
+  PoolFilterState,
   PromoLevel,
   ResponseFormatMode,
   SigunguItem,
@@ -37,6 +38,7 @@ import {
   ViewMode,
   UnifiedEventItem,
 } from './types/event';
+import { getMergedSwimmingPoolsCatalog } from './constants/swimmingPools';
 import { HeaderBar } from './components/HeaderBar';
 import { SidebarDrawer } from './components/SidebarDrawer';
 import { GeoFeature, KoreaAdminMap } from './components/KoreaAdminMap';
@@ -46,9 +48,16 @@ import { EventTableView } from './components/EventTableView';
 import { PromoDirectoryView } from './components/PromoDirectoryView';
 import { EventRegistrationView } from './components/EventRegistrationView';
 import { SpecialPromoView } from './components/SpecialPromoView';
+import { SettingsView } from './components/SettingsView';
 import { SiteAboutView } from './components/SiteAboutView';
 import { EventDetailModal } from './components/EventDetailModal';
 import { MunicipalAdapterModal } from './components/MunicipalAdapterModal';
+import {
+  AbbreviationSettings,
+  applyAbbreviation,
+  loadAbbreviationSettings,
+  saveAbbreviationSettings,
+} from './shared/abbreviation';
 import styles from './App.module.css';
 
 /** 올해 1월 1일 ~ 12월 31일 (YYYY-MM-DD) */
@@ -148,34 +157,267 @@ function matchesYearAndMonthFilter(
   return true;
 }
 
+const REGION_SHORT_ALIAS_MAP: Record<string, string> = {
+  서울: '서울특별시',
+  부산: '부산광역시',
+  대구: '대구광역시',
+  인천: '인천광역시',
+  광주: '광주광역시',
+  대전: '대전광역시',
+  울산: '울산광역시',
+  세종: '세종특별자치시',
+  경기: '경기도',
+  강원: '강원특별자치도',
+  충북: '충청북도',
+  충남: '충청남도',
+  전북: '전북특별자치도',
+  전남: '전라남도',
+  경북: '경상북도',
+  경남: '경상남도',
+  제주: '제주특별자치도',
+};
+
+function parseUrlInitialState(): {
+  menu: MainMenuView;
+  sport: SpecialPromoSport;
+  dbTab: DbCrawlTabCategory;
+  specialViewMode: ViewMode;
+  poolFilters: PoolFilterState;
+  year?: string;
+  month?: MonthPeriodFilter;
+  regionId?: string;
+  sigunguCode?: string;
+  majorCategory?: EventFilterState['majorCategory'];
+  subCategory?: string;
+  statusLevels?: EventFilterState['statusLevels'];
+  source?: EventFilterState['source'];
+  scopeLevels?: Record<PromoLevel, boolean>;
+  keyword?: string;
+} {
+  const params = new URLSearchParams(window.location.search);
+
+  const rawMenu = (params.get('menu') || '').trim().toUpperCase();
+  const rawSport = (params.get('sport') || '').trim().toUpperCase();
+  const rawDbTab = (params.get('dbTab') || '').trim().toUpperCase();
+  const rawView = (params.get('view') || '').trim().toUpperCase();
+  const rawCourse = (params.get('course') || '').trim();
+  const rawRegion = (params.get('region') || '').trim();
+  const rawSigungu = (params.get('sigungu') || '').trim();
+  const rawQ = (params.get('q') || params.get('keyword') || '').trim();
+
+  let sport: SpecialPromoSport = 'SWIMMING';
+  if (rawSport === 'RUNNING' || rawSport === 'MARATHON' || rawSport === '러닝' || rawSport === '마라톤') {
+    sport = 'RUNNING';
+  } else if (rawSport === 'CYCLING' || rawSport === 'BICYCLE' || rawSport === '자전거') {
+    sport = 'CYCLING';
+  } else if (rawSport === 'TRIATHLON' || rawSport === '철인' || rawSport === '철인3종') {
+    sport = 'TRIATHLON';
+  } else if (rawSport === 'SWIMMING' || rawSport === '수영') {
+    sport = 'SWIMMING';
+  }
+
+  let dbTab: DbCrawlTabCategory = 'ALL';
+  if (
+    rawDbTab === 'MUNICIPAL' ||
+    rawDbTab === 'SWIMMING' ||
+    rawDbTab === 'RUNNING' ||
+    rawDbTab === 'CYCLING' ||
+    rawDbTab === 'TRIATHLON'
+  ) {
+    dbTab = rawDbTab;
+  }
+
+  let specialViewMode: ViewMode = 'CALENDAR';
+  if (
+    rawView === 'POOLS_MAP' ||
+    rawView === 'POOL_MAP' ||
+    rawView === '수영장지도' ||
+    rawView === '수영장_지도'
+  ) {
+    specialViewMode = 'POOLS_MAP';
+  } else if (
+    rawView === 'POOLS' ||
+    rawView === 'POOL' ||
+    rawView === '수영장' ||
+    rawView === '수영장일람'
+  ) {
+    specialViewMode = 'POOLS';
+  } else if (rawView === 'MAP' || rawView === '지도') {
+    specialViewMode = 'MAP';
+  } else if (rawView === 'LIST' || rawView === '목록' || rawView === '일람') {
+    specialViewMode = 'LIST';
+  } else if (rawView === 'CALENDAR' || rawView === '달력') {
+    specialViewMode = 'CALENDAR';
+  }
+
+  let menu: MainMenuView = 'MAP';
+  if (
+    rawMenu === 'SPECIAL_PROMO' ||
+    rawMenu === 'SPECIAL' ||
+    rawMenu === 'PROMO' ||
+    rawMenu === '특별홍보관' ||
+    rawSport !== '' ||
+    specialViewMode === 'POOLS' ||
+    specialViewMode === 'POOLS_MAP' ||
+    rawCourse !== ''
+  ) {
+    menu = 'SPECIAL_PROMO';
+  } else if (rawMenu === 'CALENDAR' || rawView === 'CALENDAR') {
+    menu = 'CALENDAR';
+  } else if (rawMenu === 'LIST' || rawView === 'LIST') {
+    menu = 'LIST';
+  } else if (rawMenu === 'PROMO_DIRECTORY') {
+    menu = 'PROMO_DIRECTORY';
+  } else if (rawMenu === 'EVENT_REGISTER' || rawMenu === 'EVENT_REGISTRATION') {
+    menu = 'EVENT_REGISTER';
+  } else if (rawMenu === 'SETTINGS') {
+    menu = 'SETTINGS';
+  } else if (rawMenu === 'ABOUT' || rawMenu === 'SITE_ABOUT') {
+    menu = 'ABOUT';
+  }
+
+  let courses: PoolFilterState['courses'] = { '50m': true, '25m': true };
+  const upperCourse = rawCourse.toUpperCase();
+  if (upperCourse === 'NONE') {
+    courses = { '50m': false, '25m': false };
+  } else if (upperCourse && upperCourse !== 'ALL') {
+    const has50 = upperCourse.includes('50');
+    const has25 = upperCourse.includes('25');
+    if (has50 || has25) {
+      courses = { '50m': has50, '25m': has25 };
+    }
+  }
+
+  const normalizedPoolRegion = rawRegion
+    ? REGION_SHORT_ALIAS_MAP[rawRegion] || rawRegion
+    : 'ALL';
+
+  const rawScopes = (params.get('scopes') || '').trim();
+  let scopeLevels: Record<PromoLevel, boolean> | undefined;
+  if (rawScopes) {
+    const parts = new Set(rawScopes.split(',').map((s) => Number(s.trim())));
+    scopeLevels = {
+      3: parts.has(3),
+      2: parts.has(2),
+      1: parts.has(1),
+      0: parts.has(0),
+    };
+  }
+
+  const rawStatus = (params.get('status') || '').trim().toUpperCase();
+  let statusLevels: EventFilterState['statusLevels'] | undefined;
+  if (rawStatus && rawStatus !== 'ALL') {
+    if (rawStatus === 'NONE') {
+      statusLevels = { ONGOING: false, UPCOMING: false, ENDED: false };
+    } else {
+      const parts = new Set(rawStatus.split(',').map((s) => s.trim()));
+      statusLevels = {
+        ONGOING: parts.has('ONGOING'),
+        UPCOMING: parts.has('UPCOMING'),
+        ENDED: parts.has('ENDED'),
+      };
+    }
+  }
+
+  return {
+    menu,
+    sport,
+    dbTab,
+    specialViewMode,
+    poolFilters: {
+      regionName: normalizedPoolRegion || 'ALL',
+      sigunguName: rawSigungu || 'ALL',
+      courses,
+      keyword: rawQ,
+    },
+    year: params.get('year') || undefined,
+    month: (params.get('month') as MonthPeriodFilter) || undefined,
+    regionId: params.get('regionId') || undefined,
+    sigunguCode: params.get('sigunguCode') || undefined,
+    majorCategory: (params.get('cat') as EventFilterState['majorCategory']) || undefined,
+    subCategory: params.get('subCat') || undefined,
+    statusLevels,
+    source: (params.get('source') as EventFilterState['source']) || undefined,
+    scopeLevels,
+    keyword: rawQ || undefined,
+  };
+}
+
 export const App: React.FC = () => {
-  const [activeMenu, setActiveMenu] = useState<MainMenuView>('MAP');
-  const [activeSport, setActiveSport] = useState<SpecialPromoSport>('SWIMMING');
-  const [activeDbTab, setActiveDbTab] = useState<DbCrawlTabCategory>('ALL');
-  const [specialPromoViewMode, setSpecialPromoViewMode] =
-    useState<ViewMode>('LIST');
+  const initialUrlState = useMemo(() => parseUrlInitialState(), []);
+
+  const [activeMenu, setActiveMenu] = useState<MainMenuView>(initialUrlState.menu);
+  const [previousMenu, setPreviousMenu] = useState<MainMenuView>(initialUrlState.menu);
+  const [activeSport, setActiveSport] = useState<SpecialPromoSport>(
+    initialUrlState.sport
+  );
+  const [activeDbTab, setActiveDbTab] = useState<DbCrawlTabCategory>(
+    initialUrlState.dbTab
+  );
+  const [specialPromoViewMode, setSpecialPromoViewMode] = useState<ViewMode>(
+    initialUrlState.specialViewMode
+  );
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
+  const [abbrSettings, setAbbrSettings] = useState<AbbreviationSettings>(() =>
+    loadAbbreviationSettings()
+  );
+
+  const handleChangeAbbrSettings = useCallback((next: AbbreviationSettings) => {
+    setAbbrSettings(next);
+    saveAbbreviationSettings(next);
+  }, []);
+
+  const handleToggleAbbreviation = useCallback(() => {
+    setAbbrSettings((prev) => {
+      const next = { ...prev, enabled: !prev.enabled };
+      saveAbbreviationSettings(next);
+      return next;
+    });
+  }, []);
+
+  const handleSelectMenuWithHistory = useCallback(
+    (nextMenu: MainMenuView) => {
+      if (nextMenu === 'SETTINGS' && activeMenu !== 'SETTINGS') {
+        setPreviousMenu(activeMenu);
+      }
+      setActiveMenu(nextMenu);
+    },
+    [activeMenu]
+  );
+
+  const activeAbbreviationRuleCount = useMemo(() => {
+    return (
+      abbrSettings.regexRules.filter((r) => r.enabled).length +
+      abbrSettings.wordRules.filter((w) => w.enabled).length
+    );
+  }, [abbrSettings]);
+
   const [filters, setFilters] = useState<EventFilterState>({
-    regionId: 'ALL',
-    sigunguCode: 'ALL',
-    source: 'ALL',
-    majorCategory: 'ALL',
-    subCategory: 'ALL',
+    regionId: initialUrlState.regionId || 'ALL',
+    sigunguCode: initialUrlState.sigunguCode || 'ALL',
+    source: initialUrlState.source || 'ALL',
+    majorCategory: initialUrlState.majorCategory || 'ALL',
+    subCategory: initialUrlState.subCategory || 'ALL',
     specialPromoFormats: buildDefaultSpecialPromoFormats(),
     status: 'ALL',
-    scopeLevels: {
+    statusLevels: initialUrlState.statusLevels || {
+      ONGOING: true,
+      UPCOMING: true,
+      ENDED: true,
+    },
+    scopeLevels: initialUrlState.scopeLevels || {
       3: true,
       2: true,
       1: true,
       0: true,
     },
-    selectedYear: 'ALL',
-    selectedMonthPeriod: 'ALL',
+    selectedYear: initialUrlState.year || String(new Date().getFullYear()),
+    selectedMonthPeriod: initialUrlState.month || 'ALL',
     ...currentYearRange(),
-    quickPeriod: 'ALL_YEARS',
-    keyword: '',
-    detailKeyword: '',
+    quickPeriod: '1Y',
+    keyword: initialUrlState.keyword || '',
+    detailKeyword: initialUrlState.keyword || '',
     detailSearchTargets: {
       organizer: true,
       content: true,
@@ -188,8 +430,10 @@ export const App: React.FC = () => {
     formatMode: 'JSON',
   });
 
-  // 달력에 표시할 내용 체크 상태 (기본: 소재지와 행사명만 표시)
+  // 달력에 표시할 내용 체크 상태 (기본: 월 구분 없이 1년치 이어서 보기 + 빈 주간 축약 + 소재지와 행사명 표시)
   const [calendarOptions, setCalendarOptions] = useState<CalendarDisplayOptions>({
+    continuousYearView: true,
+    collapseEmptyWeeks: true,
     showRegion: true,
     showCategoryBadge: false,
     showEventTime: false,
@@ -211,6 +455,143 @@ export const App: React.FC = () => {
     addr: false,
     status: true,
   });
+
+  // 수영장 보기(일람 / 지도) 전용 필터 상태 (URL 쿼리 파라미터 초기값 반영)
+  const [poolFilters, setPoolFilters] = useState<PoolFilterState>(
+    initialUrlState.poolFilters
+  );
+
+  // 현재 메뉴·종목·뷰모드·필터 상태를 브라우저 주소창 URL 쿼리 파라미터와 실시간 동기화 (공유용 딥링크 지원)
+  useEffect(() => {
+    const params = new URLSearchParams();
+    const defaultYearStr = String(new Date().getFullYear());
+    const isPoolMode =
+      activeMenu === 'SPECIAL_PROMO' &&
+      activeSport === 'SWIMMING' &&
+      (specialPromoViewMode === 'POOLS' || specialPromoViewMode === 'POOLS_MAP');
+
+    if (activeMenu === 'SPECIAL_PROMO') {
+      params.set('menu', 'SPECIAL_PROMO');
+      params.set('sport', activeSport);
+      params.set('view', specialPromoViewMode);
+    } else if (activeMenu !== 'MAP') {
+      params.set('menu', activeMenu);
+    }
+
+    if (isPoolMode) {
+      const c50 = poolFilters.courses['50m'];
+      const c25 = poolFilters.courses['25m'];
+      if (c50 && !c25) {
+        params.set('course', '50m');
+      } else if (!c50 && c25) {
+        params.set('course', '25m');
+      } else if (!c50 && !c25) {
+        params.set('course', 'none');
+      }
+      if (poolFilters.regionName !== 'ALL') {
+        params.set('region', poolFilters.regionName);
+      }
+      if (poolFilters.sigunguName !== 'ALL') {
+        params.set('sigungu', poolFilters.sigunguName);
+      }
+      if (poolFilters.keyword.trim()) {
+        params.set('q', poolFilters.keyword.trim());
+      }
+    } else {
+      if (activeMenu === 'PROMO_DIRECTORY' && activeDbTab !== 'ALL') {
+        params.set('dbTab', activeDbTab);
+      }
+      if (filters.regionId !== 'ALL') {
+        params.set('regionId', filters.regionId);
+      }
+      if (filters.sigunguCode !== 'ALL') {
+        params.set('sigunguCode', filters.sigunguCode);
+      }
+      if (filters.selectedYear && filters.selectedYear !== defaultYearStr) {
+        params.set('year', filters.selectedYear);
+      }
+      if (filters.selectedMonthPeriod && filters.selectedMonthPeriod !== 'ALL') {
+        params.set('month', filters.selectedMonthPeriod);
+      }
+      if (filters.majorCategory !== 'ALL') {
+        params.set('cat', filters.majorCategory);
+      }
+      if (filters.subCategory !== 'ALL') {
+        params.set('subCat', filters.subCategory);
+      }
+      const stLevels = filters.statusLevels || {
+        ONGOING: true,
+        UPCOMING: true,
+        ENDED: true,
+      };
+      if (!stLevels.ONGOING || !stLevels.UPCOMING || !stLevels.ENDED) {
+        const activeStatuses = (
+          ['ONGOING', 'UPCOMING', 'ENDED'] as const
+        ).filter((st) => stLevels[st]);
+        params.set(
+          'status',
+          activeStatuses.length > 0 ? activeStatuses.join(',') : 'none'
+        );
+      }
+      if (filters.source !== 'ALL') {
+        params.set('source', filters.source);
+      }
+      const sc = filters.scopeLevels;
+      if (sc && (!sc[3] || !sc[2] || !sc[1] || !sc[0])) {
+        const activeScopes = ([3, 2, 1, 0] as PromoLevel[]).filter((lv) => sc[lv]);
+        params.set('scopes', activeScopes.join(','));
+      }
+      const kw = (filters.detailKeyword || filters.keyword || '').trim();
+      if (kw) {
+        params.set('q', kw);
+      }
+    }
+
+    const queryStr = params.toString();
+    const nextUrl = queryStr
+      ? `${window.location.pathname}?${queryStr}`
+      : window.location.pathname;
+    if (`${window.location.pathname}${window.location.search}` !== nextUrl) {
+      window.history.replaceState(null, '', nextUrl);
+    }
+  }, [activeMenu, activeSport, activeDbTab, specialPromoViewMode, poolFilters, filters]);
+
+  const allMergedPools = useMemo(() => getMergedSwimmingPoolsCatalog(), []);
+
+  const poolRegionOptions = useMemo(() => {
+    const set = new Set<string>();
+    allMergedPools.forEach((p) => {
+      if (p.regionName) set.add(p.regionName);
+    });
+    return Array.from(set).sort((a, b) => a.localeCompare(b, 'ko'));
+  }, [allMergedPools]);
+
+  const poolSigunguOptions = useMemo(() => {
+    if (poolFilters.regionName === 'ALL') return [];
+    const set = new Set<string>();
+    allMergedPools.forEach((p) => {
+      if (p.regionName === poolFilters.regionName && p.sigunguName) {
+        set.add(p.sigunguName);
+      }
+    });
+    return Array.from(set).sort((a, b) => a.localeCompare(b, 'ko'));
+  }, [allMergedPools, poolFilters.regionName]);
+
+  const updatePoolFilter = useCallback(
+    <K extends keyof PoolFilterState>(key: K, value: PoolFilterState[K]) => {
+      setPoolFilters((prev) => ({ ...prev, [key]: value }));
+    },
+    []
+  );
+
+  const handleResetPoolFilters = useCallback(() => {
+    setPoolFilters({
+      regionName: 'ALL',
+      sigunguName: 'ALL',
+      courses: { '50m': true, '25m': true },
+      keyword: '',
+    });
+  }, []);
 
   const [portalEvents, setPortalEvents] = useState<UnifiedEventItem[]>([]);
   const [firestoreDocs, setFirestoreDocs] = useState<FirestoreEventDoc[]>(() =>
@@ -268,16 +649,21 @@ export const App: React.FC = () => {
       subCategory: 'ALL',
       specialPromoFormats: buildDefaultSpecialPromoFormats(),
       status: 'ALL',
+      statusLevels: {
+        ONGOING: true,
+        UPCOMING: true,
+        ENDED: true,
+      },
       scopeLevels: {
         3: true,
         2: true,
         1: true,
         0: true,
       },
-      selectedYear: 'ALL',
+      selectedYear: String(new Date().getFullYear()),
       selectedMonthPeriod: 'ALL',
       ...currentYearRange(),
-      quickPeriod: 'ALL_YEARS',
+      quickPeriod: '1Y',
       keyword: '',
       detailKeyword: '',
       detailSearchTargets: {
@@ -291,21 +677,27 @@ export const App: React.FC = () => {
     }));
   }, []);
 
-  // 상단 메뉴바의 보기 방식 아이콘(목록보기 / 달력보기 / 지도보기) 클릭 핸들러
+  // 상단 메뉴바의 보기 방식 아이콘(목록보기 / 달력보기 / 지도보기 | 수영장 일람보기 / 수영장 지도보기) 클릭 핸들러
   const headerViewMode: ViewMode = useMemo(() => {
     if (activeMenu === 'SPECIAL_PROMO') {
+      if (
+        (specialPromoViewMode === 'POOLS' || specialPromoViewMode === 'POOLS_MAP') &&
+        activeSport !== 'SWIMMING'
+      ) {
+        return 'CALENDAR';
+      }
       return specialPromoViewMode;
     }
     if (activeMenu === 'CALENDAR') return 'CALENDAR';
     if (activeMenu === 'LIST') return 'LIST';
     return 'MAP';
-  }, [activeMenu, specialPromoViewMode]);
+  }, [activeMenu, activeSport, specialPromoViewMode]);
 
   const handleChangeViewMode = useCallback(
     (mode: ViewMode) => {
       if (activeMenu === 'SPECIAL_PROMO') {
         setSpecialPromoViewMode(mode);
-      } else {
+      } else if (mode !== 'POOLS' && mode !== 'POOLS_MAP') {
         setActiveMenu(mode);
       }
     },
@@ -498,7 +890,20 @@ export const App: React.FC = () => {
       if (filters.source !== 'ALL' && ev.source !== filters.source) {
         return false;
       }
-      if (filters.status !== 'ALL' && ev.status !== filters.status) {
+      const statusLevels = filters.statusLevels || {
+        ONGOING: true,
+        UPCOMING: true,
+        ENDED: true,
+      };
+      if (!statusLevels.ONGOING && !statusLevels.UPCOMING && !statusLevels.ENDED) {
+        return false;
+      }
+      if (
+        (ev.status === 'ONGOING' ||
+          ev.status === 'UPCOMING' ||
+          ev.status === 'ENDED') &&
+        !statusLevels[ev.status]
+      ) {
         return false;
       }
       if (
@@ -525,7 +930,7 @@ export const App: React.FC = () => {
           );
         }
         if (targets.title) {
-          chunks.push(ev.title || '');
+          chunks.push(ev.title || '', applyAbbreviation(ev.title, abbrSettings));
         }
         if (targets.place) {
           chunks.push(
@@ -542,7 +947,7 @@ export const App: React.FC = () => {
       }
       return true;
     },
-    [filters]
+    [filters, abbrSettings]
   );
 
   // 모든 필터 조건(지역 + 연도/월 + 범위 + 행사형태 + 행사상태 + 세부검색) 적용
@@ -655,28 +1060,62 @@ export const App: React.FC = () => {
     return new Date().getFullYear();
   }, [filters.selectedYear]);
 
+  // 축약보기가 활성화된 경우 표시용 이벤트 목록 생성 (원본 제목은 rawTitle에 보존)
+  const displayFilteredEvents = useMemo(() => {
+    if (!abbrSettings.enabled) return filteredEvents;
+    return filteredEvents.map((ev) => ({
+      ...ev,
+      rawTitle: ev.rawTitle || ev.title,
+      title: applyAbbreviation(ev.title, abbrSettings),
+      organizer: ev.organizer
+        ? applyAbbreviation(ev.organizer, abbrSettings)
+        : ev.organizer,
+    }));
+  }, [filteredEvents, abbrSettings]);
+
+  const displayAllCombinedEvents = useMemo(() => {
+    if (!abbrSettings.enabled) return allCombinedEvents;
+    return allCombinedEvents.map((ev) => ({
+      ...ev,
+      rawTitle: ev.rawTitle || ev.title,
+      title: applyAbbreviation(ev.title, abbrSettings),
+      organizer: ev.organizer
+        ? applyAbbreviation(ev.organizer, abbrSettings)
+        : ev.organizer,
+    }));
+  }, [allCombinedEvents, abbrSettings]);
+
   return (
     <div className={styles.appShell}>
-      {/* 상단 메뉴바: 삼선 메뉴 + 제목 + (목록보기/달력보기/지도보기 택1 아이콘) + 필터 아이콘 + 표시항목 아이콘 */}
+      {/* 상단 메뉴바: 삼선 메뉴 + 제목 + (목록보기/달력보기/지도보기 택1 아이콘 | 수영장 일람/지도 아이콘) + 필터 아이콘 + 표시항목 아이콘 */}
       <HeaderBar
         activeMenu={activeMenu}
         activeSport={activeSport}
         activeDbTab={activeDbTab}
         viewMode={headerViewMode}
         filters={filters}
+        poolFilters={poolFilters}
+        poolRegionOptions={poolRegionOptions}
+        poolSigunguOptions={poolSigunguOptions}
         scopeEventCounts={scopeEventCounts}
         specialPromoFormatCounts={specialPromoFormatCounts}
         availableYears={availableYears}
         sigunguOptions={sigunguOptions}
         calendarOptions={calendarOptions}
         listColumns={listColumns}
+        abbreviationEnabled={abbrSettings.enabled}
+        activeAbbreviationRuleCount={activeAbbreviationRuleCount}
         onToggleSidebar={() => setSidebarOpen(true)}
         onChangeViewMode={handleChangeViewMode}
         onChangeDbTab={setActiveDbTab}
         onUpdateFilter={updateFilter}
         onResetFilters={handleResetFilters}
+        onUpdatePoolFilter={updatePoolFilter}
+        onResetPoolFilters={handleResetPoolFilters}
         onChangeCalendarOptions={setCalendarOptions}
         onChangeListColumns={setListColumns}
+        onToggleAbbreviation={handleToggleAbbreviation}
+        onOpenSettings={() => handleSelectMenuWithHistory('SETTINGS')}
       />
 
       {/* 좌측 사이드바 드로어: 지도로 보기 / 달력으로 보기 / 행사 리스트 / 지자체 사이트 / 특별 홍보관(수영·러닝·자전거·철인) */}
@@ -684,10 +1123,10 @@ export const App: React.FC = () => {
         open={sidebarOpen}
         activeMenu={activeMenu}
         activeSport={activeSport}
-        onSelectMenu={setActiveMenu}
+        onSelectMenu={handleSelectMenuWithHistory}
         onSelectSport={(sport) => {
           setActiveSport(sport);
-          setActiveMenu('SPECIAL_PROMO');
+          handleSelectMenuWithHistory('SPECIAL_PROMO');
         }}
         onClose={() => setSidebarOpen(false)}
       />
@@ -700,7 +1139,7 @@ export const App: React.FC = () => {
               selectedRegionId={filters.regionId}
               selectedSigunguCode={filters.sigunguCode}
               allEvents={allCombinedEvents}
-              filteredEvents={filteredEvents}
+              filteredEvents={displayFilteredEvents}
               onSelectRegion={handleSelectRegion}
               onSelectSigungu={handleSelectSigungu}
               onSelectEvent={(ev) => setSelectedEventId(ev.id)}
@@ -712,7 +1151,7 @@ export const App: React.FC = () => {
             {errorMsg && <div className={styles.errorBanner}>⚠️ {errorMsg}</div>}
 
             <EventCardGrid
-              events={filteredEvents}
+              events={displayFilteredEvents}
               selectedRegionId={filters.regionId}
               selectedSigunguCode={filters.sigunguCode}
               selectedSigunguName={selectedSigunguName}
@@ -726,17 +1165,18 @@ export const App: React.FC = () => {
       {/* 2. 달력으로 행사보기 뷰 (일 ~ 월, 1년 연속 스크롤 + 오늘 날짜 자동 이동) */}
       {activeMenu === 'CALENDAR' && (
         <EventCalendarView
-          events={filteredEvents}
+          events={displayFilteredEvents}
           displayOptions={calendarOptions}
           targetYear={activeCalendarTargetYear}
           onSelectEvent={(ev) => setSelectedEventId(ev.id)}
+          onChangeDisplayOptions={setCalendarOptions}
         />
       )}
 
       {/* 3. 행사 리스트 뷰 (열 선택 지원 테이블) */}
       {activeMenu === 'LIST' && (
         <EventTableView
-          events={filteredEvents}
+          events={displayFilteredEvents}
           columns={listColumns}
           onSelectEvent={(ev) => setSelectedEventId(ev.id)}
         />
@@ -765,15 +1205,31 @@ export const App: React.FC = () => {
         />
       )}
 
-      {/* 5. 특별 홍보관 > 수영 · 러닝 · 자전거 · 철인 (목록보기 / 달력보기 / 지도보기) */}
+      {/* 5. 특별 홍보관 > 수영 · 러닝 · 자전거 · 철인 (목록보기 / 달력보기 / 지도보기 | 수영장 일람 / 수영장 지도) */}
       {activeMenu === 'SPECIAL_PROMO' && (
         <SpecialPromoView
           sport={activeSport}
           viewMode={specialPromoViewMode}
-          events={filteredEvents}
+          events={displayFilteredEvents}
+          allEvents={displayAllCombinedEvents}
           calendarOptions={calendarOptions}
           targetYear={activeCalendarTargetYear}
+          poolFilters={poolFilters}
+          onUpdatePoolFilter={updatePoolFilter}
+          onResetPoolFilters={handleResetPoolFilters}
           onSelectEvent={(ev) => setSelectedEventId(ev.id)}
+          onChangeCalendarOptions={setCalendarOptions}
+        />
+      )}
+
+      {/* 6. 세팅 > 축약보기 정규식 및 4글자 이상 단어 JSON 사전 관리 */}
+      {activeMenu === 'SETTINGS' && (
+        <SettingsView
+          settings={abbrSettings}
+          onChangeSettings={handleChangeAbbrSettings}
+          onBack={() =>
+            setActiveMenu(previousMenu === 'SETTINGS' ? 'MAP' : previousMenu)
+          }
         />
       )}
 

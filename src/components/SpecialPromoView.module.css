@@ -844,6 +844,1202 @@
   font-size: 0.9rem;
 }
 
+/* ==================== 수영 종목 전용 상단 탭 바 & 수영장 현황 뷰 ==================== */
+.swimSubTabBar {
+  max-width: 1640px;
+  margin: 12px auto 0;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.swimSubTabBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.swimSubTabBtn:hover {
+  border-color: #93c5fd;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.swimSubTabBtnActive {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(29, 78, 216, 0.22);
+}
+
+.swimSubTabCount {
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.08);
+}
+
+.swimSubTabBtnActive .swimSubTabCount {
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+
+.poolsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.poolsSummaryHeader {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mcstComparisonBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 100%);
+  border: 1px solid #bae6fd;
+}
+
+.mcstCompCol {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.mcstCompLabel {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #0369a1;
+}
+
+.mcstCompValueRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  color: #334155;
+}
+
+.mcstCompValueRow strong {
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.mcstCompArrow {
+  font-size: 1rem;
+  font-weight: 900;
+  color: #0284c7;
+}
+
+.mcstCompDiffBadge {
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: #ffffff;
+  background: #0284c7;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.divingBadge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #0e7490;
+  background: #cffafe;
+  border: 1px solid #67e8f9;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+.datasetBadgeNew2025 {
+  font-size: 0.71rem;
+  font-weight: 800;
+  color: #15803d;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.datasetBadgeBoth {
+  font-size: 0.71rem;
+  font-weight: 800;
+  color: #1d4ed8;
+  background: #dbeafe;
+  border: 1px solid #93c5fd;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.datasetBadgeOnly2021 {
+  font-size: 0.71rem;
+  font-weight: 800;
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.datasetBadgeExtra {
+  font-size: 0.71rem;
+  font-weight: 800;
+  color: #6d28d9;
+  background: #ede9fe;
+  border: 1px solid #c4b5fd;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.poolHomepageBtn {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #2563eb;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.14s ease;
+}
+
+.poolHomepageBtn:hover {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.poolOldNameTag {
+  margin-left: 6px;
+  font-size: 0.73rem;
+  font-weight: 700;
+  color: #b45309;
+}
+
+.poolsFilterRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.courseFilterGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.courseFilterBtn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.14s ease;
+}
+
+.courseFilterBtn:hover {
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.courseFilterBtnActive {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
+}
+
+.courseFilterBtn50Active {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #ffffff;
+}
+
+.courseFilterBtn25Active {
+  background: #047857;
+  border-color: #047857;
+  color: #ffffff;
+}
+
+.poolSearchControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.poolRegionSelect {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.poolSearchInput {
+  min-width: 240px;
+  max-width: 340px;
+  width: 100%;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.8rem;
+  color: #0f172a;
+}
+
+.poolGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.poolCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+.poolCard:hover {
+  border-color: #93c5fd;
+}
+
+.poolCardMain {
+  padding: 13px 16px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.poolTopLine {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.poolTitleWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.poolRankBadge {
+  font-size: 0.74rem;
+  font-weight: 900;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+.courseBadge50m {
+  font-size: 0.74rem;
+  font-weight: 900;
+  color: #ffffff;
+  background: #1d4ed8;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.courseBadge25m {
+  font-size: 0.74rem;
+  font-weight: 900;
+  color: #ffffff;
+  background: #059669;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.poolName {
+  margin: 0;
+  font-size: 0.96rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.poolCertBadge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #475569;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.poolCountBadges {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.poolTotalCountBadge {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #1e40af;
+  background: #dbeafe;
+  border: 1px solid #bfdbfe;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.poolFilteredCountBadge {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.poolExpandIcon {
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+}
+
+.poolMetaGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.poolMetaItem {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.8rem;
+}
+
+.poolMetaLabel {
+  min-width: 84px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.poolMetaValue {
+  color: #334155;
+  line-height: 1.4;
+}
+
+.poolEventsDrawer {
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.poolEventsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.poolEventsHint {
+  font-size: 0.73rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.poolNoEvents {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  padding: 6px 0;
+}
+
+.poolEventsList {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.poolEventRowBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.12s ease;
+}
+
+.poolEventRowBtn:hover {
+  border-color: #60a5fa;
+  background: #eff6ff;
+}
+
+.poolEventDate {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #2563eb;
+  min-width: 88px;
+}
+
+.poolEventTitle {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #0f172a;
+  flex: 1;
+}
+
+.poolEventOrg {
+  font-size: 0.73rem;
+  color: #64748b;
+}
+
+/* ==================== 수영장 일람(표) & 지도에서 보기(점 표시) 신규 스타일 ==================== */
+.poolSelectGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.poolFilterLabel {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #334155;
+  margin-right: 2px;
+}
+
+.poolFilterResetBtn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.poolFilterResetBtn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.poolResultMetaBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 6px;
+  border-top: 1px solid #f1f5f9;
+  font-size: 0.78rem;
+  color: #475569;
+}
+
+.poolResultMetaBar strong {
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.poolResultMetaHint {
+  font-size: 0.75rem;
+  color: #0369a1;
+}
+
+.poolTableContainer {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  overflow-x: auto;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.poolTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 920px;
+}
+
+.poolTable thead th {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  background: #f1f5f9;
+  border-bottom: 2px solid #cbd5e1;
+  padding: 10px 12px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #1e293b;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.colPoolName {
+  width: 24%;
+}
+
+.colPoolCourse {
+  width: 9%;
+  text-align: center !important;
+}
+
+.colPoolDiving {
+  width: 7%;
+  text-align: center !important;
+  white-space: nowrap;
+}
+
+.colPoolCount {
+  width: 13%;
+  text-align: center !important;
+}
+
+.colPoolAddr {
+  width: 14%;
+}
+
+.colPoolHome {
+  width: 5%;
+  text-align: center !important;
+}
+
+.colPoolNote {
+  width: 28%;
+}
+
+.colPoolHomeHeaderIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #334155;
+}
+
+.poolCountHeaderToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid #93c5fd;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.14s ease;
+}
+
+.poolCountHeaderToggleBtn:hover {
+  background: #dbeafe;
+  border-color: #3b82f6;
+}
+
+.poolCountModeBadge {
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: #1d4ed8;
+}
+
+.poolEmptyTd {
+  padding: 36px 16px;
+  text-align: center;
+  font-size: 0.86rem;
+  color: #64748b;
+}
+
+.poolTr {
+  border-bottom: 1px solid #e2e8f0;
+  transition: background 0.12s ease;
+}
+
+.poolTr:hover {
+  background: #f8fafc;
+}
+
+.poolTrExpanded {
+  background: #f0f9ff;
+}
+
+.poolTrMapSelected {
+  background: #fef9c3 !important;
+  outline: 2px solid #eab308;
+  outline-offset: -2px;
+}
+
+.colPoolNameTd,
+.colPoolCourseTd,
+.colPoolDivingTd,
+.colPoolCountTd,
+.colPoolAddrTd,
+.colPoolHomeTd,
+.colPoolNoteTd {
+  padding: 8px 10px;
+  vertical-align: middle;
+  font-size: 0.8rem;
+}
+
+.colPoolCourseTd,
+.colPoolDivingTd,
+.colPoolCountTd,
+.colPoolHomeTd {
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* 수영장 이름: 기본 이름은 줄바꿈 하지 않음, 괄호 표기는 줄바꿈하여 표시 */
+.poolMainNameNoWrap {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+.poolParenLineNoWrap {
+  margin-top: 2px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+/* 50m 여부 버튼 (50m/25m만 표시하고 클릭 시 세부정보 표시) */
+.poolDetailTriggerBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.14s ease;
+  white-space: nowrap;
+}
+
+.courseTrigger50m {
+  background: #1d4ed8;
+  color: #ffffff;
+  border-color: #1e40af;
+}
+
+.courseTrigger50m:hover {
+  background: #1e40af;
+}
+
+.courseTrigger25m {
+  background: #059669;
+  color: #ffffff;
+  border-color: #047857;
+}
+
+.courseTrigger25m:hover {
+  background: #047857;
+}
+
+.poolDetailTriggerOpen {
+  box-shadow: 0 0 0 2px #93c5fd;
+}
+
+/* 소재지 행정 2단계 버튼 (클릭 시 상세주소 및 지도 링크 세부정보 표시) */
+.poolAddrTriggerBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #1e293b;
+  font-size: 0.77rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.14s ease;
+}
+
+.poolAddrTriggerBtn:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+.poolAddrTriggerBtnOpen {
+  background: #dbeafe;
+  border-color: #3b82f6;
+  color: #1e40af;
+}
+
+/* 홈페이지 아이콘 전용 버튼 */
+.poolHomeIconOnlyBtn {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  text-decoration: none;
+  transition: all 0.14s ease;
+}
+
+.poolHomeIconOnlyBtn:hover {
+  background: #dbeafe;
+  border-color: #3b82f6;
+  transform: translateY(-1px);
+}
+
+/* 50m 여부 및 소재지 세부정보 드로어 내부 */
+.poolDetailSpecGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.poolDetailSpecItem {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 0.8rem;
+}
+
+.poolDetailSpecLabel {
+  min-width: 105px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.poolDetailSpecValue {
+  color: #0f172a;
+}
+
+.poolAddrDetailBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.poolFullAddressText {
+  font-size: 0.82rem;
+  color: #0f172a;
+}
+
+/* 지도 전체 화면 보기 스타일 */
+.mapTopFixedPaneFullscreen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  border-radius: 0;
+  border: none;
+  margin: 0;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.mapCanvasWrapFullscreen {
+  flex: 1;
+  height: calc(100vh - 120px) !important;
+  min-height: 420px;
+}
+
+.mapCanvasWrapFullscreen .twoLevelSvgMap {
+  max-width: 100%;
+  height: 100%;
+}
+
+.poolNameCell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.poolNameText {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.divingMiniBadge {
+  display: inline-block;
+  white-space: nowrap;
+  font-size: 0.67rem;
+  font-weight: 800;
+  color: #0e7490;
+  background: #cffafe;
+  border: 1px solid #67e8f9;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.poolSubNameText {
+  margin-top: 2px;
+  font-size: 0.71rem;
+  color: #92400e;
+}
+
+.poolLanesSubText {
+  display: block;
+  margin-top: 3px;
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.poolCountToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #475569;
+  transition: all 0.14s ease;
+  white-space: nowrap;
+}
+
+.poolCountToggleBtnActive {
+  background: #dbeafe;
+  border-color: #93c5fd;
+  color: #1e40af;
+}
+
+.poolCountToggleBtnActive:hover {
+  background: #bfdbfe;
+  border-color: #3b82f6;
+}
+
+.poolCountToggleBtnZero {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+}
+
+.poolCountToggleBtnZero:hover {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.poolCountToggleBtnOpen {
+  background: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+  color: #ffffff !important;
+}
+
+.poolAddrCellWrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.poolAddrText {
+  font-size: 0.78rem;
+  color: #334155;
+  line-height: 1.38;
+}
+
+.mapLinksGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.mapLinkChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: transform 0.1s ease, opacity 0.12s ease;
+  white-space: nowrap;
+}
+
+.mapLinkChip:hover {
+  transform: translateY(-1px);
+}
+
+.mapLinkNaver {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #15803d;
+}
+
+.mapLinkDaum {
+  background: #fef9c3;
+  border-color: #fde047;
+  color: #854d0e;
+}
+
+.mapLinkGoogle {
+  background: #dbeafe;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+.poolHomeLinkBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.12s ease;
+}
+
+.poolHomeLinkBtn:hover {
+  background: #dbeafe;
+  border-color: #60a5fa;
+}
+
+.poolNoHomeText {
+  color: #cbd5e1;
+  font-size: 0.76rem;
+}
+
+.poolOneLineSummary {
+  font-size: 0.76rem;
+  color: #334155;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 280px;
+}
+
+.poolExpandTr {
+  background: #f8fafc;
+  border-bottom: 2px solid #cbd5e1;
+}
+
+.poolExpandTd {
+  padding: 0;
+}
+
+.poolExpandMoreRow {
+  display: flex;
+  justify-content: center;
+  padding-top: 4px;
+}
+
+.poolExpandMoreBtn {
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1px solid #93c5fd;
+  background: #ffffff;
+  color: #1d4ed8;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.14s ease;
+}
+
+.poolExpandMoreBtn:hover {
+  background: #eff6ff;
+  border-color: #2563eb;
+}
+
+/* 수영장 지도(POOLS_MAP) 점 표시 & 지도 내부 범례 & 플로팅 카드 */
+.poolMapLegendOverlay {
+  position: absolute;
+  bottom: 10px;
+  right: 12px;
+  z-index: 15;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(6px);
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 7px 12px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.poolMapLegendBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.poolDotLegendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.poolDotSwatch50Hosted,
+.poolDotSwatch50,
+.poolDotSwatch25 {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.25);
+}
+
+.poolDotSwatch50Hosted {
+  background: #dc2626;
+}
+
+.poolDotSwatch50 {
+  background: #1d4ed8;
+}
+
+.poolDotSwatch25 {
+  background: #059669;
+}
+
+.poolMapDot {
+  cursor: pointer;
+  transition: r 0.14s ease, stroke-width 0.14s ease;
+}
+
+.poolMapDot:hover {
+  stroke: #facc15;
+}
+
+.poolMapFloatingCard {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  z-index: 16;
+  max-width: 340px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(6px);
+  border: 1px solid #93c5fd;
+  border-radius: 10px;
+  padding: 9px 12px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.14);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.poolMapCardTop {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: #0f172a;
+}
+
+.poolMapCardCount {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+
+.poolMapCardAddr {
+  font-size: 0.74rem;
+  color: #334155;
+}
+
+.poolMapCardSummary {
+  font-size: 0.72rem;
+  color: #0369a1;
+  font-weight: 700;
+}
+
 @media (max-width: 640px) {
   .rowBetween {
     flex-direction: column;
