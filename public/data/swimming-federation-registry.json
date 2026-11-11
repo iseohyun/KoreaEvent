@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-11T08:15:15.057Z",
+  "updatedAt": "2026-11-11T21:51:30.937Z",
   "description": "세계수영연맹(World Aquatics), 대한수영연맹(Korea Aquatics), 전국 17개 광역시·도 수영연맹, 기초지자체(시·군·구) 수영연맹 및 개별 수영장 대회 채널 마스터 DB",
   "levelPolicy": {
     "0": "Lv.0 기타 각 수영장·체육센터 내 개별 행사 및 자체 대회",
@@ -398,19 +398,19 @@
     }
   ],
   "crawlSummary": {
-    "totalSwimEvents": 544,
+    "totalSwimEvents": 541,
     "levelBreakdown": {
       "0": 9,
-      "1": 143,
-      "2": 224,
-      "3": 168
+      "1": 155,
+      "2": 191,
+      "3": 186
     },
     "bySource": {
       "koreaAquatics": 0,
-      "busanSwimming": 106,
-      "ulsanSwimming": 70,
+      "busanSwimming": 1,
+      "ulsanSwimming": 0,
       "seoulSwimming": 77,
-      "gyeonggiSwimming": 7,
+      "gyeonggiSwimming": 42,
       "otherFederationsAndPools": 67
     }
   }

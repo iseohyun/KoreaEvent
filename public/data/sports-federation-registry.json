@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-10T21:18:09.711Z",
+  "updatedAt": "2026-11-11T21:51:57.949Z",
   "description": "특별 홍보관 4대 스포츠(수영·러닝·자전거·철인) 세계/중앙연맹(Lv.3 전국), 광역시·도 연맹(Lv.2 광역), 기초지자체(Lv.1 지자체), 개별시설·크루(Lv.0 동네) 홈페이지 마스터 DB",
   "sports": {
     "SWIMMING": {
@@ -139,7 +139,7 @@
           "lDongRegnCd": "36110",
           "name": "세종특별자치시수영연맹",
           "city": "세종",
-          "homepageUrl": "https://www.sejong.go.kr/",
+          "homepageUrl": "http://www.sejongsports.or.kr",
           "scheduleUrl": "https://www.korswim.co.kr/43",
           "address": "세종특별자치시 장군면 금송로 210 1층",
           "mainPool": "세종시민체육관 수영장 / 정부세종청사체육관 수영장"
@@ -240,8 +240,10 @@
           "lDongRegnCd": "48",
           "name": "경상남도수영연맹",
           "city": "창원",
-          "homepageUrl": "https://www.gnsports.or.kr",
-          "scheduleUrl": "https://cafe.daum.net/cwsun",
+          "homepageUrl": "https://band.us/n/a0aeb0K2u0552",
+          "scheduleUrl": "https://band.us/n/a0aeb0K2u0552",
+          "noticeUrl": "https://www.gnsports.or.kr",
+          "contactEmail": "gn_aquatics@naver.com",
           "address": "경상남도 창원시 의창구 원이대로 450 창원종합운동장 내 166호",
           "mainPool": "창원실내수영장"
         },
@@ -938,17 +940,17 @@
   },
   "crawlSummary": {
     "SWIMMING": {
-      "total": 482,
-      "lv3": 163,
-      "lv2": 175,
-      "lv1": 139,
-      "lv0": 5
+      "total": 530,
+      "lv3": 185,
+      "lv2": 184,
+      "lv1": 153,
+      "lv0": 8
     },
     "RUNNING": {
-      "total": 611,
+      "total": 612,
       "lv3": 0,
       "lv2": 97,
-      "lv1": 511,
+      "lv1": 512,
       "lv0": 3
     },
     "CYCLING": {
@@ -959,11 +961,11 @@
       "lv0": 0
     },
     "TRIATHLON": {
-      "total": 128,
+      "total": 129,
       "lv3": 23,
       "lv2": 14,
       "lv1": 82,
-      "lv0": 9
+      "lv0": 10
     }
   }
 }
