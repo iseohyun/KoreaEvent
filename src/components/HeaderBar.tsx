@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  Bell,
   Calendar,
   CalendarPlus,
   Check,
@@ -64,6 +65,7 @@ interface HeaderBarProps {
   listColumns: ListColumnVisibility;
   abbreviationEnabled: boolean;
   activeAbbreviationRuleCount: number;
+  swimNewsBadgeCount?: number;
   onToggleSidebar: () => void;
   onChangeViewMode: (mode: ViewMode) => void;
   onChangeDbTab: (tab: DbCrawlTabCategory) => void;
@@ -166,6 +168,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
   listColumns,
   abbreviationEnabled,
   activeAbbreviationRuleCount,
+  swimNewsBadgeCount = 0,
   onToggleSidebar,
   onChangeViewMode,
   onChangeDbTab,
@@ -480,42 +483,63 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
               </div>
             )}
 
-            {/* 특별 홍보관 > 수영 전용: 기존 수영 이벤트 보기 아이콘과 분리된 「수영장 보기(일람 · 지도)」 아이콘 그룹 */}
+            {/* 특별 홍보관 > 수영 전용: 기존 수영 이벤트 보기 아이콘과 분리된 「수영장 보기(일람 · 지도)」 아이콘 그룹 및 「🔔 새소식」 독립 버튼 */}
             {activeMenu === 'SPECIAL_PROMO' && activeSport === 'SWIMMING' && (
-              <div
-                className={`${styles.poolModeIconGroup} ${
-                  isPoolViewActive ? styles.poolModeIconGroupActive : ''
-                }`}
-                role="group"
-                aria-label="수영장 보기 방식 선택 (수영장 일람 표, 수영장 위치 지도)"
-              >
-                <span className={styles.poolGroupLabel}>수영장</span>
-                <button
-                  type="button"
-                  className={`${styles.iconOnlyBtn} ${
-                    viewMode === 'POOLS' ? styles.iconOnlyBtnActive : ''
+              <>
+                <div
+                  className={`${styles.poolModeIconGroup} ${
+                    isPoolViewActive ? styles.poolModeIconGroupActive : ''
                   }`}
-                  onClick={() => onChangeViewMode('POOLS')}
-                  title="수영장 일람(표) 보기"
-                  aria-label="수영장 일람 보기"
-                  aria-pressed={viewMode === 'POOLS'}
+                  role="group"
+                  aria-label="수영장 보기 방식 선택 (수영장 일람 표, 수영장 위치 지도)"
                 >
-                  <Waves size={17} />
-                </button>
+                  <span className={styles.poolGroupLabel}>수영장</span>
+                  <button
+                    type="button"
+                    className={`${styles.iconOnlyBtn} ${
+                      viewMode === 'POOLS' ? styles.iconOnlyBtnActive : ''
+                    }`}
+                    onClick={() => onChangeViewMode('POOLS')}
+                    title="수영장 일람(표) 보기"
+                    aria-label="수영장 일람 보기"
+                    aria-pressed={viewMode === 'POOLS'}
+                  >
+                    <Waves size={17} />
+                  </button>
+
+                  <button
+                    type="button"
+                    className={`${styles.iconOnlyBtn} ${
+                      viewMode === 'POOLS_MAP' ? styles.iconOnlyBtnActive : ''
+                    }`}
+                    onClick={() => onChangeViewMode('POOLS_MAP')}
+                    title="수영장 지도에서 보기 (점 표시)"
+                    aria-label="수영장 지도 보기"
+                    aria-pressed={viewMode === 'POOLS_MAP'}
+                  >
+                    <MapIcon size={17} />
+                  </button>
+                </div>
 
                 <button
                   type="button"
-                  className={`${styles.iconOnlyBtn} ${
-                    viewMode === 'POOLS_MAP' ? styles.iconOnlyBtnActive : ''
+                  className={`${styles.swimNewsBtn} ${
+                    viewMode === 'SWIM_NEWS' ? styles.swimNewsBtnActive : ''
                   }`}
-                  onClick={() => onChangeViewMode('POOLS_MAP')}
-                  title="수영장 지도에서 보기 (점 표시)"
-                  aria-label="수영장 지도 보기"
-                  aria-pressed={viewMode === 'POOLS_MAP'}
+                  onClick={() => onChangeViewMode('SWIM_NEWS')}
+                  title="수영 대회 새소식 (지금 등록중 · 곧 등록 시작 · 새로 올라온 업데이트)"
+                  aria-label="수영 대회 새소식"
+                  aria-pressed={viewMode === 'SWIM_NEWS'}
                 >
-                  <MapIcon size={17} />
+                  <Bell size={15} />
+                  <span className={styles.swimNewsBtnLabel}>새소식</span>
+                  {swimNewsBadgeCount > 0 && (
+                    <span className={styles.swimNewsCountBadge}>
+                      {swimNewsBadgeCount}
+                    </span>
+                  )}
                 </button>
-              </div>
+              </>
             )}
 
             {/* 필터 아이콘 버튼 */}

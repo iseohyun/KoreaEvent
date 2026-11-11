@@ -201,6 +201,15 @@ const VENUE_GEO_MAP = [
     mapY: 34.7604,
   },
   {
+    re: /전남광주|남부대|광주/,
+    lDongRegnCd: '12',
+    lDongSignguCd: '200',
+    sigunguName: '광산구',
+    addr1: '광주광역시 광산구 첨단중앙로 23 남부대시립국제수영장',
+    mapX: 126.8435,
+    mapY: 35.2179,
+  },
+  {
     re: /전라남도|전남/,
     lDongRegnCd: '46',
     lDongSignguCd: '110',
@@ -208,15 +217,6 @@ const VENUE_GEO_MAP = [
     addr1: '전라남도 목포실내수영장 / 광양수영장',
     mapX: 126.4161,
     mapY: 34.8118,
-  },
-  {
-    re: /남부대|광주/,
-    lDongRegnCd: '12',
-    lDongSignguCd: '200',
-    sigunguName: '광산구',
-    addr1: '광주광역시 광산구 첨단중앙로 23 남부대시립국제수영장',
-    mapX: 126.8435,
-    mapY: 35.2179,
   },
   {
     re: /전주|완산|전북/,
@@ -539,13 +539,21 @@ function buildSwimDoc({
   startDate,
   endDate,
   scheduleNote,
+  eventTime,
   host,
   supervise,
+  contact,
   url,
   label,
+  extraLinks,
   invitation,
   defaultGeo,
   explicitLevel,
+  registrationPeriod,
+  publishedAt,
+  firstSeenAt,
+  updatedAt,
+  updateSummary,
 }) {
   const geo = resolveVenueGeo(`${title} ${invitation || ''} ${host || ''}`, defaultGeo);
   const promoLevel = computePromoLevel({
@@ -557,7 +565,16 @@ function buildSwimDoc({
     addr1: geo.addr1,
   });
 
-  return {
+  const links = [
+    {
+      type: 'OFFICIAL',
+      label: label || `${host} 대회 공지 원문`,
+      url,
+    },
+    ...(Array.isArray(extraLinks) ? extraLinks : []),
+  ];
+
+  const doc = {
     id,
     lDongRegnCd: geo.lDongRegnCd,
     lDongSignguCd: geo.lDongSignguCd,
@@ -568,24 +585,18 @@ function buildSwimDoc({
       endDate: endDate || startDate,
       scheduleNote: scheduleNote || '대회 요강 및 세부 경기 일정 참조',
     },
-    eventTime: '08:00 ~ 18:00 (부별 워밍업 및 경기시간 요강 참조)',
+    eventTime: eventTime || '08:00 ~ 18:00 (부별 워밍업 및 경기시간 요강 참조)',
     organizer: {
       host: host || '수영연맹',
       supervise: supervise || host || '수영연맹',
-      contact: '공식 홈페이지 요강 참조',
+      contact: contact || '공식 홈페이지 요강 참조',
     },
     category: {
       lclsSystm2: 'EV03',
       lclsSystm3: 'EV030400',
       label: '행사·전시 > 스포츠경기·대회',
     },
-    links: [
-      {
-        type: 'OFFICIAL',
-        label: label || `${host} 대회 공지 원문`,
-        url,
-      },
-    ],
+    links,
     invitation:
       invitation ||
       `[${host}] ${title} 공식 개최 안내 및 참가요강 정보입니다. (${geo.addr1})`,
@@ -593,8 +604,15 @@ function buildSwimDoc({
     addr1: geo.addr1,
     mapX: geo.mapX,
     mapY: geo.mapY,
-    updatedAt: new Date().toISOString(),
+    updatedAt: updatedAt || new Date().toISOString(),
   };
+
+  if (firstSeenAt) doc.firstSeenAt = firstSeenAt;
+  if (publishedAt) doc.publishedAt = publishedAt;
+  if (updateSummary) doc.updateSummary = updateSummary;
+  if (registrationPeriod) doc.registrationPeriod = registrationPeriod;
+
+  return doc;
 }
 
 /**
@@ -1064,6 +1082,8 @@ async function crawlGyeonggiSwimming() {
         .trim();
       if (/^테스트/.test(cleanTitle)) continue;
       const ymd = normalizeYmd(m[5], m[6], m[7]);
+      const regStartYmd = m[3].replace(/-/g, '');
+      const regEndYmd = m[4].replace(/-/g, '');
       const dedupKey = `${m[5]}:${cleanTitle.replace(/\s+/g, '')}`;
       if (seen.has(dedupKey)) continue;
       seen.add(dedupKey);
@@ -1077,8 +1097,15 @@ async function crawlGyeonggiSwimming() {
           supervise: '경기도수영연맹',
           url: 'http://www.gswimming.com/41',
           label: '경기도수영연맹 대회일정 원문',
-          invitation: `[경기도수영연맹] ${cleanTitle} 개최 안내 (대회일: ${m[5]}.${m[6]}.${m[7]})`,
+          invitation: `[경기도수영연맹] ${cleanTitle} 개최 안내 (대회일: ${m[5]}.${m[6]}.${m[7]}, 접수기간: ${m[3]} ~ ${m[4]})`,
           defaultGeo: gyeonggiGeo,
+          registrationPeriod: {
+            startDate: regStartYmd,
+            endDate: regEndYmd,
+            methodNote: '경기도수영연맹 대회 참가신청 페이지 온라인 접수',
+            registrationUrl: 'http://www.gswimming.com/41',
+          },
+          publishedAt: regStartYmd,
         })
       );
     }
@@ -1276,8 +1303,50 @@ async function crawlOtherFederationsAndPools() {
     }
   }
 
-  // (E) 세계수영연맹(World Aquatics), 창원시수영연맹, 인천·대구·대전·충북·충남·전북 및 개별 수영장(Lv.0) 주요 대회
+  // (E) 세계수영연맹(World Aquatics), 경남수영연맹, 창원시수영연맹, 인천·대구·대전·충북·충남·전북 및 개별 수영장(Lv.0) 주요 대회
   const curatedFederationAndPoolEvents = [
+    // Lv.2 경상남도수영연맹 공식 밴드 공지 대회 (2026.12.20 창원실내수영장)
+    {
+      id: 'swim-gyeongnam-masters-2026',
+      title:
+        '2026 경남수영연맹 회장배 전국 마스터즈 수영대회 (2027년 전국생활체육대축전 수영경기 경남선발전)',
+      startDate: '20261220',
+      endDate: '20261220',
+      scheduleNote:
+        '2026년 12월 20일(일) 1일간 · 창원실내수영장 (접수: 11.30 09:00 ~ 12.06 17:00 선착순 1,000명)',
+      eventTime: '08:00 ~ 18:00 (2026년 12월 20일 일요일 1일간)',
+      host: '경상남도수영연맹',
+      supervise: '경상남도수영연맹 · 후원: 경상남도체육회',
+      contact: 'gn_aquatics@naver.com / 공식밴드 https://band.us/n/a0aeb0K2u0552',
+      url: 'https://band.us/n/a0aeb0K2u0552',
+      label: '경상남도수영연맹 공식 BAND (대회요강·신청서)',
+      extraLinks: [
+        {
+          type: 'TIER1_PROMO',
+          label: '경상남도체육회 공식 홈페이지',
+          url: 'https://www.gnsports.or.kr',
+        },
+      ],
+      invitation:
+        '[경상남도수영연맹] 2026 경남수영연맹 회장배 전국 마스터즈 수영대회 겸 2027년 전국생활체육대축전 수영경기 경남선발전. 대회일시: 2026년 12월 20일(일) 1일간, 대회장소: 창원실내수영장. 참가신청: 2026년 11월 30일(월) 09:00 ~ 12월 6일(일) 17:00 (선착순 1,000명, 참가비 1인당 30,000원 일반부·학생부). 접수방법: 경상남도수영연맹 공식밴드(https://band.us/n/a0aeb0K2u0552) 가입 후 게시된 신청서를 작성하여 이메일(gn_aquatics@naver.com)로 접수. 시상: 일반부 우승 100만원·준우승 70만원·3위 50만원, 학생부 우승 50만원·준우승 30만원·3위 20만원, 최우수선수상(남·여) 각 10만원.',
+      explicitLevel: 2,
+      defaultGeo: VENUE_GEO_MAP.find((v) => v.sigunguName === '창원시'),
+      registrationPeriod: {
+        startDate: '20261130',
+        endDate: '20261206',
+        openTime: '09:00',
+        closeTime: '17:00',
+        quotaNote: '선착순 1,000명 · 참가비 1인당 30,000원 (일반부·학생부)',
+        methodNote:
+          '경상남도수영연맹 공식밴드(band.us/n/a0aeb0K2u0552) 가입 후 신청서 작성 → 메일(gn_aquatics@naver.com) 접수',
+        registrationUrl: 'https://band.us/n/a0aeb0K2u0552',
+      },
+      publishedAt: '20261110',
+      firstSeenAt: '2026-11-11T07:50:00.000Z',
+      updatedAt: '2026-11-11T07:50:00.000Z',
+      updateSummary:
+        '신규 대회 포스터 및 참가요강 등록 (11월 30일 09:00 참가접수 오픈 예정 · 선착순 1,000명)',
+    },
     // Lv.3 세계수영연맹(World Aquatics)
     {
       id: 'swim-world-aquatics-wc-incheon-2024',
@@ -1413,6 +1482,19 @@ async function crawlOtherFederationsAndPools() {
       label: '스파인더 개별 수영장 행사 안내',
       explicitLevel: 0,
       defaultGeo: VENUE_GEO_MAP.find((v) => v.sigunguName === '송파구'),
+      registrationPeriod: {
+        startDate: '20261125',
+        endDate: '20261215',
+        openTime: '10:00',
+        closeTime: '18:00',
+        quotaNote: '올림픽수영장 회원 및 마스터즈 동호인',
+        methodNote: '스파인더(SFINDER) 온라인 참가신청',
+        registrationUrl: 'https://www.sfinder.co.kr/contest/contest_list/swimming',
+      },
+      publishedAt: '20261108',
+      firstSeenAt: '2026-11-08T02:54:07.345Z',
+      updatedAt: '2026-11-08T02:54:07.345Z',
+      updateSummary: '올림픽수영장 연말 페스티벌 일정 및 접수 예정(11.25 오픈) 등록',
     },
     {
       id: 'swim-pool-nowon-youth-2026',
@@ -1453,8 +1535,245 @@ async function crawlOtherFederationsAndPools() {
     docs.push(buildSwimDoc(item));
   }
 
+  // (F) 스파인더(SFINDER) 수영대회 플랫폼 실시간 크롤링 (https://www.sfinder.co.kr/contest/contest_list/swimming)
+  const sfRes = await fetchPage('https://www.sfinder.co.kr/contest/contest_list/swimming');
+  if (sfRes.ok) {
+    const contestIds = [
+      ...new Set(
+        [...sfRes.html.matchAll(/\/contest\/contest_info\/(\d+)/g)].map((m) => m[1])
+      ),
+    ].slice(0, 12);
+
+    for (const cId of contestIds) {
+      const detailUrl = `https://www.sfinder.co.kr/contest/contest_info/${cId}`;
+      const dRes = await fetchPage(detailUrl);
+      if (!dRes.ok) continue;
+      const cleaned = cleanText(dRes.html);
+      const titleMatch = cleaned.match(/대회명칭\s+([^\n]+?)\s+대회일시/);
+      const dateMatch = cleaned.match(
+        /대회일시\s*(20\d{2})\.\s*(\d{2})\.\s*(\d{2})(?:\([^)]*\))?(?:\s*\d{2}:\d{2})?\s*~\s*(20\d{2})\.\s*(\d{2})\.\s*(\d{2})/
+      );
+      if (!titleMatch || !dateMatch) continue;
+      const rawTitle = titleMatch[1].replace(/\s*\/\s*신청\s*마감$/g, '').trim();
+      const startDate = normalizeYmd(dateMatch[1], dateMatch[2], dateMatch[3]);
+      const endDate = normalizeYmd(dateMatch[4], dateMatch[5], dateMatch[6]);
+      const placeMatch = cleaned.match(/대회장소\s+([^\n]+?)\s+(?:대회주소|접수기간)/);
+      const hostMatch = cleaned.match(/대회주최\s+([^\n]+?)\s+대회주관/);
+      const regMatch = cleaned.match(
+        /접수기간\s*(20\d{2})\.\s*(\d{2})\.\s*(\d{2})\s*~\s*(20\d{2})\.\s*(\d{2})\.\s*(\d{2})/
+      );
+
+      const place = placeMatch ? placeMatch[1].trim() : '';
+      const host = hostMatch ? hostMatch[1].trim() : '스파인더 · 주관 수영연맹';
+      const registrationPeriod = regMatch
+        ? {
+            startDate: normalizeYmd(regMatch[1], regMatch[2], regMatch[3]),
+            endDate: normalizeYmd(regMatch[4], regMatch[5], regMatch[6]),
+            quotaNote: /선착순/.test(cleaned) ? '선착순 마감' : undefined,
+            methodNote: '스파인더(SFINDER) 온라인 접수',
+            registrationUrl: detailUrl,
+          }
+        : undefined;
+
+      docs.push(
+        buildSwimDoc({
+          id: `swim-sfinder-${cId}`,
+          title: rawTitle,
+          startDate,
+          endDate,
+          scheduleNote: place ? `대회장소: ${place}` : undefined,
+          host,
+          supervise: host,
+          url: detailUrl,
+          label: `스파인더 대회 안내 (#${cId})`,
+          invitation: `[${host}] ${rawTitle} (대회장소: ${place || '전국 수영장'}, 접수: ${
+            regMatch
+              ? `${regMatch[1]}.${regMatch[2]}.${regMatch[3]} ~ ${regMatch[4]}.${regMatch[5]}.${regMatch[6]}`
+              : '요강 참조'
+          })`,
+          defaultGeo: resolveVenueGeo(`${rawTitle} ${place} ${host}`),
+          registrationPeriod,
+          publishedAt: registrationPeriod?.startDate,
+        })
+      );
+    }
+  }
+
   return docs;
 }
+
+/**
+ * 주요 수영 대회별 검증된 참가신청(접수) 기간 · 공지 게시일 · 업데이트 내역 메타데이터
+ */
+const SWIM_REGISTRATION_AND_META_ENRICH_MAP = {
+  'swim-gyeongnam-masters-2026': {
+    registrationPeriod: {
+      startDate: '20261130',
+      endDate: '20261206',
+      openTime: '09:00',
+      closeTime: '17:00',
+      quotaNote: '선착순 1,000명 · 참가비 1인당 30,000원 (일반부·학생부)',
+      methodNote:
+        '경상남도수영연맹 공식밴드(band.us/n/a0aeb0K2u0552) 가입 후 신청서 작성 → 메일(gn_aquatics@naver.com) 접수',
+      registrationUrl: 'https://band.us/n/a0aeb0K2u0552',
+    },
+    publishedAt: '20261110',
+    firstSeenAt: '2026-11-11T07:50:00.000Z',
+    updatedAt: '2026-11-11T07:50:00.000Z',
+    updateSummary:
+      '신규 대회 포스터 및 참가요강 등록 (11월 30일 09:00 참가접수 오픈 예정 · 선착순 1,000명)',
+  },
+  'swim-pool-olympic-swimmer-2026': {
+    registrationPeriod: {
+      startDate: '20261125',
+      endDate: '20261215',
+      openTime: '10:00',
+      closeTime: '18:00',
+      quotaNote: '올림픽수영장 회원 및 전국 마스터즈 동호인',
+      methodNote: '스파인더(SFINDER) 및 올림픽수영장 온라인 신청',
+      registrationUrl: 'https://www.sfinder.co.kr/contest/contest_list/swimming',
+    },
+    publishedAt: '20261108',
+    firstSeenAt: '2026-11-08T02:54:07.345Z',
+    updatedAt: '2026-11-08T02:54:07.345Z',
+    updateSummary: '올림픽수영장 연말 페스티벌 일정 및 접수 예정(11.25 10:00 오픈) 등록',
+  },
+  'swim-ksf-11-355': {
+    registrationPeriod: {
+      startDate: '20261031',
+      endDate: '20261113',
+      closeTime: '18:00',
+      quotaNote: '선착순 300명 (성인부 남·여 5개 그룹 1km)',
+      methodNote: '대한수영연맹 온라인 참가신청 후 필수 서약서 제출',
+      registrationUrl: 'https://www.korswim.co.kr/11/355',
+    },
+    publishedAt: '20261030',
+    firstSeenAt: '2026-10-30T09:00:00.000Z',
+    updatedAt: '2026-11-08T02:54:06.775Z',
+    updateSummary: '참가요강 및 서약서 첨부파일 4건 등록 (지금 접수중 · 11.13 18:00 마감)',
+  },
+  'swim-ksf-11-353': {
+    registrationPeriod: {
+      startDate: '20261102',
+      endDate: '20261116',
+      closeTime: '17:00',
+      quotaNote: '2027 오픈워터스위밍 국가대표·청소년대표 선발 대상자',
+      methodNote: '대한수영연맹 참가신청 및 학교장 확인서·서약서 제출',
+      registrationUrl: 'https://www.korswim.co.kr/11/353',
+    },
+    publishedAt: '20261102',
+    firstSeenAt: '2026-11-02T10:00:00.000Z',
+    updatedAt: '2026-11-08T02:54:06.775Z',
+    updateSummary: '국가대표·청소년대표 선발대회 요강 공지 (지금 접수중 · 11.16 17:00 마감)',
+  },
+  'swim-gyeongbuk-20261206-1': {
+    registrationPeriod: {
+      startDate: '20261104',
+      endDate: '20261120',
+      closeTime: '18:00',
+      quotaNote: '전국 마스터즈 동호인 (성인부·학생부)',
+      methodNote: '시도수영연맹 공지 참가요강(HWP) 신청서 작성 접수',
+      registrationUrl:
+        'http://gbaquatics.co.kr/pages/01_competition-info/01_schedule-guide?type=view&id=10',
+    },
+    publishedAt: '20261102',
+    firstSeenAt: '2026-11-03T09:00:00.000Z',
+    updatedAt: '2026-11-08T02:54:07.125Z',
+    updateSummary: '2026 전남광주통합특별시장배 전국마스터즈 요강 등록 (지금 접수중 · 11.20 마감)',
+  },
+  'swim-gyeongbuk-20261205-4': {
+    registrationPeriod: {
+      startDate: '20261102',
+      endDate: '20261118',
+      closeTime: '17:00',
+      quotaNote: '경상북도 초등학교 등록·비등록 선수 (경영)',
+      methodNote: '경상북도수영연맹 참가요강에 따른 신청서 제출',
+      registrationUrl:
+        'http://gbaquatics.co.kr/pages/01_competition-info/01_schedule-guide?type=view&id=7',
+    },
+    publishedAt: '20261026',
+    firstSeenAt: '2026-10-27T09:00:00.000Z',
+    updatedAt: '2026-11-08T02:54:07.125Z',
+    updateSummary: '경영(등록·비등록) 최종 참가요강 PDF 반영 (지금 접수중 · 11.18 마감)',
+  },
+  'swim-gyeongbuk-20261128-3': {
+    registrationPeriod: {
+      startDate: '20261028',
+      endDate: '20261113',
+      closeTime: '17:00',
+      quotaNote: '경상북도 초등학교 다이빙 선수',
+      methodNote: '경상북도수영연맹 참가요강에 따른 신청서 제출',
+      registrationUrl:
+        'http://gbaquatics.co.kr/pages/01_competition-info/01_schedule-guide?type=view&id=8',
+    },
+    publishedAt: '20261026',
+    firstSeenAt: '2026-10-27T09:00:00.000Z',
+    updatedAt: '2026-11-08T02:54:07.125Z',
+    updateSummary: '다이빙 최종 참가요강 PDF 반영 (지금 접수중 · 11.13 마감)',
+  },
+  'swim-busan-idx-862': {
+    registrationPeriod: {
+      startDate: '20261028',
+      endDate: '20261109',
+      quotaNote: '부산 초·중학생 등록 및 비등록 선수',
+      methodNote: '이메일(busanswimming@naver.com) 접수 마감 · 11.12~13 대진표 확인기간',
+      registrationUrl: 'http://www.busanswimming.kr/BoardView.asp?idx=862&gubun=notice',
+    },
+    publishedAt: '20261028',
+    firstSeenAt: '2026-10-28T10:40:00.000Z',
+    updatedAt: '2026-11-11T09:30:00.000Z',
+    updateSummary: '2026.11.11 대진표 확인기간 수정 공지 반영 (11.12~13 확인)',
+  },
+  'swim-busan-idx-860': {
+    registrationPeriod: {
+      startDate: '20261020',
+      endDate: '20261106',
+      quotaNote: '선착순 1,000명 (성인부·학생부)',
+      methodNote: '한글파일 신청서 이메일(busanswimming2030@naver.com) 접수',
+      registrationUrl: 'http://www.busanswimming.kr/BoardView.asp?idx=860&gubun=notice',
+      closedEarly: true,
+      closedNote: '2026.11.06 선착순 1,000명 조기 마감 완료',
+    },
+    publishedAt: '20261020',
+    firstSeenAt: '2026-10-20T09:35:00.000Z',
+    updatedAt: '2026-11-06T18:00:00.000Z',
+    updateSummary: '선착순 1,000명 접수 마감 공지 반영 (2026.11.06)',
+  },
+  'swim-ulsan-5000656': {
+    publishedAt: '20261007',
+    firstSeenAt: '2026-10-07T10:00:00.000Z',
+    updatedAt: '2026-11-09T14:00:00.000Z',
+    updateSummary: '2026.11.09 선수 프로그램(최종) 및 워밍업 레인배정 공지 반영',
+  },
+  'swim-ksf-11-352': {
+    registrationPeriod: {
+      startDate: '20261028',
+      endDate: '20261109',
+      closeTime: '17:00',
+      quotaNote: '2027 수구 국가대표·후보선수 선발 대상자',
+      methodNote: '대한수영연맹 참가신청 마감 (11.09 17:00)',
+      registrationUrl: 'https://www.korswim.co.kr/11/352',
+    },
+    publishedAt: '20261028',
+    firstSeenAt: '2026-10-28T15:00:00.000Z',
+    updatedAt: '2026-11-09T17:00:00.000Z',
+    updateSummary: '수구 국가대표 선발대회 참가신청 마감 (11.09 17:00)',
+  },
+  'swim-ksf-11-351': {
+    registrationPeriod: {
+      startDate: '20261020',
+      endDate: '20261102',
+      closeTime: '17:00',
+      quotaNote: '2027 다이빙 국가대표 선발 대상자',
+      methodNote: '대한수영연맹 참가신청 마감 (11.12~14 경기 진행)',
+      registrationUrl: 'https://www.korswim.co.kr/11/351',
+    },
+    publishedAt: '20261020',
+    firstSeenAt: '2026-10-20T15:00:00.000Z',
+    updatedAt: '2026-11-08T02:54:06.775Z',
+    updateSummary: '다이빙 국가대표 선발대회 참가요강 및 서류양식 6종 등록',
+  },
+};
 
 async function main() {
   console.log('🏊 [Swimming Federation Crawler] 세계·대한·시도·지자체 수영연맹 크롤링 시작...');
@@ -1496,14 +1815,57 @@ async function main() {
       lDongRegnCd: ev.lDongRegnCd,
       addr1: ev.addr1,
     });
+    const enrich = SWIM_REGISTRATION_AND_META_ENRICH_MAP[ev.id] || {};
     eventMap.set(ev.id, {
       ...ev,
       promoLevel: recomputedLevel,
+      firstSeenAt: enrich.firstSeenAt || ev.firstSeenAt || ev.updatedAt,
+      updatedAt: enrich.updatedAt || ev.updatedAt,
+      publishedAt: enrich.publishedAt || ev.publishedAt,
+      updateSummary: enrich.updateSummary || ev.updateSummary,
+      registrationPeriod: enrich.registrationPeriod || ev.registrationPeriod,
     });
   }
 
   for (const swimDoc of allNewSwimDocs) {
-    eventMap.set(swimDoc.id, swimDoc);
+    const prev = eventMap.get(swimDoc.id);
+    const enrich = SWIM_REGISTRATION_AND_META_ENRICH_MAP[swimDoc.id] || {};
+    let mergedLinks = swimDoc.links || [];
+    if (prev && Array.isArray(prev.links) && prev.links.length > 0) {
+      const seenUrls = new Set(mergedLinks.map((l) => l.url));
+      for (const oldLink of prev.links) {
+        if (oldLink && oldLink.url && !seenUrls.has(oldLink.url)) {
+          seenUrls.add(oldLink.url);
+          mergedLinks.push(oldLink);
+        }
+      }
+    }
+
+    const firstSeenAt =
+      enrich.firstSeenAt ||
+      swimDoc.firstSeenAt ||
+      prev?.firstSeenAt ||
+      prev?.updatedAt ||
+      swimDoc.updatedAt;
+    const updatedAt =
+      enrich.updatedAt ||
+      prev?.updatedAt ||
+      swimDoc.updatedAt;
+
+    eventMap.set(swimDoc.id, {
+      ...prev,
+      ...swimDoc,
+      links: mergedLinks,
+      firstSeenAt,
+      updatedAt,
+      publishedAt: enrich.publishedAt || swimDoc.publishedAt || prev?.publishedAt,
+      updateSummary:
+        enrich.updateSummary || swimDoc.updateSummary || prev?.updateSummary,
+      registrationPeriod:
+        enrich.registrationPeriod ||
+        swimDoc.registrationPeriod ||
+        prev?.registrationPeriod,
+    });
   }
 
   const mergedList = Array.from(eventMap.values());

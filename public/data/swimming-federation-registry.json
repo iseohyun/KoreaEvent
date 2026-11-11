@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-09T23:46:21.949Z",
+  "updatedAt": "2026-11-11T08:15:15.057Z",
   "description": "세계수영연맹(World Aquatics), 대한수영연맹(Korea Aquatics), 전국 17개 광역시·도 수영연맹, 기초지자체(시·군·구) 수영연맹 및 개별 수영장 대회 채널 마스터 DB",
   "levelPolicy": {
     "0": "Lv.0 기타 각 수영장·체육센터 내 개별 행사 및 자체 대회",
@@ -242,8 +242,10 @@
       "lDongRegnCd": "48",
       "name": "경상남도수영연맹",
       "city": "창원",
-      "homepageUrl": "https://www.gnsports.or.kr",
-      "scheduleUrl": "https://cafe.daum.net/cwsun",
+      "homepageUrl": "https://band.us/n/a0aeb0K2u0552",
+      "scheduleUrl": "https://band.us/n/a0aeb0K2u0552",
+      "noticeUrl": "https://www.gnsports.or.kr",
+      "contactEmail": "gn_aquatics@naver.com",
       "address": "경상남도 창원시 의창구 원이대로 450 창원종합운동장 내 166호",
       "mainPool": "창원실내수영장"
     },
@@ -396,20 +398,20 @@
     }
   ],
   "crawlSummary": {
-    "totalSwimEvents": 572,
+    "totalSwimEvents": 544,
     "levelBreakdown": {
-      "0": 5,
-      "1": 153,
-      "2": 222,
-      "3": 192
+      "0": 9,
+      "1": 143,
+      "2": 224,
+      "3": 168
     },
     "bySource": {
       "koreaAquatics": 0,
       "busanSwimming": 106,
-      "ulsanSwimming": 0,
-      "seoulSwimming": 80,
-      "gyeonggiSwimming": 49,
-      "otherFederationsAndPools": 53
+      "ulsanSwimming": 70,
+      "seoulSwimming": 77,
+      "gyeonggiSwimming": 7,
+      "otherFederationsAndPools": 67
     }
   }
 }

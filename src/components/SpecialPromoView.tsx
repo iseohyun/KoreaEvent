@@ -17,10 +17,12 @@
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  Bell,
   Building2,
   Calendar,
   ChevronDown,
   ChevronRight,
+  Clock,
   ExternalLink,
   FileText,
   Globe,
@@ -39,6 +41,7 @@ import {
   FirestorePromoLink,
   PoolFilterState,
   PromoLevel,
+  RegistrationProgressStatus,
   SpecialPromoSport,
   ViewMode,
   UnifiedEventItem,
@@ -393,6 +396,137 @@ function formatPoolAdmin2Addr(pool: SwimmingPoolWithStats): string {
 }
 
 type PoolDetailType = 'COURSE' | 'EVENTS' | 'ADDR';
+
+interface SwimRegistrationComputed {
+  status: RegistrationProgressStatus;
+  badgeText: string;
+  dDayText: string | null;
+  periodDisplay: string | null;
+  quotaNote?: string;
+  methodNote?: string;
+  registrationUrl?: string;
+  closedNote?: string;
+}
+
+function formatYmdDotShort(ymd?: string): string {
+  if (!ymd || ymd.length < 8) return '';
+  return `${ymd.slice(0, 4)}.${ymd.slice(4, 6)}.${ymd.slice(6, 8)}`;
+}
+
+function formatIsoTimestampKst(iso?: string): string {
+  if (!iso) return '';
+  const trimmed = iso.trim();
+  if (/^\d{8}$/.test(trimmed)) {
+    return formatYmdDotShort(trimmed);
+  }
+  const dt = new Date(trimmed);
+  if (Number.isNaN(dt.getTime())) return trimmed;
+  const y = dt.getFullYear();
+  const m = pad2(dt.getMonth() + 1);
+  const d = pad2(dt.getDate());
+  const hh = pad2(dt.getHours());
+  const mm = pad2(dt.getMinutes());
+  return `${y}.${m}.${d} ${hh}:${mm}`;
+}
+
+function getEffectiveUpdateIso(ev: UnifiedEventItem): string {
+  return (
+    ev.updatedAt ||
+    ev.firstSeenAt ||
+    (ev.publishedAt && ev.publishedAt.length === 8
+      ? `${ev.publishedAt.slice(0, 4)}-${ev.publishedAt.slice(4, 6)}-${ev.publishedAt.slice(6, 8)}T09:00:00+09:00`
+      : '') ||
+    ''
+  );
+}
+
+function getEffectiveUpdateSortableKey(ev: UnifiedEventItem): string {
+  const pubYmd = (ev.publishedAt || '').replace(/[^0-9]/g, '').slice(0, 8);
+  const firstYmd = (ev.firstSeenAt || '').replace(/[^0-9]/g, '').slice(0, 8);
+  const updYmd = (ev.updatedAt || '').replace(/[^0-9]/g, '').slice(0, 8);
+  const bestYmd = [pubYmd, firstYmd, updYmd].filter((x) => x.length === 8).sort().pop() || '00000000';
+  return `${bestYmd}-${ev.updatedAt || ''}-${ev.startDate || ''}`;
+}
+
+function computeSwimRegistrationInfo(
+  ev: UnifiedEventItem,
+  todayYmd: string,
+  todayMs: number
+): SwimRegistrationComputed {
+  const reg = ev.registrationPeriod;
+  if (!reg || !reg.startDate || reg.startDate.length < 8) {
+    return {
+      status: 'CHECK_NOTICE',
+      badgeText: '요강/공지 확인',
+      dDayText: null,
+      periodDisplay: null,
+    };
+  }
+
+  const sYmd = reg.startDate.slice(0, 8);
+  const eYmd = (reg.endDate || reg.startDate).slice(0, 8);
+  const startStr = `${formatYmdDotShort(sYmd)}${reg.openTime ? ` ${reg.openTime}` : ''}`;
+  const endStr = `${formatYmdDotShort(eYmd)}${reg.closeTime ? ` ${reg.closeTime}` : ''}`;
+  const periodDisplay = sYmd === eYmd && !reg.openTime && !reg.closeTime
+    ? startStr
+    : `${startStr} ~ ${endStr}`;
+
+  if (reg.closedEarly) {
+    return {
+      status: 'REGISTRATION_CLOSED',
+      badgeText: '선착순 조기마감',
+      dDayText: '마감',
+      periodDisplay,
+      quotaNote: reg.quotaNote,
+      methodNote: reg.methodNote,
+      registrationUrl: reg.registrationUrl,
+      closedNote: reg.closedNote,
+    };
+  }
+
+  if (todayYmd < sYmd) {
+    const diffDays = Math.max(
+      0,
+      Math.round((ymdToMs(sYmd) - todayMs) / (1000 * 60 * 60 * 24))
+    );
+    return {
+      status: 'REGISTRATION_UPCOMING',
+      badgeText: '곧 등록 시작',
+      dDayText: diffDays === 0 ? '오늘 오픈' : `오픈 D-${diffDays}`,
+      periodDisplay,
+      quotaNote: reg.quotaNote,
+      methodNote: reg.methodNote,
+      registrationUrl: reg.registrationUrl,
+    };
+  }
+
+  if (todayYmd >= sYmd && todayYmd <= eYmd) {
+    const diffDays = Math.max(
+      0,
+      Math.round((ymdToMs(eYmd) - todayMs) / (1000 * 60 * 60 * 24))
+    );
+    return {
+      status: 'REGISTRATION_OPEN',
+      badgeText: '지금 등록중',
+      dDayText: diffDays === 0 ? '오늘 마감' : `마감 D-${diffDays}`,
+      periodDisplay,
+      quotaNote: reg.quotaNote,
+      methodNote: reg.methodNote,
+      registrationUrl: reg.registrationUrl,
+    };
+  }
+
+  return {
+    status: 'REGISTRATION_CLOSED',
+    badgeText: '접수 마감',
+    dDayText: '마감',
+    periodDisplay,
+    quotaNote: reg.quotaNote,
+    methodNote: reg.methodNote,
+    registrationUrl: reg.registrationUrl,
+    closedNote: reg.closedNote,
+  };
+}
 
 export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
   sport,
@@ -966,6 +1100,98 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
   const isSwimmingPoolsList = sport === 'SWIMMING' && viewMode === 'POOLS';
   const isSwimmingPoolsMap = sport === 'SWIMMING' && viewMode === 'POOLS_MAP';
   const isSwimmingPoolsMode = isSwimmingPoolsList || isSwimmingPoolsMap;
+  const isSwimNewsMode = sport === 'SWIMMING' && viewMode === 'SWIM_NEWS';
+  const isSpecialSwimSubView = isSwimmingPoolsMode || isSwimNewsMode;
+
+  // 새소식 대시보드 내부 빠른 필터 상태 (섹션 선택 + 업데이트 기간 필터)
+  const [newsSectionFilter, setNewsSectionFilter] = useState<
+    'ALL' | 'OPEN' | 'UPCOMING' | 'UPDATES'
+  >('ALL');
+  const [newsUpdateRangeDays, setNewsUpdateRangeDays] = useState<'ALL' | 7 | 14 | 30>(
+    'ALL'
+  );
+
+  // 수영 새소식: 전체 수영 대회(allSwimEvents) 기준 접수중 / 곧 접수 시작 / 업데이트 타임라인 산출
+  const swimNewsData = useMemo(() => {
+    const annotated = allSwimEvents.map((ev) => ({
+      ev,
+      regInfo: computeSwimRegistrationInfo(ev, todayYmd, todayMs),
+      effectiveUpdateIso: getEffectiveUpdateIso(ev),
+      sortKey: getEffectiveUpdateSortableKey(ev),
+    }));
+
+    // 1) 지금 등록(접수)중인 이벤트: 마감일이 빠른 순 정렬
+    const openEvents = annotated
+      .filter((item) => item.regInfo.status === 'REGISTRATION_OPEN')
+      .sort((a, b) => {
+        const endA = a.ev.registrationPeriod?.endDate || '99999999';
+        const endB = b.ev.registrationPeriod?.endDate || '99999999';
+        if (endA !== endB) return endA.localeCompare(endB);
+        return (a.ev.startDate || '').localeCompare(b.ev.startDate || '');
+      });
+
+    // 2) 곧 등록(접수)을 시작하는 이벤트: 접수 오픈일이 빠른 순 정렬
+    const upcomingEvents = annotated
+      .filter((item) => item.regInfo.status === 'REGISTRATION_UPCOMING')
+      .sort((a, b) => {
+        const startA = a.ev.registrationPeriod?.startDate || '99999999';
+        const startB = b.ev.registrationPeriod?.startDate || '99999999';
+        if (startA !== startB) return startA.localeCompare(startB);
+        return (a.ev.startDate || '').localeCompare(b.ev.startDate || '');
+      });
+
+    // 3) 새로 올라온 업데이트 타임라인: 최신 업데이트/공지 순 정렬 + 최근 N일 필터
+    const sortedUpdates = [...annotated].sort((a, b) =>
+      b.sortKey.localeCompare(a.sortKey)
+    );
+
+    const filteredUpdates = sortedUpdates.filter((item) => {
+      if (newsUpdateRangeDays === 'ALL') return true;
+      const ev = item.ev;
+      const candidateYmds: string[] = [];
+      if (ev.publishedAt && ev.publishedAt.length >= 8) {
+        candidateYmds.push(ev.publishedAt.slice(0, 8));
+      }
+      if (ev.firstSeenAt) {
+        const d = new Date(ev.firstSeenAt);
+        if (!Number.isNaN(d.getTime())) {
+          candidateYmds.push(
+            `${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}`
+          );
+        }
+      }
+      if (ev.updatedAt) {
+        const d = new Date(ev.updatedAt);
+        if (!Number.isNaN(d.getTime())) {
+          candidateYmds.push(
+            `${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}`
+          );
+        }
+      }
+      const bestYmd = candidateYmds.sort().pop();
+      if (!bestYmd) return false;
+      const diffDays = Math.round(
+        (todayMs - ymdToMs(bestYmd)) / (1000 * 60 * 60 * 24)
+      );
+      return diffDays <= newsUpdateRangeDays;
+    });
+
+    // 가장 최근 업데이트 시각
+    const latestIso =
+      sortedUpdates
+        .map((x) => x.ev.updatedAt || x.ev.firstSeenAt || '')
+        .filter(Boolean)
+        .sort()
+        .pop() || '';
+
+    return {
+      openEvents,
+      upcomingEvents,
+      allUpdatesCount: sortedUpdates.length,
+      filteredUpdates,
+      latestUpdateFormatted: formatIsoTimestampKst(latestIso) || formatYmdDotShort(todayYmd),
+    };
+  }, [allSwimEvents, todayYmd, todayMs, newsUpdateRangeDays]);
 
   const selectedPoolOnMap = useMemo(() => {
     if (!selectedPoolIdOnMap) return null;
@@ -1744,8 +1970,607 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
         </div>
       )}
 
+      {/* 0-C. 수영 새소식 대시보드 (viewMode === 'SWIM_NEWS': ① 지금 등록중인 대회 · ② 곧 등록을 시작하는 대회 · ③ 새로 올라온 업데이트 타임라인) */}
+      {isSwimNewsMode && (
+        <section
+          className={styles.swimNewsDashboard}
+          aria-label="수영 대회 새소식 및 참가접수 현황 대시보드"
+        >
+          {/* 상단 새소식 배너 & 빠른 섹션 필터 */}
+          <div className={styles.swimNewsHeroBar}>
+            <div className={styles.swimNewsHeroLeft}>
+              <div className={styles.swimNewsTitleRow}>
+                <span className={styles.swimNewsBellChip}>
+                  <Bell size={15} />
+                  <span>수영 새소식</span>
+                </span>
+                <h2 className={styles.swimNewsHeading}>
+                  전국 수영대회 참가접수 현황 &amp; 신규 업데이트 알림판
+                </h2>
+              </div>
+              <p className={styles.swimNewsSubDesc}>
+                대한수영연맹 · 전국 17개 시도수영연맹 · 공식 밴드 · SFINDER · 50m 경기장 공지를 추적하여{' '}
+                <strong>지금 등록중인 대회</strong>, <strong>곧 등록을 시작하는 대회</strong>,{' '}
+                <strong>새로 올라온 업데이트 시각</strong>을 한눈에 안내합니다.
+              </p>
+            </div>
+
+            <div className={styles.swimNewsSyncBox}>
+              <span className={styles.swimNewsSyncLabel}>
+                <Clock size={13} />
+                최종 크롤링·업데이트 확인
+              </span>
+              <strong className={styles.swimNewsSyncTime}>
+                {swimNewsData.latestUpdateFormatted}
+              </strong>
+            </div>
+          </div>
+
+          {/* 상단 섹션 바로가기 & 카운트 요약 탭 */}
+          <div className={styles.swimNewsFilterToolbar}>
+            <div className={styles.swimNewsSectionTabs} role="tablist" aria-label="새소식 섹션 필터">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={newsSectionFilter === 'ALL'}
+                className={`${styles.swimNewsTabBtn} ${
+                  newsSectionFilter === 'ALL' ? styles.swimNewsTabBtnActive : ''
+                }`}
+                onClick={() => setNewsSectionFilter('ALL')}
+              >
+                <span>전체 대시보드 한눈에 보기</span>
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={newsSectionFilter === 'OPEN'}
+                className={`${styles.swimNewsTabBtn} ${
+                  newsSectionFilter === 'OPEN' ? styles.swimNewsTabBtnOpenActive : ''
+                }`}
+                onClick={() => setNewsSectionFilter('OPEN')}
+              >
+                <span className={styles.statusDotOpen} />
+                <span>지금 등록중</span>
+                <span className={styles.swimNewsTabCountOpen}>
+                  {swimNewsData.openEvents.length}건
+                </span>
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={newsSectionFilter === 'UPCOMING'}
+                className={`${styles.swimNewsTabBtn} ${
+                  newsSectionFilter === 'UPCOMING'
+                    ? styles.swimNewsTabBtnUpcomingActive
+                    : ''
+                }`}
+                onClick={() => setNewsSectionFilter('UPCOMING')}
+              >
+                <span className={styles.statusDotUpcoming} />
+                <span>곧 등록 시작</span>
+                <span className={styles.swimNewsTabCountUpcoming}>
+                  {swimNewsData.upcomingEvents.length}건
+                </span>
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={newsSectionFilter === 'UPDATES'}
+                className={`${styles.swimNewsTabBtn} ${
+                  newsSectionFilter === 'UPDATES'
+                    ? styles.swimNewsTabBtnUpdatesActive
+                    : ''
+                }`}
+                onClick={() => setNewsSectionFilter('UPDATES')}
+              >
+                <span>🆕 새로 올라온 업데이트</span>
+                <span className={styles.swimNewsTabCountUpdates}>
+                  {swimNewsData.filteredUpdates.length}건
+                </span>
+              </button>
+            </div>
+          </div>
+
+          {/* ① 지금 등록(접수)중인 수영 대회 섹션 */}
+          {(newsSectionFilter === 'ALL' || newsSectionFilter === 'OPEN') && (
+            <div className={styles.swimNewsSectionCard}>
+              <div className={styles.swimNewsSectionHeader}>
+                <div className={styles.swimNewsSectionTitleWrap}>
+                  <span className={styles.swimNewsSectionBadgeOpen}>LIVE 접수중</span>
+                  <h3 className={styles.swimNewsSectionTitle}>
+                    지금 등록(참가접수)중인 수영 대회
+                  </h3>
+                  <span className={styles.swimNewsSectionCount}>
+                    {swimNewsData.openEvents.length}건
+                  </span>
+                </div>
+                <span className={styles.swimNewsSectionHint}>
+                  선착순 마감 대회는 정원 도달 시 조기 마감될 수 있습니다
+                </span>
+              </div>
+
+              {swimNewsData.openEvents.length === 0 ? (
+                <div className={styles.swimNewsEmptyBox}>
+                  현재 참가접수가 진행중인 수영 대회가 없습니다.
+                </div>
+              ) : (
+                <div className={styles.swimNewsGrid}>
+                  {swimNewsData.openEvents.map(({ ev, regInfo }) => {
+                    const specificLinks = (ev.links || []).filter((lnk) =>
+                      isSpecificEventLink(lnk.url, lnk.label)
+                    );
+                    const updatedStr = formatIsoTimestampKst(
+                      ev.updatedAt || ev.firstSeenAt
+                    );
+                    const publishedStr = formatYmdDotShort(ev.publishedAt);
+
+                    return (
+                      <article
+                        key={`open-${ev.id}`}
+                        className={`${styles.swimNewsItemCard} ${styles.swimNewsItemCardOpen}`}
+                        onClick={() => onSelectEvent(ev)}
+                      >
+                        <div className={styles.swimNewsCardTopRow}>
+                          <div className={styles.swimNewsBadgeGroup}>
+                            <span className={styles.regBadgeOpen}>
+                              🟢 {regInfo.badgeText}
+                            </span>
+                            {regInfo.dDayText && (
+                              <span className={styles.dDayChipOpen}>
+                                ⏰ {regInfo.dDayText}
+                              </span>
+                            )}
+                            <span className={SCOPE_PILL_CLASS[ev.promoLevel]}>
+                              {PROMO_LEVEL_SHORT_LABELS[ev.promoLevel]}
+                            </span>
+                            {regInfo.quotaNote && (
+                              <span className={styles.quotaChip}>
+                                👥 {regInfo.quotaNote}
+                              </span>
+                            )}
+                          </div>
+                          {updatedStr && (
+                            <span className={styles.updateTimeChip}>
+                              업데이트 {updatedStr}
+                            </span>
+                          )}
+                        </div>
+
+                        <h4 className={styles.swimNewsCardTitle}>{ev.title}</h4>
+
+                        {/* 접수기간 · 접수방법 강조 박스 */}
+                        <div className={styles.regHighlightBoxOpen}>
+                          <div className={styles.regHighlightRow}>
+                            <span className={styles.regHighlightLabel}>접수기간</span>
+                            <strong className={styles.regHighlightValue}>
+                              {regInfo.periodDisplay}
+                            </strong>
+                          </div>
+                          {regInfo.methodNote && (
+                            <div className={styles.regHighlightRow}>
+                              <span className={styles.regHighlightLabel}>접수방법</span>
+                              <span className={styles.regHighlightMethod}>
+                                {regInfo.methodNote}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className={styles.swimNewsCardFooter}>
+                          <div className={styles.metaGroup}>
+                            <span className={styles.metaItem}>
+                              <Calendar size={13} />
+                              <span>
+                                대회일: <strong>{formatYmdRange(ev.startDate, ev.endDate)}</strong>
+                              </span>
+                            </span>
+                            <span className={styles.metaItem}>
+                              <MapPin size={13} />
+                              <span>
+                                <strong>[{getEventCityShortName(ev)}]</strong>{' '}
+                                {ev.addr1 || `${ev.regionName} ${ev.sigunguName}`}
+                              </span>
+                            </span>
+                            {publishedStr && (
+                              <span className={styles.metaItem}>
+                                <span>공지일: {publishedStr}</span>
+                              </span>
+                            )}
+                          </div>
+
+                          <div
+                            className={styles.swimNewsActionLinks}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            {regInfo.registrationUrl && (
+                              <a
+                                href={regInfo.registrationUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className={styles.regDirectBtnOpen}
+                              >
+                                <span>신청·공지 바로가기</span>
+                                <ExternalLink size={13} />
+                              </a>
+                            )}
+                            {specificLinks.map((lnk, idx) => {
+                              const isRedAttachment =
+                                lnk.type === 'ATTACHMENT' ||
+                                isAttachmentLink(lnk.url, lnk.label);
+                              return (
+                                <a
+                                  key={`${lnk.url}-${idx}`}
+                                  href={lnk.url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className={`${styles.linkIconBtn} ${
+                                    isRedAttachment ? styles.linkIconBtnRed : ''
+                                  }`}
+                                  title={lnk.label}
+                                  aria-label={lnk.label}
+                                >
+                                  {renderLinkIcon(lnk)}
+                                </a>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ② 곧 등록(접수)을 시작하는 수영 대회 섹션 */}
+          {(newsSectionFilter === 'ALL' || newsSectionFilter === 'UPCOMING') && (
+            <div className={styles.swimNewsSectionCard}>
+              <div className={styles.swimNewsSectionHeader}>
+                <div className={styles.swimNewsSectionTitleWrap}>
+                  <span className={styles.swimNewsSectionBadgeUpcoming}>
+                    오픈 예정
+                  </span>
+                  <h3 className={styles.swimNewsSectionTitle}>
+                    곧 등록(참가접수)을 시작하는 수영 대회
+                  </h3>
+                  <span className={styles.swimNewsSectionCount}>
+                    {swimNewsData.upcomingEvents.length}건
+                  </span>
+                </div>
+                <span className={styles.swimNewsSectionHint}>
+                  접수 시작 시각과 사전 준비사항(밴드 가입·신청서 양식 등)을 미리 확인하세요
+                </span>
+              </div>
+
+              {swimNewsData.upcomingEvents.length === 0 ? (
+                <div className={styles.swimNewsEmptyBox}>
+                  현재 접수 시작 예정인 수영 대회가 없습니다.
+                </div>
+              ) : (
+                <div className={styles.swimNewsGrid}>
+                  {swimNewsData.upcomingEvents.map(({ ev, regInfo }) => {
+                    const specificLinks = (ev.links || []).filter((lnk) =>
+                      isSpecificEventLink(lnk.url, lnk.label)
+                    );
+                    const updatedStr = formatIsoTimestampKst(
+                      ev.updatedAt || ev.firstSeenAt
+                    );
+                    const publishedStr = formatYmdDotShort(ev.publishedAt);
+
+                    return (
+                      <article
+                        key={`upcoming-${ev.id}`}
+                        className={`${styles.swimNewsItemCard} ${styles.swimNewsItemCardUpcoming}`}
+                        onClick={() => onSelectEvent(ev)}
+                      >
+                        <div className={styles.swimNewsCardTopRow}>
+                          <div className={styles.swimNewsBadgeGroup}>
+                            <span className={styles.regBadgeUpcoming}>
+                              🟡 {regInfo.badgeText}
+                            </span>
+                            {regInfo.dDayText && (
+                              <span className={styles.dDayChipUpcoming}>
+                                ⏳ {regInfo.dDayText}
+                              </span>
+                            )}
+                            <span className={SCOPE_PILL_CLASS[ev.promoLevel]}>
+                              {PROMO_LEVEL_SHORT_LABELS[ev.promoLevel]}
+                            </span>
+                            {regInfo.quotaNote && (
+                              <span className={styles.quotaChip}>
+                                👥 {regInfo.quotaNote}
+                              </span>
+                            )}
+                          </div>
+                          {updatedStr && (
+                            <span className={styles.updateTimeChip}>
+                              업데이트 {updatedStr}
+                            </span>
+                          )}
+                        </div>
+
+                        <h4 className={styles.swimNewsCardTitle}>{ev.title}</h4>
+
+                        {/* 접수기간 · 접수방법 강조 박스 */}
+                        <div className={styles.regHighlightBoxUpcoming}>
+                          <div className={styles.regHighlightRow}>
+                            <span className={styles.regHighlightLabel}>접수오픈</span>
+                            <strong className={styles.regHighlightValue}>
+                              {regInfo.periodDisplay}
+                            </strong>
+                          </div>
+                          {regInfo.methodNote && (
+                            <div className={styles.regHighlightRow}>
+                              <span className={styles.regHighlightLabel}>접수방법</span>
+                              <span className={styles.regHighlightMethod}>
+                                {regInfo.methodNote}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        {ev.updateSummary && (
+                          <p className={styles.swimNewsUpdateNote}>
+                            💡 {ev.updateSummary}
+                          </p>
+                        )}
+
+                        <div className={styles.swimNewsCardFooter}>
+                          <div className={styles.metaGroup}>
+                            <span className={styles.metaItem}>
+                              <Calendar size={13} />
+                              <span>
+                                대회일: <strong>{formatYmdRange(ev.startDate, ev.endDate)}</strong>
+                              </span>
+                            </span>
+                            <span className={styles.metaItem}>
+                              <MapPin size={13} />
+                              <span>
+                                <strong>[{getEventCityShortName(ev)}]</strong>{' '}
+                                {ev.addr1 || `${ev.regionName} ${ev.sigunguName}`}
+                              </span>
+                            </span>
+                            {publishedStr && (
+                              <span className={styles.metaItem}>
+                                <span>공지일: {publishedStr}</span>
+                              </span>
+                            )}
+                          </div>
+
+                          <div
+                            className={styles.swimNewsActionLinks}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            {regInfo.registrationUrl && (
+                              <a
+                                href={regInfo.registrationUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className={styles.regDirectBtnUpcoming}
+                              >
+                                <span>공지·밴드 바로가기</span>
+                                <ExternalLink size={13} />
+                              </a>
+                            )}
+                            {specificLinks.map((lnk, idx) => {
+                              const isRedAttachment =
+                                lnk.type === 'ATTACHMENT' ||
+                                isAttachmentLink(lnk.url, lnk.label);
+                              return (
+                                <a
+                                  key={`${lnk.url}-${idx}`}
+                                  href={lnk.url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className={`${styles.linkIconBtn} ${
+                                    isRedAttachment ? styles.linkIconBtnRed : ''
+                                  }`}
+                                  title={lnk.label}
+                                  aria-label={lnk.label}
+                                >
+                                  {renderLinkIcon(lnk)}
+                                </a>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ③ 새로 올라온 업데이트 & 공지 타임라인 섹션 */}
+          {(newsSectionFilter === 'ALL' || newsSectionFilter === 'UPDATES') && (
+            <div className={styles.swimNewsSectionCard}>
+              <div className={styles.swimNewsSectionHeader}>
+                <div className={styles.swimNewsSectionTitleWrap}>
+                  <span className={styles.swimNewsSectionBadgeUpdates}>
+                    NEW 업데이트 기록
+                  </span>
+                  <h3 className={styles.swimNewsSectionTitle}>
+                    새로 올라온 수영 대회 업데이트 · 공지 타임라인
+                  </h3>
+                  <span className={styles.swimNewsSectionCount}>
+                    {swimNewsData.filteredUpdates.length}건
+                  </span>
+                </div>
+
+                {/* 기간 필터 버튼: 전체 최신순 | 최근 7일 | 최근 14일 | 최근 30일 */}
+                <div
+                  className={styles.updateRangeFilterGroup}
+                  role="group"
+                  aria-label="업데이트 기간 필터"
+                >
+                  {(
+                    [
+                      { key: 'ALL', label: '전체 최신순' },
+                      { key: 7, label: '최근 7일' },
+                      { key: 14, label: '최근 14일' },
+                      { key: 30, label: '최근 30일' },
+                    ] as const
+                  ).map((opt) => (
+                    <button
+                      key={String(opt.key)}
+                      type="button"
+                      className={`${styles.updateRangeBtn} ${
+                        newsUpdateRangeDays === opt.key
+                          ? styles.updateRangeBtnActive
+                          : ''
+                      }`}
+                      onClick={() => setNewsUpdateRangeDays(opt.key)}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {swimNewsData.filteredUpdates.length === 0 ? (
+                <div className={styles.swimNewsEmptyBox}>
+                  선택한 기간(최근 {newsUpdateRangeDays}일) 내에 새로 업데이트된 수영 대회가 없습니다.{' '}
+                  <button
+                    type="button"
+                    className={styles.inlineResetLinkBtn}
+                    onClick={() => setNewsUpdateRangeDays('ALL')}
+                  >
+                    전체 최신순 보기
+                  </button>
+                </div>
+              ) : (
+                <div className={styles.swimUpdateTimelineList}>
+                  {swimNewsData.filteredUpdates.map(({ ev, regInfo }) => {
+                    const specificLinks = (ev.links || []).filter((lnk) =>
+                      isSpecificEventLink(lnk.url, lnk.label)
+                    );
+                    const firstSeenStr = formatIsoTimestampKst(ev.firstSeenAt);
+                    const updatedStr = formatIsoTimestampKst(ev.updatedAt);
+                    const publishedStr = formatYmdDotShort(ev.publishedAt);
+
+                    return (
+                      <article
+                        key={`upd-${ev.id}`}
+                        className={styles.swimTimelineCard}
+                        onClick={() => onSelectEvent(ev)}
+                      >
+                        <div className={styles.swimTimelineLeftMeta}>
+                          <span className={styles.timelineTimestampPrimary}>
+                            <Clock size={12} />
+                            {updatedStr || firstSeenStr || publishedStr || '수집 완료'}
+                          </span>
+                          {firstSeenStr && firstSeenStr !== updatedStr && (
+                            <span className={styles.timelineTimestampSub}>
+                              최초 수집: {firstSeenStr}
+                            </span>
+                          )}
+                          {publishedStr && (
+                            <span className={styles.timelineTimestampSub}>
+                              원문 공지일: {publishedStr}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className={styles.swimTimelineMainBody}>
+                          <div className={styles.swimNewsBadgeGroup}>
+                            <span className={SCOPE_PILL_CLASS[ev.promoLevel]}>
+                              {PROMO_LEVEL_SHORT_LABELS[ev.promoLevel]}
+                            </span>
+                            {regInfo.status === 'REGISTRATION_OPEN' && (
+                              <span className={styles.regBadgeOpen}>
+                                🟢 {regInfo.badgeText}
+                                {regInfo.dDayText ? ` (${regInfo.dDayText})` : ''}
+                              </span>
+                            )}
+                            {regInfo.status === 'REGISTRATION_UPCOMING' && (
+                              <span className={styles.regBadgeUpcoming}>
+                                🟡 {regInfo.badgeText}
+                                {regInfo.dDayText ? ` (${regInfo.dDayText})` : ''}
+                              </span>
+                            )}
+                            {regInfo.status === 'REGISTRATION_CLOSED' && (
+                              <span className={styles.regBadgeClosed}>
+                                ⚪ {regInfo.badgeText}
+                              </span>
+                            )}
+                            {ev.organizer && (
+                              <span className={styles.timelineOrganizerText}>
+                                {ev.organizer}
+                              </span>
+                            )}
+                          </div>
+
+                          <h4 className={styles.swimTimelineTitle}>{ev.title}</h4>
+
+                          <p className={styles.swimTimelineSummary}>
+                            {ev.updateSummary || ev.invitation || ev.summary}
+                          </p>
+
+                          <div className={styles.metaGroup}>
+                            <span className={styles.metaItem}>
+                              <Calendar size={13} />
+                              <span>
+                                대회일: <strong>{formatYmdRange(ev.startDate, ev.endDate)}</strong>
+                              </span>
+                            </span>
+                            <span className={styles.metaItem}>
+                              <MapPin size={13} />
+                              <span>
+                                <strong>[{getEventCityShortName(ev)}]</strong>{' '}
+                                {ev.addr1 || `${ev.regionName} ${ev.sigunguName}`}
+                              </span>
+                            </span>
+                            {regInfo.periodDisplay && (
+                              <span className={styles.metaItem}>
+                                <span>
+                                  접수기간: <strong>{regInfo.periodDisplay}</strong>
+                                </span>
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {specificLinks.length > 0 && (
+                          <div
+                            className={styles.linkIcons}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            {specificLinks.map((lnk, idx) => {
+                              const isRedAttachment =
+                                lnk.type === 'ATTACHMENT' ||
+                                isAttachmentLink(lnk.url, lnk.label);
+                              return (
+                                <a
+                                  key={`${lnk.url}-${idx}`}
+                                  href={lnk.url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className={`${styles.linkIconBtn} ${
+                                    isRedAttachment ? styles.linkIconBtnRed : ''
+                                  }`}
+                                  title={lnk.label}
+                                  aria-label={lnk.label}
+                                >
+                                  {renderLinkIcon(lnk)}
+                                </a>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </article>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+        </section>
+      )}
+
       {/* 1. 목록보기 ("세계/대한연맹", "광역시도", "시군구", "동네" 클릭 시 펼치기/접기 애니메이션) */}
-      {!isSwimmingPoolsMode && viewMode === 'LIST' && (
+      {!isSpecialSwimSubView && viewMode === 'LIST' && (
         <>
           {scopeGroups.length === 0 ? (
             <div className={styles.emptyState}>
@@ -1804,6 +2629,16 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                               sport,
                               ev
                             );
+                            const swimRegInfo =
+                              sport === 'SWIMMING'
+                                ? computeSwimRegistrationInfo(ev, todayYmd, todayMs)
+                                : null;
+                            const swimUpdatedStr =
+                              sport === 'SWIMMING'
+                                ? formatIsoTimestampKst(
+                                    ev.updatedAt || ev.firstSeenAt
+                                  ) || formatYmdDotShort(ev.publishedAt)
+                                : '';
 
                             return (
                               <article
@@ -1811,7 +2646,7 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                                 className={`${styles.card} ${SCOPE_CARD_CLASS[ev.promoLevel]}`}
                                 onClick={() => onSelectEvent(ev)}
                               >
-                                {/* 1행: 범위 배지 + 행사 형태 배지 + 제목 <---> 주최 */}
+                                {/* 1행: 범위 배지 + 행사 형태 배지 + 참가접수 배지(수영) + 제목 <---> 주최 */}
                                 <div className={styles.rowBetween}>
                                   <div className={styles.titleRow}>
                                     <span className={SCOPE_PILL_CLASS[ev.promoLevel]}>
@@ -1825,6 +2660,29 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                                         {fmtLabel}
                                       </span>
                                     ))}
+                                    {swimRegInfo?.status === 'REGISTRATION_OPEN' && (
+                                      <span className={styles.regBadgeOpen}>
+                                        🟢 {swimRegInfo.badgeText}
+                                        {swimRegInfo.dDayText
+                                          ? ` (${swimRegInfo.dDayText})`
+                                          : ''}
+                                      </span>
+                                    )}
+                                    {swimRegInfo?.status ===
+                                      'REGISTRATION_UPCOMING' && (
+                                      <span className={styles.regBadgeUpcoming}>
+                                        🟡 {swimRegInfo.badgeText}
+                                        {swimRegInfo.dDayText
+                                          ? ` (${swimRegInfo.dDayText})`
+                                          : ''}
+                                      </span>
+                                    )}
+                                    {swimRegInfo?.status ===
+                                      'REGISTRATION_CLOSED' && (
+                                      <span className={styles.regBadgeClosed}>
+                                        ⚪ {swimRegInfo.badgeText}
+                                      </span>
+                                    )}
                                     <h3 className={styles.title}>{ev.title}</h3>
                                     {ev.seriesHistory &&
                                       ev.seriesHistory.length >= 2 && (
@@ -1847,7 +2705,7 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                                   </p>
                                 )}
 
-                                {/* 3행: 위치/날짜 <---> 구체적 이벤트 공지·홍보 링크 & 붉은색 모집공고(PDF/HWP) 아이콘 */}
+                                {/* 3행: 위치/날짜/접수기간/업데이트시각 <---> 구체적 이벤트 공지·홍보 링크 & 붉은색 모집공고(PDF/HWP) 아이콘 */}
                                 <div className={styles.rowBetween}>
                                   <div className={styles.metaGroup}>
                                     <span className={styles.metaItem}>
@@ -1866,6 +2724,19 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                                         {formatYmdRange(ev.startDate, ev.endDate)}
                                       </span>
                                     </span>
+                                    {swimRegInfo?.periodDisplay && (
+                                      <span className={styles.metaItem}>
+                                        <span>
+                                          접수: <strong>{swimRegInfo.periodDisplay}</strong>
+                                        </span>
+                                      </span>
+                                    )}
+                                    {swimUpdatedStr && (
+                                      <span className={styles.metaItem}>
+                                        <Clock size={12} />
+                                        <span>업데이트: {swimUpdatedStr}</span>
+                                      </span>
+                                    )}
                                   </div>
 
                                   {specificLinks.length > 0 && (
@@ -1913,7 +2784,7 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
       )}
 
       {/* 2. 달력보기: 기존의 달력보기(일 ~ 월, EventCalendarView) 그대로 표시 */}
-      {!isSwimmingPoolsMode && viewMode === 'CALENDAR' && (
+      {!isSpecialSwimSubView && viewMode === 'CALENDAR' && (
         <EventCalendarView
           events={sportEvents}
           displayOptions={calendarOptions}
@@ -1924,7 +2795,7 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
       )}
 
       {/* 3. 지도보기: 상단 고정 2단계 전국 행정지도 + 하단 주차별 보기 리스트 (1열: 주차, 2열: 행사) */}
-      {!isSwimmingPoolsMode && viewMode === 'MAP' && (
+      {!isSpecialSwimSubView && viewMode === 'MAP' && (
         <div className={styles.specialMapLayout}>
           {/* 상단 고정: 전국 2단계 시·군·구(250개) + 1단계 시·도(17개) 행정지도 */}
           <section

@@ -36,8 +36,33 @@ export type DbCrawlTabCategory =
  * 상단 메뉴바 보기 방식
  * - 일반/종목 이벤트: 'LIST' | 'CALENDAR' | 'MAP'
  * - 수영장 보기 전용(분리 아이콘): 'POOLS'(일람 표) | 'POOLS_MAP'(수영장 점 지도)
+ * - 수영 새소식 전용(분리 버튼): 'SWIM_NEWS'(새로 올라온 업데이트 · 지금 등록중 · 곧 등록 시작)
  */
-export type ViewMode = 'LIST' | 'CALENDAR' | 'MAP' | 'POOLS' | 'POOLS_MAP';
+export type ViewMode =
+  | 'LIST'
+  | 'CALENDAR'
+  | 'MAP'
+  | 'POOLS'
+  | 'POOLS_MAP'
+  | 'SWIM_NEWS';
+
+export type RegistrationProgressStatus =
+  | 'REGISTRATION_OPEN' // 지금 등록(접수)중
+  | 'REGISTRATION_UPCOMING' // 곧 등록(접수) 시작
+  | 'REGISTRATION_CLOSED' // 접수 마감
+  | 'CHECK_NOTICE'; // 요강/공지 참조
+
+export interface EventRegistrationPeriod {
+  startDate?: string; // YYYYMMDD (예: '20261130')
+  endDate?: string; // YYYYMMDD (예: '20261206')
+  openTime?: string; // 예: '09:00'
+  closeTime?: string; // 예: '17:00'
+  quotaNote?: string; // 예: '선착순 1,000명 · 참가비 30,000원'
+  methodNote?: string; // 예: '공식밴드 신청서 작성 후 이메일(gn_aquatics@naver.com) 접수'
+  registrationUrl?: string; // 신청/요강 페이지 URL
+  closedEarly?: boolean; // 선착순 조기마감 여부
+  closedNote?: string; // 예: '2026.11.06 선착순 1,000명 마감 완료'
+}
 
 export interface PoolCourseSelection {
   '50m': boolean;
@@ -133,6 +158,10 @@ export interface FirestoreEventDoc {
   mapY?: number;
   imageUrl?: string;
   updatedAt: string;
+  firstSeenAt?: string;
+  publishedAt?: string; // 원문 공지 게시일 (YYYYMMDD)
+  updateSummary?: string; // 업데이트 내역 요약
+  registrationPeriod?: EventRegistrationPeriod;
   manualEdited?: boolean;
   registrationMeta?: {
     isPastEvent: boolean;
@@ -233,6 +262,11 @@ export interface UnifiedEventItem {
   links?: FirestorePromoLink[];
   promoLevel: PromoLevel;
   firestoreDoc?: FirestoreEventDoc;
+  updatedAt?: string;
+  firstSeenAt?: string;
+  publishedAt?: string;
+  updateSummary?: string;
+  registrationPeriod?: EventRegistrationPeriod;
 
   // 회차별·연도별 시리즈 연결 메타데이터
   seriesId?: string;

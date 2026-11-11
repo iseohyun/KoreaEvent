@@ -229,6 +229,12 @@ function parseUrlInitialState(): {
 
   let specialViewMode: ViewMode = 'CALENDAR';
   if (
+    rawView === 'SWIM_NEWS' ||
+    rawView === 'NEWS' ||
+    rawView === '새소식'
+  ) {
+    specialViewMode = 'SWIM_NEWS';
+  } else if (
     rawView === 'POOLS_MAP' ||
     rawView === 'POOL_MAP' ||
     rawView === '수영장지도' ||
@@ -259,6 +265,7 @@ function parseUrlInitialState(): {
     rawSport !== '' ||
     specialViewMode === 'POOLS' ||
     specialViewMode === 'POOLS_MAP' ||
+    specialViewMode === 'SWIM_NEWS' ||
     rawCourse !== ''
   ) {
     menu = 'SPECIAL_PROMO';
@@ -677,11 +684,13 @@ export const App: React.FC = () => {
     }));
   }, []);
 
-  // 상단 메뉴바의 보기 방식 아이콘(목록보기 / 달력보기 / 지도보기 | 수영장 일람보기 / 수영장 지도보기) 클릭 핸들러
+  // 상단 메뉴바의 보기 방식 아이콘(목록보기 / 달력보기 / 지도보기 | 수영장 일람보기 / 수영장 지도보기 | 새소식) 클릭 핸들러
   const headerViewMode: ViewMode = useMemo(() => {
     if (activeMenu === 'SPECIAL_PROMO') {
       if (
-        (specialPromoViewMode === 'POOLS' || specialPromoViewMode === 'POOLS_MAP') &&
+        (specialPromoViewMode === 'POOLS' ||
+          specialPromoViewMode === 'POOLS_MAP' ||
+          specialPromoViewMode === 'SWIM_NEWS') &&
         activeSport !== 'SWIMMING'
       ) {
         return 'CALENDAR';
@@ -697,7 +706,11 @@ export const App: React.FC = () => {
     (mode: ViewMode) => {
       if (activeMenu === 'SPECIAL_PROMO') {
         setSpecialPromoViewMode(mode);
-      } else if (mode !== 'POOLS' && mode !== 'POOLS_MAP') {
+      } else if (
+        mode !== 'POOLS' &&
+        mode !== 'POOLS_MAP' &&
+        mode !== 'SWIM_NEWS'
+      ) {
         setActiveMenu(mode);
       }
     },
@@ -1085,9 +1098,35 @@ export const App: React.FC = () => {
     }));
   }, [allCombinedEvents, abbrSettings]);
 
+  // 수영 새소식 배지 카운트 (현재 접수중 + 곧 접수 시작 수영 대회 수)
+  const swimNewsBadgeCount = useMemo(() => {
+    const now = new Date();
+    const todayYmd = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(
+      2,
+      '0'
+    )}${String(now.getDate()).padStart(2, '0')}`;
+    let count = 0;
+    allCombinedEvents.forEach((ev) => {
+      const hay = `${ev.title} ${ev.invitation || ''} ${ev.summary || ''} ${ev.organizer || ''}`;
+      if (!matchesSportCategory(hay, 'SWIMMING')) return;
+      const reg = ev.registrationPeriod || ev.firestoreDoc?.registrationPeriod;
+      if (!reg || reg.closedEarly) return;
+      if (reg.startDate && reg.startDate > todayYmd) {
+        count += 1;
+      } else if (
+        reg.endDate &&
+        reg.endDate >= todayYmd &&
+        (!reg.startDate || reg.startDate <= todayYmd)
+      ) {
+        count += 1;
+      }
+    });
+    return count;
+  }, [allCombinedEvents]);
+
   return (
     <div className={styles.appShell}>
-      {/* 상단 메뉴바: 삼선 메뉴 + 제목 + (목록보기/달력보기/지도보기 택1 아이콘 | 수영장 일람/지도 아이콘) + 필터 아이콘 + 표시항목 아이콘 */}
+      {/* 상단 메뉴바: 삼선 메뉴 + 제목 + (목록보기/달력보기/지도보기 택1 아이콘 | 수영장 일람/지도 아이콘 | 새소식 버튼) + 필터 아이콘 + 표시항목 아이콘 */}
       <HeaderBar
         activeMenu={activeMenu}
         activeSport={activeSport}
@@ -1105,6 +1144,7 @@ export const App: React.FC = () => {
         listColumns={listColumns}
         abbreviationEnabled={abbrSettings.enabled}
         activeAbbreviationRuleCount={activeAbbreviationRuleCount}
+        swimNewsBadgeCount={swimNewsBadgeCount}
         onToggleSidebar={() => setSidebarOpen(true)}
         onChangeViewMode={handleChangeViewMode}
         onChangeDbTab={setActiveDbTab}

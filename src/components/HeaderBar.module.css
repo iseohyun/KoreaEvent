@@ -161,6 +161,63 @@
   white-space: nowrap;
 }
 
+.swimNewsBtn {
+  position: relative;
+  height: 36px;
+  padding: 0 11px;
+  border-radius: 10px;
+  border: 1px solid #f59e0b;
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  color: #b45309;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.76rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  margin-right: 4px;
+  white-space: nowrap;
+}
+
+.swimNewsBtn:hover {
+  background: #fde68a;
+  border-color: #d97706;
+  color: #92400e;
+}
+
+.swimNewsBtnActive {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  border-color: #92400e;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.32);
+}
+
+.swimNewsBtnLabel {
+  line-height: 1;
+}
+
+.swimNewsCountBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 0.67rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.swimNewsBtnActive .swimNewsCountBadge {
+  background: #ffffff;
+  color: #b45309;
+}
+
 .iconBtnWrap {
   position: relative;
   flex-shrink: 0;
