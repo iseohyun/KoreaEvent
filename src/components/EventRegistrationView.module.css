@@ -1,620 +1,783 @@
-.page {
+.pageContainer {
   max-width: 980px;
   margin: 0 auto;
-  padding: 20px 18px 56px;
+  padding: 20px 24px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* =====================================================================
+   STEP 카드 공통 (STEP 1: 프로세스 고지 / STEP 2: 등록방식 선택 및 폼)
+   ===================================================================== */
+.stepCard {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 16px;
+  padding: 22px 24px;
   display: flex;
   flex-direction: column;
   gap: 18px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
 }
 
-.heroBanner {
-  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
-  color: #ffffff;
-  border-radius: 14px;
-  padding: 20px 22px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
+.stepCardInvalid {
+  border-color: #ef4444;
+  background: #fffafa;
 }
 
-.heroLeft {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.heroBadgeRow {
+.stepHeaderRow {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.openToAllBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: rgba(16, 185, 129, 0.2);
-  border: 1px solid rgba(52, 211, 153, 0.55);
-  color: #6ee7b7;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 999px;
-}
-
-.autoGeoBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: rgba(59, 130, 246, 0.24);
-  border: 1px solid rgba(147, 197, 253, 0.45);
-  color: #bfdbfe;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 999px;
-}
-
-.heroTitle {
-  margin: 2px 0 0;
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-.heroDesc {
-  margin: 0;
-  font-size: 13.5px;
-  color: #cbd5e1;
-  line-height: 1.55;
-}
-
-.card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 20px 22px;
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.cardHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  border-bottom: 1px solid #f1f5f9;
+  gap: 10px;
   padding-bottom: 12px;
-}
-
-.cardTitleWrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .stepBadge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #eff6ff;
-  color: #1d4ed8;
-  border: 1px solid #bfdbfe;
-  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #1d4ed8;
+  color: #ffffff;
+  font-size: 0.76rem;
   font-weight: 800;
-  padding: 2px 8px;
-  border-radius: 6px;
+  letter-spacing: 0.03em;
 }
 
-.cardTitle {
+.stepTitle {
   margin: 0;
-  font-size: 16px;
-  font-weight: 800;
+  font-size: 1.15rem;
+  font-weight: 900;
   color: #0f172a;
 }
 
-.agreeAllBtn {
+/* =====================================================================
+   STEP 1: O --- O --- O 그래픽 (등록 ─── 확인 ─── 적용)
+   ===================================================================== */
+.processGraphicWrap {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  padding: 16px 20px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+}
+
+.processNode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 170px;
+  text-align: center;
+}
+
+.processCircle {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 3px solid #2563eb;
+  background: #ffffff;
+  color: #1d4ed8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.96rem;
+  font-weight: 900;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.14);
+}
+
+.processNodeCaption {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #475569;
+  line-height: 1.4;
+}
+
+.processConnectorLine {
+  flex: 1;
+  max-width: 140px;
+  min-width: 40px;
+  height: 3px;
+  background: linear-gradient(90deg, #2563eb 0%, #60a5fa 50%, #2563eb 100%);
+  margin-top: 28px;
+  border-radius: 999px;
+}
+
+.step1ConfirmBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+}
+
+.confirmCheckLabel {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1px solid #cbd5e1;
+  gap: 8px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #0f172a;
+  cursor: pointer;
+  user-select: none;
+}
+
+.confirmCheckLabelInvalid {
+  color: #dc2626;
+}
+
+.confirmCheckbox {
+  width: 18px;
+  height: 18px;
+  accent-color: #2563eb;
+  cursor: pointer;
+}
+
+/* =====================================================================
+   STEP 2: 3가지 등록방식 탭 (포스터로 등록 / URL로 등록 / 직접 입력 등록)
+   ===================================================================== */
+.methodTabsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.methodTabBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 16px;
+  border-radius: 12px;
+  border: 1.5px solid #cbd5e1;
   background: #f8fafc;
-  color: #1e293b;
-  font-size: 12.5px;
-  font-weight: 700;
+  color: #334155;
+  font-size: 0.94rem;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
-.agreeAllBtnActive {
+.methodTabBtn:hover {
+  border-color: #93c5fd;
   background: #eff6ff;
-  border-color: #2563eb;
   color: #1d4ed8;
 }
 
-.noticeList {
+.methodTabBtnActive {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.22);
+}
+
+/* =====================================================================
+   `항목 - 입력` 1행(Single Row) 수직 진행 폼 리스트
+   ===================================================================== */
+.singleRowFormList {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.noticeItem {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 13px 15px;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.noticeItemChecked {
-  background: #f0fdf4;
-  border-color: #86efac;
-}
-
-.noticeCheckbox {
-  width: 17px;
-  height: 17px;
-  margin-top: 2px;
-  accent-color: #16a34a;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.noticeContent {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-}
-
-.noticeTitleRow {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  flex-wrap: wrap;
-}
-
-.requiredTag {
-  font-size: 11px;
-  font-weight: 800;
-  padding: 1px 6px;
-  border-radius: 4px;
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-.noticeHeadline {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: #0f172a;
-}
-
-.noticeSub {
-  margin: 0;
-  font-size: 12.5px;
-  color: #475569;
-  line-height: 1.5;
-}
-
-.formGrid2 {
+.itemInputRow {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 170px 1fr;
+  align-items: center;
   gap: 14px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
 }
 
-.formGrid3 {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+.itemInputRowInvalid {
+  border-color: #ef4444;
+  background: #fef2f2;
 }
 
-.field {
+.rowLabel {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #1e293b;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.itemInputRowInvalid .rowLabel {
+  color: #dc2626;
+}
+
+.reqStar {
+  color: #dc2626;
+  font-weight: 900;
+}
+
+.rowInputWrap {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
 }
 
-.label {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: #334155;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.input,
-.select,
-.textarea {
+.rowInput,
+.rowSelect,
+.rowTimeInput {
   width: 100%;
   box-sizing: border-box;
   padding: 9px 12px;
-  border-radius: 8px;
   border: 1px solid #cbd5e1;
-  background: #ffffff;
-  font-size: 13.5px;
+  border-radius: 8px;
+  font-size: 0.88rem;
   color: #0f172a;
-  outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  background: #ffffff;
+  font-family: inherit;
 }
 
-.input:focus,
-.select:focus,
-.textarea:focus {
+.rowInput:focus,
+.rowSelect:focus,
+.rowTimeInput:focus {
+  outline: none;
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
-.textarea {
-  resize: vertical;
-  min-height: 76px;
-  line-height: 1.5;
+.inputInvalid {
+  border-color: #dc2626 !important;
+  background: #fff5f5 !important;
+  color: #991b1b;
 }
 
-.addressSearchRow {
-  display: flex;
+.fieldErrorMsg {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.inlineDateAndTime {
+  display: grid;
+  grid-template-columns: 1fr 150px;
   gap: 8px;
   align-items: center;
 }
 
-.addressSearchBtn {
+.numberUnitWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.unitSuffix {
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.sampleHelperRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sampleMiniBtn {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sampleMiniBtn:hover {
+  background: #dbeafe;
+}
+
+.disciplineChipsWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+}
+
+.discToggleChip {
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.discToggleChipActive {
+  background: #1d4ed8;
+  border: 1px solid #1e40af;
+  color: #ffffff;
+}
+
+.discToggleChipDimmed {
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+  color: #64748b;
+  opacity: 0.65;
+}
+
+.formSubmitRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 8px;
+}
+
+.primarySubmitBtn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 9px 14px;
-  border-radius: 8px;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 10px;
   border: 1px solid #1d4ed8;
   background: #2563eb;
   color: #ffffff;
-  font-size: 13px;
-  font-weight: 700;
-  white-space: nowrap;
+  font-size: 0.94rem;
+  font-weight: 800;
   cursor: pointer;
 }
 
-.addressSearchBtn:hover {
+.primarySubmitBtn:hover {
   background: #1d4ed8;
 }
 
-.sampleAddrRow {
-  display: flex;
+.adminApproveDirectBtn {
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.sampleAddrLabel {
-  font-size: 11.5px;
-  color: #64748b;
-  font-weight: 600;
-}
-
-.sampleChip {
-  padding: 3px 9px;
-  border-radius: 999px;
-  border: 1px solid #cbd5e1;
-  background: #f8fafc;
-  color: #334155;
-  font-size: 11.5px;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: 1px solid #15803d;
+  background: #16a34a;
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 800;
   cursor: pointer;
 }
 
-.sampleChip:hover {
-  background: #eff6ff;
-  border-color: #93c5fd;
-  color: #1d4ed8;
+.adminApproveDirectBtn:hover {
+  background: #15803d;
 }
 
-.autoClassificationBox {
+/* =====================================================================
+   제출 결과 알림 배너
+   ===================================================================== */
+.submitBanner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  flex-wrap: wrap;
-  padding: 12px 15px;
+  padding: 12px 16px;
   border-radius: 10px;
-  background: #f0f9ff;
-  border: 1px solid #bae6fd;
+  font-size: 0.86rem;
+  font-weight: 700;
 }
 
-.autoClassLeft {
+.submitBannerSuccess {
+  background: #ecfdf5;
+  border: 1px solid #6ee7b7;
+  color: #065f46;
+}
+
+.submitBannerError {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+}
+
+.bannerCloseBtn {
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  border-radius: 6px;
+  padding: 3px 9px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* =====================================================================
+   포스터 미리보기 박스 (미등록 / 삭제됨 / 정상 이미지)
+   ===================================================================== */
+.posterEmptyBox {
+  min-height: 120px;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #64748b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.posterDeletedBox {
+  min-height: 120px;
+  border: 1.5px dashed #fca5a5;
+  border-radius: 10px;
+  background: #fff1f2;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.posterDeletedTitle {
+  font-size: 0.88rem;
+  font-weight: 900;
+  color: #b91c1c;
+}
+
+.posterDeletedSub {
+  font-size: 0.75rem;
+  color: #7f1d1d;
+  word-break: break-all;
+}
+
+.posterImageFrame {
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.posterBoxCompact {
+  min-height: 96px;
+  padding: 10px;
+}
+
+.posterPreviewImg {
+  max-width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+/* =====================================================================
+   관리자(iseohyun@hanmail.net) 미확인 요청 패널
+   ===================================================================== */
+.adminPendingPanel {
+  background: #fffbeb;
+  border: 1.5px solid #fcd34d;
+  border-radius: 16px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.adminPanelHeader {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
   flex-wrap: wrap;
+  gap: 12px;
 }
 
-.autoClassStatus {
+.adminPanelTitleWrap {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.adminShieldBadge {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 3px 9px;
+  padding: 4px 10px;
   border-radius: 999px;
-  background: #0284c7;
+  background: #dc2626;
   color: #ffffff;
-  font-size: 11.5px;
-  font-weight: 700;
+  font-size: 0.76rem;
+  font-weight: 800;
 }
 
-.autoClassDetail {
-  font-size: 13px;
-  font-weight: 700;
-  color: #0c4a6e;
+.adminPanelTitle {
+  margin: 0;
+  font-size: 1.04rem;
+  font-weight: 900;
+  color: #0f172a;
 }
 
-.codePillGroup {
+.adminPendingCountBadge {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.adminHeaderControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.adminStatusTabs {
+  display: inline-flex;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 3px;
+  gap: 4px;
+}
+
+.adminStatusTabBtn {
+  border: none;
+  background: transparent;
+  padding: 5px 10px;
+  border-radius: 7px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+}
+
+.adminStatusTabBtnActive {
+  background: #1d4ed8;
+  color: #ffffff;
+}
+
+.refreshQueueBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.adminEmptyBox {
+  background: #ffffff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.adminRequestsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+}
+
+.adminRequestCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
+.adminReqTopBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.adminReqBadges {
   display: flex;
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
 }
 
-.codePill {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 3px 9px;
+.methodTag {
+  padding: 3px 8px;
   border-radius: 6px;
-  background: #ffffff;
-  border: 1px solid #7dd3fc;
-  color: #0369a1;
-}
-
-.modeBannerPast {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
-  padding: 11px 14px;
-  border-radius: 10px;
-  background: #fffbeb;
-  border: 1px solid #fde68a;
-  color: #92400e;
-  font-size: 12.5px;
-  font-weight: 600;
-}
-
-.modeBannerUpcoming {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
-  padding: 11px 14px;
-  border-radius: 10px;
   background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  color: #1e40af;
-  font-size: 12.5px;
-  font-weight: 600;
+  color: #1d4ed8;
+  font-size: 0.74rem;
+  font-weight: 800;
 }
 
-.scopeCardsGrid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+.statusPendingTag {
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #fef3c7;
+  color: #b45309;
+  font-size: 0.74rem;
+  font-weight: 800;
 }
 
-.scopeCardBtn {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+.statusApprovedTag {
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.statusRejectedTag {
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.adminReqTime {
+  display: inline-flex;
+  align-items: center;
   gap: 4px;
-  padding: 11px 12px;
-  border-radius: 10px;
-  border: 1px solid #cbd5e1;
-  background: #f8fafc;
-  cursor: pointer;
-  text-align: left;
-  transition: all 0.15s ease;
+  font-size: 0.74rem;
+  color: #64748b;
 }
 
-.scopeCardBtnActive {
-  background: #eff6ff;
-  border: 2px solid #2563eb;
-}
-
-.scopeCardTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.scopeCardTitle {
-  font-size: 13px;
+.adminReqTitle {
+  margin: 0;
+  font-size: 0.94rem;
   font-weight: 800;
   color: #0f172a;
 }
 
-.scopeCardSub {
-  font-size: 11.5px;
-  color: #64748b;
-  line-height: 1.35;
-}
-
-.upgradeVerifyPanel {
-  padding: 14px 16px;
-  border-radius: 10px;
-  background: #fefce8;
-  border: 1px solid #fde047;
+.adminReqMetaList {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: #334155;
 }
 
-.upgradeTitle {
-  margin: 0;
-  font-size: 13.5px;
-  font-weight: 800;
-  color: #854d0e;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.adminReqLinkRow {
+  word-break: break-all;
 }
 
-.verifyChannelBox {
-  padding: 13px 15px;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.verifyChannelBoxDone {
-  background: #f0fdf4;
-  border-color: #86efac;
-}
-
-.verifyRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.verifyActionBtn {
-  padding: 8px 13px;
-  border-radius: 8px;
-  border: 1px solid #2563eb;
-  background: #eff6ff;
-  color: #1d4ed8;
-  font-size: 12.5px;
-  font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.verifyActionBtn:hover:not(:disabled) {
-  background: #dbeafe;
-}
-
-.verifyActionBtn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.verifiedPill {
+.adminExternalLink {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: #dcfce7;
-  color: #15803d;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.domainMatchHint {
-  font-size: 12px;
+  color: #2563eb;
+  text-decoration: underline;
   font-weight: 600;
 }
 
-.domainMatchOk {
-  color: #15803d;
-}
-
-.domainMatchErr {
-  color: #b91c1c;
-}
-
-.linksList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.linkItemRow {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.removeLinkBtn {
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid #fecaca;
-  background: #fef2f2;
-  color: #dc2626;
-  cursor: pointer;
-}
-
-.submitBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  flex-wrap: wrap;
-  padding: 16px 20px;
-  border-radius: 12px;
+.adminReqNotes {
+  padding: 6px 8px;
   background: #f8fafc;
-  border: 1px solid #e2e8f0;
-}
-
-.submitCheckSummary {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 12.5px;
+  border-radius: 6px;
   color: #475569;
 }
 
-.submitBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  border-radius: 10px;
-  border: none;
-  background: #2563eb;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+.adminPosterPreviewWrap {
+  margin-top: 4px;
 }
 
-.submitBtn:disabled {
-  background: #94a3b8;
-  box-shadow: none;
-  cursor: not-allowed;
-}
-
-.successBanner {
-  padding: 14px 18px;
-  border-radius: 12px;
-  background: #ecfdf5;
-  border: 1px solid #6ee7b7;
-  color: #065f46;
-  font-size: 13.5px;
-  font-weight: 700;
+.adminReqActionRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
 }
 
-@media (max-width: 768px) {
-  .formGrid2,
-  .formGrid3,
-  .scopeCardsGrid {
+.adminInspectApproveBtn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #16a34a;
+  background: #16a34a;
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.adminInspectApproveBtn:hover {
+  background: #15803d;
+}
+
+.adminRejectBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #fca5a5;
+  background: #fef2f2;
+  color: #dc2626;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (max-width: 720px) {
+  .methodTabsRow {
     grid-template-columns: 1fr;
+  }
+
+  .itemInputRow {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .inlineDateAndTime {
+    grid-template-columns: 1fr;
+  }
+
+  .processGraphicWrap {
+    padding: 12px 8px;
+  }
+
+  .processNode {
+    width: 96px;
   }
 }

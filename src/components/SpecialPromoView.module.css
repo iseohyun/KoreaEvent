@@ -2047,27 +2047,26 @@
   gap: 16px;
 }
 
-.swimNewsHeroBar {
+.swimCrawlChartCard {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 12px;
   padding: 16px 20px;
   border-radius: 14px;
-  background: linear-gradient(135deg, #fff1f2 0%, #f0f9ff 100%);
-  border: 1px solid #fecdd3;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  border: 1px solid #cbd5e1;
   box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
 }
 
-.swimNewsHeroLeft {
+.swimCrawlChartHeader {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-.swimNewsTitleRow {
+.swimCrawlChartTitleWrap {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -2086,46 +2085,54 @@
   font-weight: 900;
 }
 
-.swimNewsHeading {
+.swimCrawlChartHeading {
   margin: 0;
-  font-size: 1.16rem;
+  font-size: 1.12rem;
   font-weight: 900;
   color: #0f172a;
   letter-spacing: -0.02em;
 }
 
-.swimNewsSubDesc {
-  margin: 0;
-  font-size: 0.82rem;
-  color: #334155;
-  line-height: 1.5;
+.swimCrawlChartSummaryBadge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #1e40af;
+  background: #dbeafe;
+  border: 1px solid #93c5fd;
+  padding: 2px 9px;
+  border-radius: 999px;
 }
 
-.swimNewsSyncBox {
+.swimCrawlChartRight {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 3px;
-  padding: 8px 14px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid #cbd5e1;
-  flex-shrink: 0;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-.swimNewsSyncLabel {
+.swimCrawlChartSyncInfo {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 700;
   color: #64748b;
 }
 
-.swimNewsSyncTime {
-  font-size: 0.86rem;
-  font-weight: 900;
-  color: #0f172a;
+.swimCrawlSvgWrap {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 10px 4px;
+  box-sizing: border-box;
+}
+
+.swimCrawlSvg {
+  width: 100%;
+  height: auto;
+  max-height: 220px;
+  display: block;
 }
 
 /* 상단 섹션 빠른 필터 탭 */

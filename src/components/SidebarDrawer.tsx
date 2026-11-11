@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Award,
+  Bell,
   Calendar,
   CalendarPlus,
   ChevronDown,
@@ -112,6 +113,17 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
             >
               <List size={18} />
               <span>행사 리스트</span>
+            </button>
+
+            <button
+              type="button"
+              className={`${styles.navItem} ${
+                activeMenu === 'EVENT_NEWS' ? styles.navItemActive : ''
+              }`}
+              onClick={() => handlePick('EVENT_NEWS')}
+            >
+              <Bell size={18} />
+              <span>새소식</span>
             </button>
 
             {/* 특별 홍보관: 자체 페이지 없이 하위 항목('수영', '러닝', '자전거', '철인')을 펼치는 상위 그룹 */}

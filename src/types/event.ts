@@ -10,11 +10,56 @@ export type MainMenuView =
   | 'MAP'
   | 'CALENDAR'
   | 'LIST'
+  | 'EVENT_NEWS'
   | 'EVENT_REGISTER'
   | 'PROMO_DIRECTORY'
   | 'SPECIAL_PROMO'
   | 'SETTINGS'
   | 'ABOUT';
+
+export type EventRegistrationRequestMethod = 'POSTER' | 'URL' | 'DETAILED';
+
+export interface EventRegistrationRequestItem {
+  id: string;
+  method: EventRegistrationRequestMethod;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  createdAt: string;
+  createdByEmail: string;
+  createdByName?: string;
+  createdByUid?: string;
+  posterUrl?: string;
+  noticeUrl?: string;
+  title?: string;
+  sportGroup?: EventDisciplineGroup;
+  operatingDisciplines?: string[];
+  regionId?: string;
+  lDongRegnCd?: string;
+  lDongSignguCd?: string;
+  sigunguName?: string;
+  addr1?: string;
+  venuePoolName?: string;
+  startDate?: string;
+  endDate?: string;
+  scheduleNote?: string;
+  eventTime?: string;
+  host?: string;
+  supervise?: string;
+  contact?: string;
+  feeText?: string;
+  feeSpecialNote?: string;
+  preOpenDate?: string;
+  publishedAt?: string;
+  regStartDate?: string;
+  regEndDate?: string;
+  adultParticipantCount?: number;
+  studentParticipantCount?: number;
+  regMethodNote?: string;
+  promoLevel?: PromoLevel;
+  additionalNotes?: string;
+  approvedEventId?: string;
+  reviewedAt?: string;
+  reviewedByEmail?: string;
+}
 
 /**
  * 특별 홍보관 하위 스포츠 종목 카테고리
@@ -92,6 +137,15 @@ export type PromoLevel = 0 | 1 | 2 | 3;
 
 export type ScopeFilterState = Record<PromoLevel, boolean>;
 
+export type EventDisciplineGroup =
+  | 'SWIMMING'
+  | 'RUNNING'
+  | 'CYCLING'
+  | 'TRIATHLON'
+  | 'FESTIVAL'
+  | 'PERFORMANCE'
+  | 'EXHIBITION_MUNICIPAL';
+
 export type PromoLinkType =
   | 'TIER1_PROMO'
   | 'TIER2_PROMO'
@@ -157,11 +211,19 @@ export interface FirestoreEventDoc {
   mapX?: number;
   mapY?: number;
   imageUrl?: string;
+  posterUrl?: string;
   updatedAt: string;
   firstSeenAt?: string;
   publishedAt?: string; // 원문 공지 게시일 (YYYYMMDD)
   updateSummary?: string; // 업데이트 내역 요약
   registrationPeriod?: EventRegistrationPeriod;
+  sportDisciplineGroup?: EventDisciplineGroup;
+  operatingDisciplines?: string[];
+  feeText?: string;
+  feeSpecialNote?: string;
+  preOpenDate?: string;
+  venuePoolId?: string;
+  venuePoolName?: string;
   manualEdited?: boolean;
   registrationMeta?: {
     isPastEvent: boolean;
@@ -251,6 +313,7 @@ export interface UnifiedEventItem {
 
   // 이미지 및 부가정보
   imageUrl?: string;
+  posterUrl?: string;
   thumbnailUrl?: string;
   modifiedTime?: string;
   summary?: string;
@@ -267,6 +330,13 @@ export interface UnifiedEventItem {
   publishedAt?: string;
   updateSummary?: string;
   registrationPeriod?: EventRegistrationPeriod;
+  sportDisciplineGroup?: EventDisciplineGroup;
+  operatingDisciplines?: string[];
+  feeText?: string;
+  feeSpecialNote?: string;
+  preOpenDate?: string;
+  venuePoolId?: string;
+  venuePoolName?: string;
 
   // 회차별·연도별 시리즈 연결 메타데이터
   seriesId?: string;

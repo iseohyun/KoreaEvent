@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-11T08:15:15.057Z",
-  "totalSeries": 274,
+  "generatedAt": "2026-11-11T10:16:40.752Z",
+  "totalSeries": 273,
   "series": [
     {
       "seriesId": "series-47-150-수영다이빙국가대표선발대회",
@@ -443,7 +443,7 @@
           "year": 2024,
           "startDate": "20240610",
           "endDate": "20240610",
-          "primaryUrl": "http://www.gswimming.com/34/472"
+          "primaryUrl": "http://www.gswimming.com/34/1015"
         },
         {
           "id": "swim-ksf-11-303",
@@ -461,7 +461,7 @@
           "year": 2026,
           "startDate": "20260730",
           "endDate": "20260730",
-          "primaryUrl": "http://www.gswimming.com/34/260"
+          "primaryUrl": "http://www.gswimming.com/34/1057"
         },
         {
           "id": "swim-ksf-11-347",
@@ -498,6 +498,33 @@
           "startDate": "20211009",
           "endDate": "20211014",
           "primaryUrl": "https://www.korswim.co.kr/11/181"
+        }
+      ]
+    },
+    {
+      "seriesId": "series-47-150-경상북도교육감배초등학교수영대회경영",
+      "seriesName": "경상북도 교육감기 초등학교 수영대회(경영)",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "150",
+      "sigunguName": "김천시",
+      "editions": [
+        {
+          "id": "swim-gyeongbuk-20261128-3",
+          "title": "제26회 경상북도 교육감기 초등학교 수영대회(다이빙)",
+          "edition": 26,
+          "year": 2026,
+          "startDate": "20261128",
+          "endDate": "20261128",
+          "primaryUrl": "http://gbaquatics.co.kr/pages/01_competition-info/01_schedule-guide?type=view&id=8"
+        },
+        {
+          "id": "swim-gyeongbuk-20261205-4",
+          "title": "제26회 경상북도 교육감기 초등학교 수영대회(경영)",
+          "edition": 26,
+          "year": 2026,
+          "startDate": "20261205",
+          "endDate": "20261205",
+          "primaryUrl": "http://gbaquatics.co.kr/pages/01_competition-info/01_schedule-guide?type=view&id=7"
         }
       ]
     },
@@ -662,7 +689,7 @@
           "year": 2025,
           "startDate": "20250227",
           "endDate": "20250227",
-          "primaryUrl": "http://www.gswimming.com/34/253"
+          "primaryUrl": "http://www.gswimming.com/34/1029"
         },
         {
           "id": "swim-ksf-11-289",
@@ -680,7 +707,7 @@
           "year": 2026,
           "startDate": "20260219",
           "endDate": "20260219",
-          "primaryUrl": "http://www.gswimming.com/34/258"
+          "primaryUrl": "http://www.gswimming.com/34/1047"
         },
         {
           "id": "swim-ksf-11-336",
@@ -716,7 +743,7 @@
           "year": 2025,
           "startDate": "20251101",
           "endDate": "20251101",
-          "primaryUrl": "http://cycling.or.kr/membership/member/terms/"
+          "primaryUrl": "https://bikelife.cycling.or.kr/events/tour/info/?mode=info&tourcd=30119"
         },
         {
           "id": "cyc-kcf-30128",
@@ -725,7 +752,7 @@
           "year": 2026,
           "startDate": "20261107",
           "endDate": "20261107",
-          "primaryUrl": "http://cycling.or.kr/membership/member/terms/"
+          "primaryUrl": "https://bikelife.cycling.or.kr/events/tour/info/?mode=info&tourcd=30128"
         }
       ]
     },
@@ -851,7 +878,7 @@
           "year": 2025,
           "startDate": "20250325",
           "endDate": "20250325",
-          "primaryUrl": "http://www.gswimming.com/34/315"
+          "primaryUrl": "http://www.gswimming.com/34/1031"
         },
         {
           "id": "swim-ksf-11-298",
@@ -905,7 +932,7 @@
           "year": 2025,
           "startDate": "20250223",
           "endDate": "20250223",
-          "primaryUrl": "https://www.sfinder.co.kr/contest/contest_list/swimming"
+          "primaryUrl": "https://www.sfinder.co.kr/contest/contest_info/351"
         },
         {
           "id": "swim-incheon-76-2026",
@@ -914,7 +941,7 @@
           "year": 2026,
           "startDate": "20260222",
           "endDate": "20260222",
-          "primaryUrl": "https://www.sfinder.co.kr/contest/contest_list/swimming"
+          "primaryUrl": "https://www.sfinder.co.kr/contest/contest_info/387"
         }
       ]
     },
@@ -931,7 +958,7 @@
           "year": 2024,
           "startDate": "20241207",
           "endDate": "20241208",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1942"
         },
         {
           "id": "tri-ktf-2032",
@@ -939,7 +966,7 @@
           "year": 2025,
           "startDate": "20251206",
           "endDate": "20251207",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2032"
         }
       ]
     },
@@ -1131,7 +1158,7 @@
           "year": 2024,
           "startDate": "20240506",
           "endDate": "20240506",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1892"
         },
         {
           "id": "tri-ktf-1975",
@@ -1139,7 +1166,7 @@
           "year": 2025,
           "startDate": "20250504",
           "endDate": "20250504",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1975"
         },
         {
           "id": "tri-ktf-2075",
@@ -1147,7 +1174,7 @@
           "year": 2026,
           "startDate": "20260503",
           "endDate": "20260503",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2075"
         }
       ]
     },
@@ -1245,7 +1272,7 @@
           "year": 2025,
           "startDate": "20251101",
           "endDate": "20251102",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2009"
         },
         {
           "id": "tri-ktf-2050",
@@ -1253,7 +1280,7 @@
           "year": 2026,
           "startDate": "20260815",
           "endDate": "20260816",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2050"
         }
       ]
     },
@@ -1270,7 +1297,7 @@
           "year": 2024,
           "startDate": "20240713",
           "endDate": "20240714",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1921"
         },
         {
           "id": "tri-ktf-1994",
@@ -1278,7 +1305,7 @@
           "year": 2025,
           "startDate": "20250705",
           "endDate": "20250706",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1994"
         },
         {
           "id": "tri-ktf-2043",
@@ -1286,7 +1313,7 @@
           "year": 2026,
           "startDate": "20260711",
           "endDate": "20260712",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2043"
         }
       ]
     },
@@ -1355,7 +1382,7 @@
           "year": 2025,
           "startDate": "20250125",
           "endDate": "20250125",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1946"
         },
         {
           "id": "tri-ktf-2033",
@@ -1363,7 +1390,7 @@
           "year": 2025,
           "startDate": "20251129",
           "endDate": "20251129",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2033"
         },
         {
           "id": "tri-ktf-2049",
@@ -1371,7 +1398,7 @@
           "year": 2026,
           "startDate": "20261219",
           "endDate": "20261219",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2049"
         }
       ]
     },
@@ -1388,7 +1415,7 @@
           "year": 2024,
           "startDate": "20240406",
           "endDate": "20240407",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1897"
         },
         {
           "id": "tri-ktf-1957",
@@ -1396,7 +1423,7 @@
           "year": 2025,
           "startDate": "20250329",
           "endDate": "20250330",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1957"
         },
         {
           "id": "tri-ktf-2047",
@@ -1404,7 +1431,7 @@
           "year": 2026,
           "startDate": "20260328",
           "endDate": "20260329",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2047"
         }
       ]
     },
@@ -1422,7 +1449,7 @@
           "year": 2024,
           "startDate": "20240816",
           "endDate": "20240816",
-          "primaryUrl": "http://www.gswimming.com/34/334"
+          "primaryUrl": "http://www.gswimming.com/34/1018"
         },
         {
           "id": "swim-gyeonggi-34-880",
@@ -1431,7 +1458,7 @@
           "year": 2025,
           "startDate": "20250820",
           "endDate": "20250820",
-          "primaryUrl": "http://www.gswimming.com/34/880"
+          "primaryUrl": "http://www.gswimming.com/34/1040"
         },
         {
           "id": "swim-gyeonggi-34-541",
@@ -1440,7 +1467,7 @@
           "year": 2026,
           "startDate": "20260812",
           "endDate": "20260812",
-          "primaryUrl": "http://www.gswimming.com/34/541"
+          "primaryUrl": "http://www.gswimming.com/34/1058"
         }
       ]
     },
@@ -1458,7 +1485,7 @@
           "year": 2024,
           "startDate": "20240610",
           "endDate": "20240610",
-          "primaryUrl": "http://www.gswimming.com/34/384"
+          "primaryUrl": "http://www.gswimming.com/34/1014"
         },
         {
           "id": "swim-gyeonggi-34-420",
@@ -1467,7 +1494,7 @@
           "year": 2025,
           "startDate": "20250731",
           "endDate": "20250731",
-          "primaryUrl": "http://www.gswimming.com/34/420"
+          "primaryUrl": "http://www.gswimming.com/34/1039"
         },
         {
           "id": "swim-gyeonggi-34-396",
@@ -1476,7 +1503,7 @@
           "year": 2026,
           "startDate": "20260722",
           "endDate": "20260722",
-          "primaryUrl": "http://www.gswimming.com/34/396"
+          "primaryUrl": "http://www.gswimming.com/34/1056"
         }
       ]
     },
@@ -1494,7 +1521,7 @@
           "year": 2024,
           "startDate": "20240711",
           "endDate": "20240711",
-          "primaryUrl": "http://www.gswimming.com/34/341"
+          "primaryUrl": "http://www.gswimming.com/34/1017"
         },
         {
           "id": "swim-gyeonggi-34-693",
@@ -1503,7 +1530,7 @@
           "year": 2025,
           "startDate": "20250704",
           "endDate": "20250704",
-          "primaryUrl": "http://www.gswimming.com/34/693"
+          "primaryUrl": "http://www.gswimming.com/34/1038"
         },
         {
           "id": "swim-gyeonggi-34-214",
@@ -1512,7 +1539,7 @@
           "year": 2026,
           "startDate": "20260710",
           "endDate": "20260710",
-          "primaryUrl": "http://www.gswimming.com/34/214"
+          "primaryUrl": "http://www.gswimming.com/34/1029"
         }
       ]
     },
@@ -1529,7 +1556,7 @@
           "year": 2024,
           "startDate": "20240702",
           "endDate": "20240702",
-          "primaryUrl": "http://www.gswimming.com/34/621"
+          "primaryUrl": "http://www.gswimming.com/34/1016"
         },
         {
           "id": "swim-gyeonggi-34-3",
@@ -1537,7 +1564,7 @@
           "year": 2025,
           "startDate": "20250627",
           "endDate": "20250627",
-          "primaryUrl": "http://www.gswimming.com/34/3"
+          "primaryUrl": "http://www.gswimming.com/34/1035"
         },
         {
           "id": "swim-gyeonggi-34-134",
@@ -1545,7 +1572,7 @@
           "year": 2026,
           "startDate": "20260630",
           "endDate": "20260630",
-          "primaryUrl": "http://www.gswimming.com/34/134"
+          "primaryUrl": "http://www.gswimming.com/34/1054"
         }
       ]
     },
@@ -1563,7 +1590,7 @@
           "year": 2025,
           "startDate": "20250306",
           "endDate": "20250306",
-          "primaryUrl": "http://www.gswimming.com/34/256"
+          "primaryUrl": "http://www.gswimming.com/34/1030"
         },
         {
           "id": "swim-gyeonggi-34-2",
@@ -1572,7 +1599,7 @@
           "year": 2026,
           "startDate": "20260306",
           "endDate": "20260306",
-          "primaryUrl": "http://www.gswimming.com/34/2"
+          "primaryUrl": "http://www.gswimming.com/34/1049"
         }
       ]
     },
@@ -1590,7 +1617,7 @@
           "year": 2025,
           "startDate": "20250407",
           "endDate": "20250407",
-          "primaryUrl": "http://www.gswimming.com/34/865"
+          "primaryUrl": "http://www.gswimming.com/34/1032"
         },
         {
           "id": "swim-gyeonggi-34-651",
@@ -1599,7 +1626,7 @@
           "year": 2026,
           "startDate": "20260326",
           "endDate": "20260326",
-          "primaryUrl": "http://www.gswimming.com/34/651"
+          "primaryUrl": "http://www.gswimming.com/34/1050"
         }
       ]
     },
@@ -1616,7 +1643,7 @@
           "year": 2024,
           "startDate": "20241022",
           "endDate": "20241022",
-          "primaryUrl": "http://www.gswimming.com/34/262"
+          "primaryUrl": "http://www.gswimming.com/34/1022"
         },
         {
           "id": "swim-gyeonggi-34-327",
@@ -1624,7 +1651,7 @@
           "year": 2025,
           "startDate": "20251027",
           "endDate": "20251027",
-          "primaryUrl": "http://www.gswimming.com/34/327"
+          "primaryUrl": "http://www.gswimming.com/34/1043"
         }
       ]
     },
@@ -1641,7 +1668,7 @@
           "year": 2025,
           "startDate": "20251015",
           "endDate": "20251015",
-          "primaryUrl": "http://www.gswimming.com/34/659"
+          "primaryUrl": "http://www.gswimming.com/34/1042"
         },
         {
           "id": "swim-gyeonggi-41-20251109-4",
@@ -1649,7 +1676,7 @@
           "year": 2025,
           "startDate": "20251109",
           "endDate": "20251109",
-          "primaryUrl": "http://www.gswimming.com/41"
+          "primaryUrl": "http://www.gswimming.com/41/33"
         },
         {
           "id": "swim-gyeonggi-34-283",
@@ -1657,7 +1684,7 @@
           "year": 2026,
           "startDate": "20260622",
           "endDate": "20260622",
-          "primaryUrl": "http://www.gswimming.com/34/283"
+          "primaryUrl": "http://www.gswimming.com/34/1053"
         },
         {
           "id": "swim-gyeonggi-41-20260801-1",
@@ -1665,7 +1692,7 @@
           "year": 2026,
           "startDate": "20260801",
           "endDate": "20260801",
-          "primaryUrl": "http://www.gswimming.com/41"
+          "primaryUrl": "http://www.gswimming.com/41/39"
         }
       ]
     },
@@ -1682,7 +1709,7 @@
           "year": 2024,
           "startDate": "20240603",
           "endDate": "20240603",
-          "primaryUrl": "http://www.gswimming.com/34/672"
+          "primaryUrl": "http://www.gswimming.com/34/1013"
         },
         {
           "id": "swim-gyeonggi-34-186",
@@ -1690,7 +1717,7 @@
           "year": 2025,
           "startDate": "20250701",
           "endDate": "20250701",
-          "primaryUrl": "http://www.gswimming.com/34/186"
+          "primaryUrl": "http://www.gswimming.com/34/999"
         },
         {
           "id": "swim-gyeonggi-34-779",
@@ -1698,7 +1725,7 @@
           "year": 2026,
           "startDate": "20260414",
           "endDate": "20260414",
-          "primaryUrl": "http://www.gswimming.com/34/779"
+          "primaryUrl": "http://www.gswimming.com/34/1051"
         },
         {
           "id": "swim-gyeonggi-41-20260509-2",
@@ -1706,7 +1733,7 @@
           "year": 2026,
           "startDate": "20260509",
           "endDate": "20260509",
-          "primaryUrl": "http://www.gswimming.com/41"
+          "primaryUrl": "http://www.gswimming.com/41/37"
         }
       ]
     },
@@ -1723,7 +1750,7 @@
           "year": 2025,
           "startDate": "20251113",
           "endDate": "20251113",
-          "primaryUrl": "http://www.gswimming.com/34/504"
+          "primaryUrl": "http://www.gswimming.com/34/1044"
         },
         {
           "id": "swim-gyeonggi-34-169",
@@ -1731,7 +1758,7 @@
           "year": 2026,
           "startDate": "20261015",
           "endDate": "20261015",
-          "primaryUrl": "http://www.gswimming.com/34/169"
+          "primaryUrl": "http://www.gswimming.com/34/1060"
         }
       ]
     },
@@ -1748,7 +1775,7 @@
           "year": 2025,
           "startDate": "20251010",
           "endDate": "20251010",
-          "primaryUrl": "http://www.gswimming.com/34/657"
+          "primaryUrl": "http://www.gswimming.com/34/1041"
         },
         {
           "id": "swim-gyeonggi-41-20251102-5",
@@ -1756,7 +1783,7 @@
           "year": 2025,
           "startDate": "20251102",
           "endDate": "20251102",
-          "primaryUrl": "http://www.gswimming.com/41"
+          "primaryUrl": "http://www.gswimming.com/41/31"
         }
       ]
     },
@@ -2327,7 +2354,7 @@
           "year": 2025,
           "startDate": "20250503",
           "endDate": "20250504",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1963"
         },
         {
           "id": "tri-ktf-2073",
@@ -2336,7 +2363,7 @@
           "year": 2026,
           "startDate": "20260502",
           "endDate": "20260503",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2073"
         }
       ]
     },
@@ -2435,15 +2462,6 @@
       "lDongSignguCd": "260",
       "sigunguName": "동래구",
       "editions": [
-        {
-          "id": "swim-busan-idx-467",
-          "title": "제42회 부산회장기 수영대회 연기알림",
-          "edition": 42,
-          "year": 2016,
-          "startDate": "20160624",
-          "endDate": "20160624",
-          "primaryUrl": "http://www.busanswimming.kr/BoardView.asp?idx=467&gubun=notice"
-        },
         {
           "id": "swim-busan-idx-482",
           "title": "제42회 부산회장기수영대회",
@@ -2570,15 +2588,6 @@
       "lDongSignguCd": "260",
       "sigunguName": "동래구",
       "editions": [
-        {
-          "id": "swim-busan-idx-101",
-          "title": "제29회 교육감기 초·중학교 학년별 수영대회 경기결과",
-          "edition": 29,
-          "year": 2010,
-          "startDate": "20101129",
-          "endDate": "20101129",
-          "primaryUrl": "http://www.busanswimming.kr/BoardView.asp?idx=101&gubun=notice"
-        },
         {
           "id": "swim-busan-idx-160",
           "title": "제30회 교육감기 초·중학교 학년별 수영대회",
@@ -2833,7 +2842,7 @@
           "year": 2024,
           "startDate": "20240829",
           "endDate": "20240901",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1881"
         },
         {
           "id": "tri-ktf-1950",
@@ -2842,7 +2851,7 @@
           "year": 2025,
           "startDate": "20250912",
           "endDate": "20250914",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1950"
         },
         {
           "id": "tri-ktf-2052",
@@ -2851,7 +2860,7 @@
           "year": 2026,
           "startDate": "20260626",
           "endDate": "20260628",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2052"
         }
       ]
     },
@@ -2869,7 +2878,7 @@
           "year": 2025,
           "startDate": "20250517",
           "endDate": "20250517",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1969"
         },
         {
           "id": "tri-ktf-1967",
@@ -2878,7 +2887,7 @@
           "year": 2025,
           "startDate": "20250726",
           "endDate": "20250726",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1967"
         },
         {
           "id": "tri-ktf-2069",
@@ -2887,7 +2896,7 @@
           "year": 2026,
           "startDate": "20260425",
           "endDate": "20260425",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2069"
         },
         {
           "id": "tri-ktf-2066",
@@ -2896,7 +2905,7 @@
           "year": 2026,
           "startDate": "20260523",
           "endDate": "20260523",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2066"
         },
         {
           "id": "tri-ktf-2065",
@@ -2905,7 +2914,7 @@
           "year": 2026,
           "startDate": "20260919",
           "endDate": "20260919",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2065"
         }
       ]
     },
@@ -2922,7 +2931,7 @@
           "year": 2024,
           "startDate": "20240614",
           "endDate": "20240616",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1875"
         },
         {
           "id": "tri-ktf-1947",
@@ -2930,7 +2939,57 @@
           "year": 2025,
           "startDate": "20250613",
           "endDate": "20250615",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1947"
+        }
+      ]
+    },
+    {
+      "seriesId": "series-48-820-오픈워터스위밍국제대회파견국가대표선발대회",
+      "seriesName": "오픈워터 스위밍 국제대회 파견 국가대표 선발대회",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "820",
+      "sigunguName": "고성군",
+      "editions": [
+        {
+          "id": "swim-ksf-11-197",
+          "title": "2023 오픈워터스위밍 국제대회 파견 국가대표 선발대회",
+          "year": 2023,
+          "startDate": "20221016",
+          "endDate": "20221016",
+          "primaryUrl": "https://www.korswim.co.kr/11/197"
+        },
+        {
+          "id": "swim-ksf-11-243",
+          "title": "2024년 오픈워터 스위밍 국제대회 파견 국가대표 선발대회",
+          "year": 2024,
+          "startDate": "20231022",
+          "endDate": "20231022",
+          "primaryUrl": "https://www.korswim.co.kr/11/243"
+        }
+      ]
+    },
+    {
+      "seriesId": "series-48-820-오픈워터스위밍국제대회파견선발대회",
+      "seriesName": "오픈워터스위밍 국제대회 파견 선발대회",
+      "lDongRegnCd": "48",
+      "lDongSignguCd": "820",
+      "sigunguName": "고성군",
+      "editions": [
+        {
+          "id": "swim-ksf-11-171",
+          "title": "2020 오픈워터스위밍 국제대회 파견 선발대회",
+          "year": 2020,
+          "startDate": "20201025",
+          "endDate": "20201025",
+          "primaryUrl": "https://www.korswim.co.kr/11/171"
+        },
+        {
+          "id": "swim-ksf-11-179",
+          "title": "2022 오픈워터스위밍 국제대회 파견 선발대회",
+          "year": 2022,
+          "startDate": "20211019",
+          "endDate": "20211019",
+          "primaryUrl": "https://www.korswim.co.kr/11/179"
         }
       ]
     },
@@ -2947,7 +3006,7 @@
           "year": 2026,
           "startDate": "20251121",
           "endDate": "20251123",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2022"
         },
         {
           "id": "tri-ktf-2079",
@@ -2955,7 +3014,7 @@
           "year": 2026,
           "startDate": "20260513",
           "endDate": "20260515",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2079"
         }
       ]
     },
@@ -2973,7 +3032,7 @@
           "year": 2024,
           "startDate": "20240517",
           "endDate": "20240519",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1879"
         },
         {
           "id": "tri-ktf-1949",
@@ -2982,32 +3041,7 @@
           "year": 2025,
           "startDate": "20250516",
           "endDate": "20250518",
-          "primaryUrl": "https://www.k-sec.or.kr/"
-        }
-      ]
-    },
-    {
-      "seriesId": "series-48-120-오픈워터스위밍국제대회파견국가대표선발대회",
-      "seriesName": "오픈워터 스위밍 국제대회 파견 국가대표 선발대회",
-      "lDongRegnCd": "48",
-      "lDongSignguCd": "120",
-      "sigunguName": "창원시",
-      "editions": [
-        {
-          "id": "swim-ksf-11-197",
-          "title": "2023 오픈워터스위밍 국제대회 파견 국가대표 선발대회",
-          "year": 2023,
-          "startDate": "20221016",
-          "endDate": "20221016",
-          "primaryUrl": "https://www.korswim.co.kr/11/197"
-        },
-        {
-          "id": "swim-ksf-11-243",
-          "title": "2024년 오픈워터 스위밍 국제대회 파견 국가대표 선발대회",
-          "year": 2024,
-          "startDate": "20231022",
-          "endDate": "20231022",
-          "primaryUrl": "https://www.korswim.co.kr/11/243"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1949"
         }
       ]
     },
@@ -3079,7 +3113,7 @@
           "year": 2024,
           "startDate": "20240629",
           "endDate": "20240630",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1914"
         },
         {
           "id": "tri-ktf-1999",
@@ -3088,7 +3122,7 @@
           "year": 2025,
           "startDate": "20250906",
           "endDate": "20250907",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1999"
         },
         {
           "id": "tri-ktf-2057",
@@ -3097,32 +3131,7 @@
           "year": 2026,
           "startDate": "20260502",
           "endDate": "20260503",
-          "primaryUrl": "https://www.k-sec.or.kr/"
-        }
-      ]
-    },
-    {
-      "seriesId": "series-48-120-오픈워터스위밍국제대회파견선발대회",
-      "seriesName": "오픈워터스위밍 국제대회 파견 선발대회",
-      "lDongRegnCd": "48",
-      "lDongSignguCd": "120",
-      "sigunguName": "창원시",
-      "editions": [
-        {
-          "id": "swim-ksf-11-171",
-          "title": "2020 오픈워터스위밍 국제대회 파견 선발대회",
-          "year": 2020,
-          "startDate": "20201025",
-          "endDate": "20201025",
-          "primaryUrl": "https://www.korswim.co.kr/11/171"
-        },
-        {
-          "id": "swim-ksf-11-179",
-          "title": "2022 오픈워터스위밍 국제대회 파견 선발대회",
-          "year": 2022,
-          "startDate": "20211019",
-          "endDate": "20211019",
-          "primaryUrl": "https://www.korswim.co.kr/11/179"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2057"
         }
       ]
     },
@@ -3139,7 +3148,7 @@
           "year": 2024,
           "startDate": "20241024",
           "endDate": "20241027",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1886"
         },
         {
           "id": "tri-ktf-1998",
@@ -3147,7 +3156,7 @@
           "year": 2025,
           "startDate": "20251115",
           "endDate": "20251116",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1998"
         },
         {
           "id": "tri-ktf-2042",
@@ -3155,7 +3164,7 @@
           "year": 2026,
           "startDate": "20261024",
           "endDate": "20261025",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2042"
         }
       ]
     },
@@ -3226,7 +3235,7 @@
           "year": 2025,
           "startDate": "20251019",
           "endDate": "20251019",
-          "primaryUrl": "http://cycling.or.kr/membership/member/terms/"
+          "primaryUrl": "https://bikelife.cycling.or.kr/events/tour/info/?mode=info&tourcd=30116"
         },
         {
           "id": "cyc-kcf-30125",
@@ -3234,7 +3243,7 @@
           "year": 2026,
           "startDate": "20251018",
           "endDate": "20251018",
-          "primaryUrl": "http://cycling.or.kr/membership/member/terms/"
+          "primaryUrl": "https://bikelife.cycling.or.kr/events/tour/info/?mode=info&tourcd=30125"
         },
         {
           "id": "cyc-kcf-30126",
@@ -3242,7 +3251,7 @@
           "year": 2026,
           "startDate": "20261018",
           "endDate": "20261018",
-          "primaryUrl": "http://cycling.or.kr/membership/member/terms/"
+          "primaryUrl": "https://bikelife.cycling.or.kr/events/tour/info/?mode=info&tourcd=30126"
         }
       ]
     },
@@ -3268,6 +3277,58 @@
           "startDate": "20260305",
           "endDate": "20260305",
           "primaryUrl": "https://www.gwswim.or.kr/bbs/board.php?bo_table=501&wr_id=41"
+        }
+      ]
+    },
+    {
+      "seriesId": "series-47-190-오픈워터스위밍국가대표선발대회",
+      "seriesName": "오픈워터 스위밍 국가대표 선발대회",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "190",
+      "sigunguName": "구미시",
+      "editions": [
+        {
+          "id": "swim-ksf-11-273",
+          "title": "2025년 오픈워터 스위밍 국가대표 선발대회",
+          "year": 2025,
+          "startDate": "20241110",
+          "endDate": "20241110",
+          "primaryUrl": "https://www.korswim.co.kr/11/273"
+        },
+        {
+          "id": "swim-ksf-11-328",
+          "title": "2026년 오픈워터 스위밍 국가대표 선발대회",
+          "year": 2026,
+          "startDate": "20251116",
+          "endDate": "20251116",
+          "primaryUrl": "https://www.korswim.co.kr/11/328"
+        }
+      ]
+    },
+    {
+      "seriesId": "series-47-190-경상북도수영연맹회장배수영대회",
+      "seriesName": "경상북도수영연맹회장배 전국 마스터즈 수영대회",
+      "lDongRegnCd": "47",
+      "lDongSignguCd": "190",
+      "sigunguName": "구미시",
+      "editions": [
+        {
+          "id": "swim-seoul-372",
+          "title": "제2회 경상북도수영연맹 회장배 전국 마스터즈 수영대회",
+          "edition": 2,
+          "year": 2026,
+          "startDate": "20261008",
+          "endDate": "20261008",
+          "primaryUrl": "http://www.seoulswim.or.kr/bbs/board.php?bo_table=schedule&wr_id=372&page=1"
+        },
+        {
+          "id": "swim-gyeongbuk-20261107-5",
+          "title": "제2회 경상북도수영연맹회장배 전국 마스터즈 수영대회",
+          "edition": 2,
+          "year": 2026,
+          "startDate": "20261107",
+          "endDate": "20261107",
+          "primaryUrl": "http://gbaquatics.co.kr/pages/01_competition-info/01_schedule-guide?type=view&id=5"
         }
       ]
     },
@@ -3330,60 +3391,6 @@
       ]
     },
     {
-      "seriesId": "series-47-290-경상북도교육감배초등학교수영대회경영",
-      "seriesName": "경상북도 교육감기 초등학교 수영대회(경영)",
-      "lDongRegnCd": "47",
-      "lDongSignguCd": "290",
-      "sigunguName": "경산시",
-      "editions": [
-        {
-          "id": "swim-gyeongbuk-20261128-3",
-          "title": "제26회 경상북도 교육감기 초등학교 수영대회(다이빙)",
-          "edition": 26,
-          "year": 2026,
-          "startDate": "20261128",
-          "endDate": "20261128",
-          "primaryUrl": "http://gbaquatics.co.kr/pages/01_competition-info/01_schedule-guide/"
-        },
-        {
-          "id": "swim-gyeongbuk-20261205-4",
-          "title": "제26회 경상북도 교육감기 초등학교 수영대회(경영)",
-          "edition": 26,
-          "year": 2026,
-          "startDate": "20261205",
-          "endDate": "20261205",
-          "primaryUrl": "http://gbaquatics.co.kr/pages/01_competition-info/01_schedule-guide/"
-        }
-      ]
-    },
-    {
-      "seriesId": "series-47-290-경상북도수영연맹회장배수영대회",
-      "seriesName": "경상북도수영연맹회장배 전국 마스터즈 수영대회",
-      "lDongRegnCd": "47",
-      "lDongSignguCd": "290",
-      "sigunguName": "경산시",
-      "editions": [
-        {
-          "id": "swim-seoul-372",
-          "title": "제2회 경상북도수영연맹 회장배 전국 마스터즈 수영대회",
-          "edition": 2,
-          "year": 2026,
-          "startDate": "20261008",
-          "endDate": "20261008",
-          "primaryUrl": "http://www.seoulswim.or.kr/bbs/board.php?bo_table=schedule&wr_id=372&page=1"
-        },
-        {
-          "id": "swim-gyeongbuk-20261107-5",
-          "title": "제2회 경상북도수영연맹회장배 전국 마스터즈 수영대회",
-          "edition": 2,
-          "year": 2026,
-          "startDate": "20261107",
-          "endDate": "20261107",
-          "primaryUrl": "http://gbaquatics.co.kr/pages/01_competition-info/01_schedule-guide/"
-        }
-      ]
-    },
-    {
       "seriesId": "series-31-140-울산장배수영대회",
       "seriesName": "울산광역시장배 수영대회",
       "lDongRegnCd": "31",
@@ -3398,15 +3405,6 @@
           "startDate": "20190906",
           "endDate": "20190906",
           "primaryUrl": "http://www.ulsanswimming.com/board/notice/1000652"
-        },
-        {
-          "id": "swim-ulsan-1000663",
-          "title": "제10회 울산광역시장배 수영대회기록(전체기록)",
-          "edition": 10,
-          "year": 2019,
-          "startDate": "20191021",
-          "endDate": "20191021",
-          "primaryUrl": "http://www.ulsanswimming.com/board/notice/1000663"
         },
         {
           "id": "swim-ulsan-1000695",
@@ -3442,7 +3440,7 @@
           "year": 2024,
           "startDate": "20241110",
           "endDate": "20241110",
-          "primaryUrl": "http://www.ulsanswimming.com/board/notice"
+          "primaryUrl": "http://www.ulsanswimming.com/board/notice/5000592"
         },
         {
           "id": "swim-ulsan-1000749",
@@ -3460,7 +3458,7 @@
           "year": 2025,
           "startDate": "20251109",
           "endDate": "20251109",
-          "primaryUrl": "http://www.ulsanswimming.com/board/notice"
+          "primaryUrl": "http://www.ulsanswimming.com/board/notice/5000630"
         },
         {
           "id": "swim-ulsan-5000656",
@@ -3534,15 +3532,6 @@
           "primaryUrl": "http://www.ulsanswimming.com/board/notice/1000666"
         },
         {
-          "id": "swim-ulsan-1000669",
-          "title": "제3회 울산광역시수영연맹회장배 수영대회 대진표 최종",
-          "edition": 3,
-          "year": 2019,
-          "startDate": "20191202",
-          "endDate": "20191202",
-          "primaryUrl": "http://www.ulsanswimming.com/board/notice/1000669"
-        },
-        {
           "id": "swim-ulsan-1000705",
           "title": "제4회 울산광역시수영연맹회장배 수영대회 개최",
           "edition": 4,
@@ -3550,15 +3539,6 @@
           "startDate": "20221123",
           "endDate": "20221123",
           "primaryUrl": "http://www.ulsanswimming.com/board/notice/1000705"
-        },
-        {
-          "id": "swim-ulsan-1000706",
-          "title": "제4회 울산광역시수영연맹회장배 수영대회 대진표 1차",
-          "edition": 4,
-          "year": 2022,
-          "startDate": "20221205",
-          "endDate": "20221205",
-          "primaryUrl": "http://www.ulsanswimming.com/board/notice/1000706"
         },
         {
           "id": "swim-ulsan-1000721",
@@ -3669,60 +3649,6 @@
       ]
     },
     {
-      "seriesId": "series-31-140-교육감배수영대회프로그램공지",
-      "seriesName": "교육감배 수영대회 프로그램 공지",
-      "lDongRegnCd": "31",
-      "lDongSignguCd": "140",
-      "sigunguName": "남구",
-      "editions": [
-        {
-          "id": "swim-ulsan-1000631",
-          "title": "제19회 교육감배 수영대회 프로그램 공지",
-          "edition": 19,
-          "year": 2019,
-          "startDate": "20190325",
-          "endDate": "20190325",
-          "primaryUrl": "http://www.ulsanswimming.com/board/notice/1000631"
-        },
-        {
-          "id": "swim-ulsan-1000711",
-          "title": "제23회 교육감배 수영대회 프로그램 공지",
-          "edition": 23,
-          "year": 2023,
-          "startDate": "20230325",
-          "endDate": "20230325",
-          "primaryUrl": "http://www.ulsanswimming.com/board/notice/1000711"
-        }
-      ]
-    },
-    {
-      "seriesId": "series-31-140-울산장배수영대회대진표1차",
-      "seriesName": "울산광역시장배 수영대회 대진표 1차",
-      "lDongRegnCd": "31",
-      "lDongSignguCd": "140",
-      "sigunguName": "남구",
-      "editions": [
-        {
-          "id": "swim-ulsan-1000656",
-          "title": "제10회 울산광역시장배 수영대회 대진표 1차공지",
-          "edition": 10,
-          "year": 2019,
-          "startDate": "20191008",
-          "endDate": "20191008",
-          "primaryUrl": "http://www.ulsanswimming.com/board/notice/1000656"
-        },
-        {
-          "id": "swim-ulsan-1000702",
-          "title": "제11회 울산광역시장배 수영대회 대진표 1차",
-          "edition": 11,
-          "year": 2022,
-          "startDate": "20221019",
-          "endDate": "20221019",
-          "primaryUrl": "http://www.ulsanswimming.com/board/notice/1000702"
-        }
-      ]
-    },
-    {
       "seriesId": "series-41-270-안산시장배수영대회",
       "seriesName": "안산시장배 수영대회",
       "lDongRegnCd": "41",
@@ -3762,15 +3688,6 @@
           "startDate": "20250928",
           "endDate": "20250928",
           "primaryUrl": "http://jnsf.kr/board.php?bo=schedule&no=29"
-        },
-        {
-          "id": "swim-jeonnam-20251019-10",
-          "title": "제14회 전라남도지사배 생활체육 수영대회 프로그램 (학생부, 성인부)",
-          "edition": 14,
-          "year": 2025,
-          "startDate": "20251019",
-          "endDate": "20251019",
-          "primaryUrl": "http://jnsf.kr/board.php?bo=schedule&no=33"
         },
         {
           "id": "swim-jeonnam-20260515-8",
@@ -3822,7 +3739,7 @@
           "year": 2024,
           "startDate": "20240511",
           "endDate": "20240512",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1890"
         },
         {
           "id": "tri-ktf-1965",
@@ -3831,7 +3748,7 @@
           "year": 2025,
           "startDate": "20250510",
           "endDate": "20250511",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1965"
         },
         {
           "id": "tri-ktf-2072",
@@ -3840,7 +3757,7 @@
           "year": 2026,
           "startDate": "20260509",
           "endDate": "20260510",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2072"
         }
       ]
     },
@@ -4012,7 +3929,7 @@
           "year": 2024,
           "startDate": "20240514",
           "endDate": "20240514",
-          "primaryUrl": "http://www.gswimming.com/34/786"
+          "primaryUrl": "http://www.gswimming.com/34/1012"
         },
         {
           "id": "swim-ksf-11-260",
@@ -4030,7 +3947,7 @@
           "year": 2025,
           "startDate": "20250521",
           "endDate": "20250521",
-          "primaryUrl": "http://www.gswimming.com/34/689"
+          "primaryUrl": "http://www.gswimming.com/34/1033"
         },
         {
           "id": "swim-ksf-11-300",
@@ -4204,7 +4121,7 @@
           "year": 2024,
           "startDate": "20240810",
           "endDate": "20240811",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1919"
         },
         {
           "id": "tri-ktf-2104",
@@ -4213,7 +4130,7 @@
           "year": 2026,
           "startDate": "20260822",
           "endDate": "20260823",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2104"
         }
       ]
     },
@@ -5770,7 +5687,7 @@
           "year": 2024,
           "startDate": "20241111",
           "endDate": "20241111",
-          "primaryUrl": "http://www.gswimming.com/34/4"
+          "primaryUrl": "http://www.gswimming.com/34/1023"
         },
         {
           "id": "swim-ksf-11-279",
@@ -5788,7 +5705,7 @@
           "year": 2025,
           "startDate": "20250617",
           "endDate": "20250617",
-          "primaryUrl": "http://www.gswimming.com/34/772"
+          "primaryUrl": "http://www.gswimming.com/34/1034"
         },
         {
           "id": "swim-ksf-11-301",
@@ -5806,7 +5723,7 @@
           "year": 2026,
           "startDate": "20261012",
           "endDate": "20261012",
-          "primaryUrl": "http://www.gswimming.com/34/275"
+          "primaryUrl": "http://www.gswimming.com/34/1059"
         },
         {
           "id": "swim-ksf-11-354",
@@ -5833,7 +5750,7 @@
           "year": 2025,
           "startDate": "20251101",
           "endDate": "20251102",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2018"
         },
         {
           "id": "tri-ktf-2111",
@@ -5842,7 +5759,7 @@
           "year": 2026,
           "startDate": "20261031",
           "endDate": "20261101",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2111"
         }
       ]
     },
@@ -6278,7 +6195,7 @@
           "year": 2024,
           "startDate": "20241027",
           "endDate": "20241027",
-          "primaryUrl": "http://cycling.or.kr/membership/member/terms/"
+          "primaryUrl": "https://bikelife.cycling.or.kr/events/tour/info/?mode=info&tourcd=30105"
         },
         {
           "id": "cyc-kcf-30117",
@@ -6287,7 +6204,7 @@
           "year": 2025,
           "startDate": "20251019",
           "endDate": "20251019",
-          "primaryUrl": "http://cycling.or.kr/membership/member/terms/"
+          "primaryUrl": "https://bikelife.cycling.or.kr/events/tour/info/?mode=info&tourcd=30117"
         },
         {
           "id": "cyc-kcf-30123",
@@ -6296,7 +6213,7 @@
           "year": 2026,
           "startDate": "20261018",
           "endDate": "20261018",
-          "primaryUrl": "http://cycling.or.kr/membership/member/terms/"
+          "primaryUrl": "https://bikelife.cycling.or.kr/events/tour/info/?mode=info&tourcd=30123"
         }
       ]
     },
@@ -6314,7 +6231,7 @@
           "year": 2025,
           "startDate": "20250607",
           "endDate": "20250608",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1979"
         },
         {
           "id": "tri-ktf-2044",
@@ -6323,7 +6240,7 @@
           "year": 2026,
           "startDate": "20260919",
           "endDate": "20260920",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2044"
         }
       ]
     },
@@ -6453,7 +6370,7 @@
           "year": 2024,
           "startDate": "20240927",
           "endDate": "20240930",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1884"
         },
         {
           "id": "tri-ktf-1948",
@@ -6461,7 +6378,7 @@
           "year": 2025,
           "startDate": "20250927",
           "endDate": "20250928",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1948"
         }
       ]
     },
@@ -6478,7 +6395,7 @@
           "year": 2024,
           "startDate": "20240602",
           "endDate": "20240602",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1896"
         },
         {
           "id": "tri-ktf-1982",
@@ -6486,7 +6403,7 @@
           "year": 2025,
           "startDate": "20250815",
           "endDate": "20250817",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1982"
         },
         {
           "id": "tri-ktf-2070",
@@ -6494,7 +6411,7 @@
           "year": 2026,
           "startDate": "20260710",
           "endDate": "20260712",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2070"
         }
       ]
     },
@@ -6859,7 +6776,7 @@
           "year": 2024,
           "startDate": "20240804",
           "endDate": "20240804",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1927"
         },
         {
           "id": "tri-ulju-aquathlon-2026",
@@ -6920,7 +6837,7 @@
           "year": 2024,
           "startDate": "20241102",
           "endDate": "20241103",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1916"
         },
         {
           "id": "tri-ktf-2006",
@@ -6928,7 +6845,7 @@
           "year": 2025,
           "startDate": "20251018",
           "endDate": "20251019",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2006"
         },
         {
           "id": "tri-ktf-2085",
@@ -6936,7 +6853,7 @@
           "year": 2026,
           "startDate": "20260627",
           "endDate": "20260628",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=2085"
         }
       ]
     },
@@ -7079,7 +6996,7 @@
           "year": 2024,
           "startDate": "20240921",
           "endDate": "20240922",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1922"
         },
         {
           "id": "tri-ktf-1989",
@@ -7088,7 +7005,7 @@
           "year": 2025,
           "startDate": "20250906",
           "endDate": "20250907",
-          "primaryUrl": "https://www.k-sec.or.kr/"
+          "primaryUrl": "https://www.triathlon.or.kr/events/tour/overview/?mode=overview&tourcd=1989"
         }
       ]
     },

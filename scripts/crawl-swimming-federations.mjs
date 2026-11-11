@@ -1067,24 +1067,35 @@ async function crawlGyeonggiSwimming() {
   };
   const seen = new Set();
 
-  // (A) http://www.gswimming.com/41 (경기도 수영대회 접수/일정)
+  // (A) http://www.gswimming.com/41 (경기도 수영대회 접수/일정 -> 실제 /41/{wr_id} 상세 주소 추출)
   const res41 = await fetchPage('http://www.gswimming.com/41');
   if (res41.ok) {
-    const cleaned41 = cleanText(res41.html);
-    const regex41 =
-      /\[(모집마감|모집중)\]\s*([^\n]+?)\s+(20\d{2}-\d{2}-\d{2})\s*~\s*(20\d{2}-\d{2}-\d{2})\s+(20\d{2})-(\d{2})-(\d{2})/g;
-    let m;
+    const liMatches =
+      res41.html.match(/<li[^>]*class=["'][^"']*board_list_con[^"']*["'][^>]*>[\s\S]*?<\/li>/gi) ||
+      [];
     let idx = 1;
-    while ((m = regex41.exec(cleaned41)) !== null) {
-      let cleanTitle = m[2]
+    for (const liHtml of liMatches) {
+      const aMatches = [
+        ...liHtml.matchAll(
+          /<a[^>]+href=["'](http:\/\/www\.gswimming\.com\/41\/(\d+)[^"']*)["'][^>]*>([\s\S]*?)<\/a>/gi
+        ),
+      ];
+      const titleAnchor = aMatches.find((am) => cleanText(am[3]).length > 0);
+      const liText = cleanText(liHtml);
+      const dateMatch = liText.match(
+        /(20\d{2}-\d{2}-\d{2})\s*~\s*(20\d{2}-\d{2}-\d{2})\s+(20\d{2})-(\d{2})-(\d{2})/
+      );
+      if (!titleAnchor || !dateMatch) continue;
+      const realPostUrl = `http://www.gswimming.com/41/${titleAnchor[2]}`;
+      let cleanTitle = cleanText(titleAnchor[3])
         .replace(/\(등록선수[^)]*\)/g, '')
         .replace(/\(비등록선수[^)]*\)/g, '')
         .trim();
       if (/^테스트/.test(cleanTitle)) continue;
-      const ymd = normalizeYmd(m[5], m[6], m[7]);
-      const regStartYmd = m[3].replace(/-/g, '');
-      const regEndYmd = m[4].replace(/-/g, '');
-      const dedupKey = `${m[5]}:${cleanTitle.replace(/\s+/g, '')}`;
+      const ymd = normalizeYmd(dateMatch[3], dateMatch[4], dateMatch[5]);
+      const regStartYmd = dateMatch[1].replace(/-/g, '');
+      const regEndYmd = dateMatch[2].replace(/-/g, '');
+      const dedupKey = `${dateMatch[3]}:${cleanTitle.replace(/\s+/g, '')}`;
       if (seen.has(dedupKey)) continue;
       seen.add(dedupKey);
       docs.push(
@@ -1095,15 +1106,15 @@ async function crawlGyeonggiSwimming() {
           endDate: ymd,
           host: '경기도수영연맹',
           supervise: '경기도수영연맹',
-          url: 'http://www.gswimming.com/41',
+          url: realPostUrl,
           label: '경기도수영연맹 대회일정 원문',
-          invitation: `[경기도수영연맹] ${cleanTitle} 개최 안내 (대회일: ${m[5]}.${m[6]}.${m[7]}, 접수기간: ${m[3]} ~ ${m[4]})`,
+          invitation: `[경기도수영연맹] ${cleanTitle} 개최 안내 (대회일: ${dateMatch[3]}.${dateMatch[4]}.${dateMatch[5]}, 접수기간: ${dateMatch[1]} ~ ${dateMatch[2]})`,
           defaultGeo: gyeonggiGeo,
           registrationPeriod: {
             startDate: regStartYmd,
             endDate: regEndYmd,
             methodNote: '경기도수영연맹 대회 참가신청 페이지 온라인 접수',
-            registrationUrl: 'http://www.gswimming.com/41',
+            registrationUrl: realPostUrl,
           },
           publishedAt: regStartYmd,
         })
@@ -1116,39 +1127,40 @@ async function crawlGyeonggiSwimming() {
     const res = await fetchPage(url);
     if (!res.ok) continue;
 
-    // 조회수 뒤에서 끊어지도록 매칭하여 상단 헤더('1페이지 | 경기도수영연맹...')나 이전 행이 제목에 섞이지 않게 처리
-    const tableBodyHtml = res.html.includes('번호')
-      ? res.html.slice(res.html.indexOf('번호'))
-      : res.html;
-    const trMatches = tableBodyHtml.match(/<tr[\s\S]*?<\/tr>/gi) || [tableBodyHtml];
+    const liMatches =
+      res.html.match(/<li[^>]*class=["'][^"']*board_list_con[^"']*["'][^>]*>[\s\S]*?<\/li>/gi) ||
+      [];
 
-    for (const trHtml of trMatches) {
-      const rowText = cleanText(trHtml);
-      const m = rowText.match(
-        /^(\d{1,3})\s+(.+?(?:개최\s*통보|참가요강\s*공지))\s+경기도수영연맹\s+(20\d{2})\.(\d{2})\.(\d{2})/
+    for (const liHtml of liMatches) {
+      const aMatch = liHtml.match(
+        /<a[^>]+href=["'](http:\/\/www\.gswimming\.com\/34\/(\d+)[^"']*)["'][^>]*>([\s\S]*?)<\/a>/i
       );
-      if (!m) continue;
-      const postId = m[1];
-      let cleanTitle = m[2]
+      const dateMatch = cleanText(liHtml).match(/(20\d{2})\.(\d{2})\.(\d{2})/);
+      if (!aMatch || !dateMatch) continue;
+      const wrId = aMatch[2];
+      const realPostUrl = `http://www.gswimming.com/34/${wrId}`;
+      const numMatch = liHtml.match(/<div[^>]*class=["']num["'][^>]*>\s*(\d+)\s*<\/div>/i);
+      const rowNum = numMatch ? numMatch[1] : wrId;
+      let cleanTitle = cleanText(aMatch[3])
         .replace(/\s*(개최\s*통보|참가요강\s*공지|개최\s*안내|개최\s*알림)$/g, '')
         .trim();
 
       if (!/수영|선발전|대축전|체전|의장배|교육감배/.test(cleanTitle)) continue;
 
-      const ymd = normalizeYmd(m[3], m[4], m[5]);
-      const dedupKey = `${m[3]}:${cleanTitle.replace(/\s+/g, '')}`;
+      const ymd = normalizeYmd(dateMatch[1], dateMatch[2], dateMatch[3]);
+      const dedupKey = `${dateMatch[1]}:${cleanTitle.replace(/\s+/g, '')}`;
       if (seen.has(dedupKey)) continue;
       seen.add(dedupKey);
 
       docs.push(
         buildSwimDoc({
-          id: `swim-gyeonggi-34-${postId}`,
+          id: `swim-gyeonggi-34-${rowNum}`,
           title: cleanTitle,
           startDate: ymd,
           endDate: ymd,
           host: '경기도수영연맹',
           supervise: '경기도수영연맹',
-          url: `http://www.gswimming.com/34/${postId}`,
+          url: realPostUrl,
           label: '경기도수영연맹 대회일정표 원문',
           invitation: `[경기도수영연맹] ${cleanTitle} 개최 안내 및 대회 일정표 공지입니다.`,
           defaultGeo: gyeonggiGeo,
@@ -1244,17 +1256,24 @@ async function crawlOtherFederationsAndPools() {
     }
   }
 
-  // (C) 경상북도수영연맹 (gbaquatics.co.kr)
+  // (C) 경상북도수영연맹 (gbaquatics.co.kr -> 실제 ?type=view&id={id} 상세 주소 추출)
   const gbRes = await fetchPage(
     'http://gbaquatics.co.kr/pages/01_competition-info/01_schedule-guide/'
   );
   if (gbRes.ok) {
-    const itemRegex =
-      /공지\s+([^\n<]+?)\s+대회기간\s*:\s*(20\d{2})-(\d{2})-(\d{2})\s*~\s*(20\d{2})-(\d{2})-(\d{2})/g;
-    const cleaned = cleanText(gbRes.html);
-    let m;
+    const aMatches = [
+      ...gbRes.html.matchAll(
+        /<a[^>]+href=["'](\/pages\/01_competition-info\/01_schedule-guide\?type=view&id=\d+)["'][^>]*>([\s\S]*?)<\/a>/gi
+      ),
+    ];
     let idx = 1;
-    while ((m = itemRegex.exec(cleaned)) !== null) {
+    for (const am of aMatches) {
+      const realPostUrl = `http://gbaquatics.co.kr${am[1]}`;
+      const cleaned = cleanText(am[2]);
+      const m = cleaned.match(
+        /공지\s+(.+?)\s+대회기간\s*:\s*(20\d{2})-(\d{2})-(\d{2})\s*~\s*(20\d{2})-(\d{2})-(\d{2})/
+      );
+      if (!m) continue;
       const title = m[1].replace(/\s*참가요강$/, '').trim();
       const startDate = normalizeYmd(m[2], m[3], m[4]);
       const endDate = normalizeYmd(m[5], m[6], m[7]);
@@ -1266,7 +1285,7 @@ async function crawlOtherFederationsAndPools() {
           endDate,
           host: '경상북도수영연맹',
           supervise: '경상북도수영연맹',
-          url: 'http://gbaquatics.co.kr/pages/01_competition-info/01_schedule-guide/',
+          url: realPostUrl,
           label: '경북수영연맹 대회일정 원문',
           defaultGeo: VENUE_GEO_MAP.find((v) => v.sigunguName === '경산시'),
         })
@@ -1388,8 +1407,8 @@ async function crawlOtherFederationsAndPools() {
       startDate: '20260222',
       endDate: '20260222',
       host: '인천광역시수영연맹',
-      url: 'https://www.sfinder.co.kr/contest/contest_list/swimming',
-      label: '인천수영연맹 / 스파인더 대회 안내',
+      url: 'https://www.sfinder.co.kr/contest/contest_info/387',
+      label: '인천수영연맹 / 스파인더 대회 안내 (#387)',
       explicitLevel: 2,
       defaultGeo: VENUE_GEO_MAP.find((v) => v.sigunguName === '미추홀구'),
     },
@@ -1399,8 +1418,8 @@ async function crawlOtherFederationsAndPools() {
       startDate: '20250223',
       endDate: '20250223',
       host: '인천광역시수영연맹',
-      url: 'https://www.sfinder.co.kr/contest/contest_list/swimming',
-      label: '인천수영연맹 / 스파인더 대회 안내',
+      url: 'https://www.sfinder.co.kr/contest/contest_info/351',
+      label: '인천수영연맹 / 스파인더 대회 안내 (#351)',
       explicitLevel: 2,
       defaultGeo: VENUE_GEO_MAP.find((v) => v.sigunguName === '미추홀구'),
     },
@@ -1410,8 +1429,8 @@ async function crawlOtherFederationsAndPools() {
       startDate: '20251109',
       endDate: '20251109',
       host: '울산광역시수영연맹',
-      url: 'http://www.ulsanswimming.com/board/notice',
-      label: '울산수영연맹 공지사항',
+      url: 'http://www.ulsanswimming.com/board/notice/5000630',
+      label: '울산수영연맹 공지 원문',
       explicitLevel: 2,
       defaultGeo: VENUE_GEO_MAP.find((v) => v.sigunguName === '남구'),
     },
@@ -1421,8 +1440,8 @@ async function crawlOtherFederationsAndPools() {
       startDate: '20241110',
       endDate: '20241110',
       host: '울산광역시수영연맹',
-      url: 'http://www.ulsanswimming.com/board/notice',
-      label: '울산수영연맹 공지사항',
+      url: 'http://www.ulsanswimming.com/board/notice/5000592',
+      label: '울산수영연맹 공지 원문',
       explicitLevel: 2,
       defaultGeo: VENUE_GEO_MAP.find((v) => v.sigunguName === '남구'),
     },
@@ -1478,8 +1497,8 @@ async function crawlOtherFederationsAndPools() {
       startDate: '20261231',
       endDate: '20261231',
       host: '올림픽수영장 · 스파인더',
-      url: 'https://www.sfinder.co.kr/contest/contest_list/swimming',
-      label: '스파인더 개별 수영장 행사 안내',
+      url: 'https://www.sfinder.co.kr/contest/contest_info/310',
+      label: '스파인더 개별 수영장 행사 안내 (#310)',
       explicitLevel: 0,
       defaultGeo: VENUE_GEO_MAP.find((v) => v.sigunguName === '송파구'),
       registrationPeriod: {
@@ -1489,7 +1508,7 @@ async function crawlOtherFederationsAndPools() {
         closeTime: '18:00',
         quotaNote: '올림픽수영장 회원 및 마스터즈 동호인',
         methodNote: '스파인더(SFINDER) 온라인 참가신청',
-        registrationUrl: 'https://www.sfinder.co.kr/contest/contest_list/swimming',
+        registrationUrl: 'https://www.sfinder.co.kr/contest/contest_info/310',
       },
       publishedAt: '20261108',
       firstSeenAt: '2026-11-08T02:54:07.345Z',
@@ -1502,8 +1521,8 @@ async function crawlOtherFederationsAndPools() {
       startDate: '20260726',
       endDate: '20260726',
       host: '시립노원청소년센터 수영장',
-      url: 'https://www.sfinder.co.kr/contest/contest_list/swimming',
-      label: '스파인더 개별 수영장 행사 안내',
+      url: 'https://www.sfinder.co.kr/contest/contest_info/401',
+      label: '스파인더 개별 수영장 행사 안내 (#401)',
       explicitLevel: 0,
       defaultGeo: VENUE_GEO_MAP.find((v) => v.sigunguName === '노원구'),
     },
@@ -1513,8 +1532,8 @@ async function crawlOtherFederationsAndPools() {
       startDate: '20260620',
       endDate: '20260621',
       host: '대부동 복지체육센터 수영장',
-      url: 'https://www.sfinder.co.kr/contest/contest_list/swimming',
-      label: '스파인더 개별 수영장 행사 안내',
+      url: 'https://www.sfinder.co.kr/contest/contest_info/399',
+      label: '스파인더 개별 수영장 행사 안내 (#399)',
       explicitLevel: 0,
       defaultGeo: VENUE_GEO_MAP.find((v) => v.sigunguName === '안산시'),
     },
@@ -1524,8 +1543,8 @@ async function crawlOtherFederationsAndPools() {
       startDate: '20251207',
       endDate: '20251207',
       host: '사립노원청소년센터 수영장',
-      url: 'https://www.sfinder.co.kr/contest/contest_list/swimming',
-      label: '스파인더 개별 수영장 행사 안내',
+      url: 'https://www.sfinder.co.kr/contest/contest_info/383',
+      label: '스파인더 개별 수영장 행사 안내 (#383)',
       explicitLevel: 0,
       defaultGeo: VENUE_GEO_MAP.find((v) => v.sigunguName === '노원구'),
     },

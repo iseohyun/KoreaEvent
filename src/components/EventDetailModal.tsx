@@ -2,20 +2,28 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
-  Building2,
   Database,
   Edit3,
   ExternalLink,
+  FileText,
   Globe,
   History,
+  MapPin,
   Plus,
-  RefreshCw,
   Save,
-  Sparkles,
   Trash2,
   X,
 } from 'lucide-react';
-import { getMajorCategoryName, getSubCategoryName, SUB_CATEGORIES } from '../constants/categories';
+import {
+  getMajorCategoryName,
+  getOperatingDisciplinesForEvent,
+  getSubCategoryName,
+  SUB_CATEGORIES,
+} from '../constants/categories';
+import {
+  buildNaverMapSearchUrl,
+  findMatchingSwimmingPool,
+} from '../constants/swimmingPools';
 import { fetchEventDetail } from '../services/korService2Api';
 import {
   AdminPromoRegistryData,
@@ -43,13 +51,82 @@ interface EventDetailModalProps {
   onSaveFirestoreDoc: (docData: FirestoreEventDoc) => Promise<boolean>;
 }
 
-function extractHrefFromHtml(html?: string): string | undefined {
-  if (!html) return undefined;
-  const match = html.match(/href=["']([^"']+)["']/i);
-  if (match && match[1]) return match[1];
-  const urlMatch = html.match(/https?:\/\/[^\s"'<>]+/i);
-  if (urlMatch && urlMatch[0]) return urlMatch[0];
-  return undefined;
+function cleanScheduleNoteText(note?: string): string {
+  if (!note) return '';
+  return note
+    .replace(/\(?\s*대회\s*요강\s*및\s*세부\s*경기\s*일정\s*참조\s*\)?/g, '')
+    .replace(/기간\s*내\s*상시\s*및\s*주말\s*운영/g, '')
+    .trim();
+}
+
+function formatEventDateSingleOrRange(
+  startYmd?: string,
+  endYmd?: string,
+  scheduleNote?: string
+): string {
+  const s = (startYmd || '').replace(/[^0-9]/g, '').slice(0, 8);
+  const e = (endYmd || '').replace(/[^0-9]/g, '').slice(0, 8);
+  if (!s) return '-';
+  const dateStr = !e || s === e ? formatYmd(s) : `${formatYmd(s)} ~ ${formatYmd(e)}`;
+  const cleanNote = cleanScheduleNoteText(scheduleNote);
+  return cleanNote ? `${dateStr} (${cleanNote})` : dateStr;
+}
+
+function cleanEventTimeDisplay(raw?: string): string {
+  if (!raw) return '09:00 ~ 18:00';
+  const cleaned = raw
+    .replace(/\(?\s*부별\s*워밍업\s*및\s*경기시간\s*요강\s*참조\s*\)?/g, '')
+    .trim();
+  return cleaned || '09:00 ~ 18:00';
+}
+
+function stripOrganizerDummyText(raw?: string): string {
+  if (!raw) return '';
+  return raw
+    .replace(/\(?\s*공식\s*홈페이지\s*요강\s*참조\s*\)?/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function parseOrganizerLines(
+  host?: string,
+  supervise?: string,
+  fallbackOrganizer?: string
+): string[] {
+  const rawSources = [host || '', supervise || '', fallbackOrganizer || '']
+    .map(stripOrganizerDummyText)
+    .filter(Boolean);
+
+  const lines: string[] = [];
+  for (const src of rawSources) {
+    src
+      .split(/\s*(?:·|\/|,|\||;| 및 )\s*/g)
+      .map((token) => stripOrganizerDummyText(token))
+      .filter(Boolean)
+      .forEach((token) => {
+        if (!lines.includes(token)) {
+          lines.push(token);
+        }
+      });
+  }
+  return lines;
+}
+
+function formatCrawlTimestampKst(iso?: string): string {
+  if (!iso) return '-';
+  const trimmed = iso.trim();
+  if (/^\d{8}$/.test(trimmed)) {
+    return formatYmd(trimmed);
+  }
+  const d = new Date(trimmed);
+  if (Number.isNaN(d.getTime())) return trimmed;
+  const kst = new Date(d.getTime() + 9 * 3600 * 1000);
+  const y = kst.getUTCFullYear();
+  const m = String(kst.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(kst.getUTCDate()).padStart(2, '0');
+  const hh = String(kst.getUTCHours()).padStart(2, '0');
+  const mm = String(kst.getUTCMinutes()).padStart(2, '0');
+  return `${y}-${m}-${day} ${hh}:${mm}`;
 }
 
 export const EventDetailModal: React.FC<EventDetailModalProps> = ({
@@ -62,19 +139,8 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
   onSaveFirestoreDoc,
 }) => {
   const [detail, setDetail] = useState<EventDetailInfo | null>(null);
-  const [loading, setLoading] = useState(false);
 
-  // 실시간 지자체 홍보 페이지 파싱 결과 상태
-  const [customTargetUrl, setCustomTargetUrl] = useState('');
-  const [liveScrapeResult, setLiveScrapeResult] = useState<{
-    pageTitle: string;
-    highlights: string[];
-    trafficNotice: string | null;
-    sourceUrl: string;
-  } | null>(null);
-  const [liveScraping, setLiveScraping] = useState(false);
-
-  // Firebase Firestore 7대 핵심 항목 편집 모드 상태
+  // 편집 모드 상태
   const [isEditingFirestore, setIsEditingFirestore] = useState(false);
   const [savingFirestore, setSavingFirestore] = useState(false);
   const [saveNotice, setSaveNotice] = useState<string | null>(null);
@@ -91,19 +157,18 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
   const [editCat3, setEditCat3] = useState('EV010200');
   const [editPromoLevel, setEditPromoLevel] = useState<PromoLevel>(0);
   const [editInvitation, setEditInvitation] = useState('');
+  const [editPosterUrl, setEditPosterUrl] = useState('');
+  const [posterLoadFailed, setPosterLoadFailed] = useState(false);
   const [editLinks, setEditLinks] = useState<FirestorePromoLink[]>([]);
 
   useEffect(() => {
-    setLiveScrapeResult(null);
     setIsEditingFirestore(false);
     setSaveNotice(null);
     if (!event) return;
     if (event.source === 'PUBLIC_PORTAL' && event.contentId) {
-      setLoading(true);
       fetchEventDetail(event.contentId, event.contentTypeId || '15', formatMode)
         .then((res) => setDetail(res))
-        .catch(() => setDetail(null))
-        .finally(() => setLoading(false));
+        .catch(() => setDetail(null));
     } else {
       setDetail(null);
     }
@@ -114,41 +179,42 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
     return analyzeOrganizerAndMatchPromo(event, detail, registry);
   }, [event, detail, registry]);
 
-  // 현재 이벤트 + KorService2 상세 + 홍보DB 매칭 결과를 기반으로 Firestore 스키마 초기값 세팅
   useEffect(() => {
     if (!event || !promoAnalysis) return;
 
     const fDoc = event.firestoreDoc;
     const deep = promoAnalysis.deepEnrichment;
 
-    setCustomTargetUrl(
-      fDoc?.links?.[0]?.url || deep?.deepArticleUrl || promoAnalysis.primaryPromoUrl
-    );
-
     setEditTitle(fDoc?.title || event.title);
     setEditStartDate(fDoc?.eventDate?.startDate || event.startDate);
     setEditEndDate(fDoc?.eventDate?.endDate || event.endDate);
     setEditScheduleNote(
-      fDoc?.eventDate?.scheduleNote ||
-        deep?.scheduleOrCourseDetail ||
-        '기간 내 상시 및 주말 운영'
+      cleanScheduleNoteText(
+        fDoc?.eventDate?.scheduleNote || deep?.scheduleOrCourseDetail || ''
+      )
     );
     setEditEventTime(
-      fDoc?.eventTime || detail?.playtime || deep?.scheduleOrCourseDetail || '10:00 ~ 18:00'
+      cleanEventTimeDisplay(
+        fDoc?.eventTime || detail?.playtime || deep?.scheduleOrCourseDetail || '09:00 ~ 18:00'
+      )
     );
     setEditHost(
-      fDoc?.organizer?.host ||
-        detail?.sponsor1 ||
-        event.organizer ||
-        promoAnalysis.tier2Municipality.hallName
+      stripOrganizerDummyText(
+        fDoc?.organizer?.host ||
+          detail?.sponsor1 ||
+          event.organizer ||
+          promoAnalysis.tier2Municipality.hallName
+      )
     );
     setEditSupervise(
-      fDoc?.organizer?.supervise ||
-        detail?.sponsor2 ||
-        promoAnalysis.tier1Province.name
+      stripOrganizerDummyText(
+        fDoc?.organizer?.supervise || detail?.sponsor2 || ''
+      )
     );
     setEditContact(
-      fDoc?.organizer?.contact || detail?.tel || event.tel || detail?.telName || ''
+      stripOrganizerDummyText(
+        fDoc?.organizer?.contact || detail?.tel || event.tel || detail?.telName || ''
+      )
     );
     setEditCat2(fDoc?.category?.lclsSystm2 || event.lclsSystm2);
     setEditCat3(fDoc?.category?.lclsSystm3 || event.lclsSystm3);
@@ -166,9 +232,19 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
         : event.summary || detail?.overview || '');
 
     setEditInvitation(defaultInvitation);
+    const initialPoster =
+      fDoc?.posterUrl ||
+      fDoc?.imageUrl ||
+      event.posterUrl ||
+      event.imageUrl ||
+      '';
+    setEditPosterUrl(initialPoster);
+    setPosterLoadFailed(false);
 
     if (fDoc?.links && fDoc.links.length > 0) {
       setEditLinks(fDoc.links);
+    } else if (event.links && event.links.length > 0) {
+      setEditLinks(event.links);
     } else {
       const defaultLinks: FirestorePromoLink[] = [];
       if (deep?.deepArticleUrl) {
@@ -181,48 +257,132 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
       }
       defaultLinks.push({
         type: 'TIER1_PROMO',
-        label: `1단계 홍보주소1 (${promoAnalysis.tier1Province.promo1Name})`,
+        label: `${promoAnalysis.tier1Province.promo1Name}`,
         url: promoAnalysis.tier1Province.promo1Url,
       });
       defaultLinks.push({
         type: 'TIER2_PROMO',
-        label: `2단계 홍보주소1 (${promoAnalysis.tier2Municipality.promo1Name})`,
+        label: `${promoAnalysis.tier2Municipality.promo1Name}`,
         url: promoAnalysis.tier2Municipality.promo1Url,
       });
       setEditLinks(defaultLinks);
     }
   }, [event, detail, promoAnalysis]);
 
+  // 1) 행사지역 (행정구역)
+  const regionAdminText = useMemo(() => {
+    if (!event) return '-';
+    const r = (event.regionName || '').trim();
+    const s = (event.sigunguName || '').trim();
+    if (!s || r === s || (r.includes('세종') && s.includes('세종'))) {
+      return r || s || '-';
+    }
+    return `${r} ${s}`;
+  }, [event]);
+
+  // 2) 행사위치 (수영장이 있다면 수영장 이름만 노출 + 네이버 지도 검색 링크 아이콘 동봉, 그 외에는 결집지/장소 + 네이버 지도 검색 링크 아이콘)
+  const venueInfo = useMemo(() => {
+    if (!event) {
+      return {
+        isSwimmingPool: false,
+        displayName: '-',
+        naverMapUrl: 'https://map.naver.com',
+      };
+    }
+    const matchedPool = findMatchingSwimmingPool(event);
+    const poolName = matchedPool?.name || event.venuePoolName;
+    if (poolName) {
+      const naverQuery = `${event.regionName || ''} ${event.sigunguName || ''} ${poolName}`.trim();
+      return {
+        isSwimmingPool: true,
+        displayName: poolName,
+        naverMapUrl: buildNaverMapSearchUrl(naverQuery),
+      };
+    }
+
+    const rawAddr = [event.addr1, event.addr2 || detail?.eventPlace]
+      .filter(Boolean)
+      .join(' ')
+      .trim();
+    const displayPlace = rawAddr || `${regionAdminText} 일원`;
+    const naverQuery = rawAddr
+      ? `${event.regionName || ''} ${rawAddr}`.trim()
+      : `${regionAdminText} ${event.title}`.trim();
+
+    return {
+      isSwimmingPool: false,
+      displayName: displayPlace,
+      naverMapUrl: buildNaverMapSearchUrl(naverQuery),
+    };
+  }, [event, detail?.eventPlace, regionAdminText]);
+
+  // 3) 주최 (주최기관이 많으면 줄 바꿔서 표시, '공식 홈페이지 요강 참조' 삭제)
+  const organizerLines = useMemo(() => {
+    if (!event) return [];
+    return parseOrganizerLines(editHost, editSupervise, event.organizer);
+  }, [event, editHost, editSupervise]);
+
+  // 4) 참가비 및 *(붉은색) 각주
+  const feeDisplayInfo = useMemo(() => {
+    if (!event) {
+      return { feeText: '-', specialNote: null };
+    }
+    const rawFee =
+      event.feeText ||
+      detail?.useTimeFestival ||
+      event.feeInfo ||
+      '무료 (일부 체험·부대프로그램 유료)';
+    const specialNote = (event.feeSpecialNote || '').trim();
+    return {
+      feeText: rawFee,
+      specialNote: specialNote || null,
+    };
+  }, [event, detail?.useTimeFestival]);
+
+  // 5) 연락처 (별도 항목, '공식 홈페이지 요강 참조' 제거)
+  const contactText = useMemo(() => {
+    if (!event) return '-';
+    const cleaned = stripOrganizerDummyText(
+      editContact || detail?.tel || event.tel || ''
+    );
+    return cleaned || '-';
+  }, [event, editContact, detail?.tel]);
+
+  // 6) 종목 (운영종목만 하이라이트, 비운영 음영)
+  const disciplineInfo = useMemo(() => {
+    if (!event) {
+      return {
+        group: 'SWIMMING' as const,
+        catalog: [] as string[],
+        activeSet: new Set<string>(),
+      };
+    }
+    return getOperatingDisciplinesForEvent(event);
+  }, [event]);
+
+  // 7) 모집일
+  const registrationPeriodText = useMemo(() => {
+    if (!event) return '-';
+    const reg = event.registrationPeriod;
+    if (!reg || (!reg.startDate && !reg.endDate)) {
+      return '상시 또는 현장 참여 (별도 사전 모집 없음)';
+    }
+    const s = (reg.startDate || '').replace(/[^0-9]/g, '').slice(0, 8);
+    const e = (reg.endDate || '').replace(/[^0-9]/g, '').slice(0, 8);
+    const dateRange =
+      !e || s === e
+        ? `${formatYmd(s)}${reg.openTime ? ` ${reg.openTime}` : ''}`
+        : `${formatYmd(s)}${reg.openTime ? ` ${reg.openTime}` : ''} ~ ${formatYmd(e)}${
+            reg.closeTime ? ` ${reg.closeTime}` : ''
+          }`;
+
+    const extras = [reg.quotaNote, reg.methodNote].filter(Boolean).join(' · ');
+    return extras ? `${dateRange} (${extras})` : dateRange;
+  }, [event]);
+
   if (!event || !promoAnalysis) return null;
 
   const isPortal = event.source === 'PUBLIC_PORTAL';
-  const externalUrl =
-    extractHrefFromHtml(detail?.homepageHtml) || event.sourceOrgUrl;
-
-  const handleLiveScrape = async () => {
-    if (!customTargetUrl.trim()) return;
-    setLiveScraping(true);
-    try {
-      const res = await fetch(
-        `/api/municipal-enrich?url=${encodeURIComponent(customTargetUrl.trim())}`
-      );
-      const data = await res.json();
-      if (res.ok && data.highlights) {
-        setLiveScrapeResult(data);
-        const scrapedInvitation = [
-          ...data.highlights.slice(0, 4),
-          data.trafficNotice ? `(${data.trafficNotice})` : '',
-        ]
-          .filter(Boolean)
-          .join(' / ');
-        setEditInvitation(scrapedInvitation);
-      }
-    } catch {
-      // ignore
-    } finally {
-      setLiveScraping(false);
-    }
-  };
 
   const handleAddLinkRow = () => {
     setEditLinks((prev) => [
@@ -264,13 +424,13 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
       eventDate: {
         startDate: editStartDate.replace(/[^0-9]/g, '').slice(0, 8) || event.startDate,
         endDate: editEndDate.replace(/[^0-9]/g, '').slice(0, 8) || event.endDate,
-        scheduleNote: editScheduleNote.trim() || undefined,
+        scheduleNote: cleanScheduleNoteText(editScheduleNote) || undefined,
       },
-      eventTime: editEventTime.trim() || '상시 운영',
+      eventTime: cleanEventTimeDisplay(editEventTime),
       organizer: {
-        host: editHost.trim() || promoAnalysis.tier2Municipality.hallName,
-        supervise: editSupervise.trim() || undefined,
-        contact: editContact.trim() || undefined,
+        host: stripOrganizerDummyText(editHost) || promoAnalysis.tier2Municipality.hallName,
+        supervise: stripOrganizerDummyText(editSupervise) || undefined,
+        contact: stripOrganizerDummyText(editContact) || undefined,
       },
       category: {
         lclsSystm2: editCat2,
@@ -284,7 +444,8 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
       addr1: event.addr1,
       mapX: event.mapX,
       mapY: event.mapY,
-      imageUrl: event.imageUrl,
+      imageUrl: editPosterUrl.trim() || event.imageUrl,
+      posterUrl: editPosterUrl.trim() || undefined,
       seriesId: event.seriesId,
       seriesName: event.seriesName,
       edition: event.edition,
@@ -292,6 +453,13 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
       prevEventId: event.prevEventId,
       nextEventId: event.nextEventId,
       seriesHistory: event.seriesHistory,
+      sportDisciplineGroup: event.sportDisciplineGroup,
+      operatingDisciplines: event.operatingDisciplines,
+      feeText: event.feeText,
+      feeSpecialNote: event.feeSpecialNote,
+      preOpenDate: event.preOpenDate,
+      venuePoolId: event.venuePoolId,
+      venuePoolName: event.venuePoolName,
       updatedAt: new Date().toISOString(),
     };
 
@@ -300,12 +468,11 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
     setIsEditingFirestore(false);
     setSaveNotice(
       synced
-        ? '✅ Firebase Firestore (koreaeventlist) 클라우드 DB에 저장 및 실시간 조합이 반영되었습니다!'
-        : '✅ 로컬 Firestore 캐시에 저장 및 실시간 조합이 반영되었습니다!'
+        ? '✅ Firebase Firestore 클라우드 DB에 저장되었습니다!'
+        : '✅ 로컬 캐시에 저장되었습니다!'
     );
   };
 
-  const deep = promoAnalysis.deepEnrichment;
   const subCategoriesForEdit = Object.values(SUB_CATEGORIES).filter(
     (s) => s.parentCode === editCat2
   );
@@ -321,6 +488,22 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
     ? seriesTimeline.find((h) => h.id === event.nextEventId) ||
       allEvents.find((ev) => ev.id === event.nextEventId)
     : undefined;
+
+  const preOpenDateText = event.preOpenDate || '-';
+  const crawledDateText = formatCrawlTimestampKst(
+    event.firstSeenAt || event.updatedAt
+  );
+  const publishedDateText = event.publishedAt
+    ? formatYmd(event.publishedAt.slice(0, 8))
+    : '-';
+
+  const rawPosterLink = (editPosterUrl || '').trim();
+  const baseUrl = import.meta.env.BASE_URL || '/';
+  const resolvedPosterSrc = rawPosterLink
+    ? /^https?:\/\//i.test(rawPosterLink) || rawPosterLink.startsWith('data:')
+      ? rawPosterLink
+      : `${baseUrl}${rawPosterLink.replace(/^\/+/, '')}`
+    : '';
 
   return (
     <div className={styles.backdrop} onClick={onClose}>
@@ -341,16 +524,9 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                   🔄 역대 {seriesTimeline.length}개 회차 연결됨
                 </span>
               )}
-              {event.firestoreDoc && (
-                <span className={styles.firestoreBadge}>
-                  🔥 지자체 홍보 상세정보 연동됨
-                </span>
-              )}
+              <span className={styles.catBadge}>{regionAdminText}</span>
               <span className={styles.catBadge}>
-                {event.regionName} · {event.sigunguName}
-              </span>
-              <span className={styles.catBadge}>
-                {event.lclsSystm2Name} &gt; {event.lclsSystm3Name}
+                {getMajorCategoryName(editCat2)} &gt; {getSubCategoryName(editCat3)}
               </span>
             </div>
             <h2 className={styles.title}>{event.title}</h2>
@@ -362,11 +538,110 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
         </div>
 
         <div className={styles.body}>
-          {event.imageUrl && (
-            <img src={event.imageUrl} alt={event.title} className={styles.heroImg} />
-          )}
+          {/* 행사 배포 포스터 영역 (링크 참조 방식: 미등록 시 안내, 링크 삭제/만료 시 대체 그래픽 표시) */}
+          <div className={styles.posterSectionBox}>
+            <div className={styles.posterSectionHeader}>
+              <span className={styles.posterSectionLabel}>🖼️ 행사 배포 포스터</span>
+              {resolvedPosterSrc && !posterLoadFailed && (
+                <a
+                  href={resolvedPosterSrc}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={styles.posterOriginalLink}
+                >
+                  <span>포스터 원본 열기</span>
+                  <ExternalLink size={12} />
+                </a>
+              )}
+            </div>
+            {!resolvedPosterSrc ? (
+              <div className={styles.posterMissingPlaceholder}>
+                <svg
+                  width="44"
+                  height="44"
+                  viewBox="0 0 48 48"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <rect
+                    x="6"
+                    y="8"
+                    width="36"
+                    height="32"
+                    rx="6"
+                    stroke="#94a3b8"
+                    strokeWidth="2.2"
+                    strokeDasharray="4 3"
+                    fill="#f8fafc"
+                  />
+                  <circle cx="18" cy="19" r="3.5" fill="#cbd5e1" />
+                  <path
+                    d="M11 34L20 25L27 31L33 26L38 34H11Z"
+                    fill="#cbd5e1"
+                  />
+                </svg>
+                <span className={styles.posterPlaceholderTitle}>
+                  포스터가 등록되지 않았습니다.
+                </span>
+              </div>
+            ) : posterLoadFailed ? (
+              <div
+                className={styles.posterDeletedGraphic}
+                role="img"
+                aria-label="이미지가 삭제되었습니다."
+              >
+                <svg
+                  width="64"
+                  height="64"
+                  viewBox="0 0 64 64"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <rect
+                    x="8"
+                    y="10"
+                    width="48"
+                    height="44"
+                    rx="8"
+                    fill="#fef2f2"
+                    stroke="#f87171"
+                    strokeWidth="2.2"
+                  />
+                  <path
+                    d="M16 44L26 33L34 40L42 31L50 44H16Z"
+                    fill="#fecaca"
+                  />
+                  <circle cx="24" cy="23" r="4" fill="#fca5a5" />
+                  <line
+                    x1="14"
+                    y1="14"
+                    x2="50"
+                    y2="50"
+                    stroke="#dc2626"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <strong className={styles.posterDeletedTitle}>
+                  이미지가 삭제되었습니다.
+                </strong>
+                <span className={styles.posterDeletedSub}>
+                  원본 포스터 링크({rawPosterLink})가 만료되었거나 삭제되었습니다.
+                </span>
+              </div>
+            ) : (
+              <div className={styles.posterPreviewWrap}>
+                <img
+                  src={resolvedPosterSrc}
+                  alt={`${event.title} 포스터`}
+                  className={styles.posterPreviewImg}
+                  onError={() => setPosterLoadFailed(true)}
+                />
+              </div>
+            )}
+          </div>
 
-          {/* 0. 역대 대회·행사 시리즈 회차 연결 패널 (제19회 <-> 제18회 <-> 제17회 등) */}
+          {/* 0. 역대 대회·행사 시리즈 회차 연결 패널 */}
           {(hasMultiSeries || prevEditionItem || nextEditionItem) && (
             <div className={styles.seriesHistoryBox}>
               <div className={styles.seriesHeader}>
@@ -381,7 +656,6 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                 </span>
               </div>
 
-              {/* 이전 회차 / 다음 회차 빠른 이동 버튼 바 */}
               {(prevEditionItem || nextEditionItem) && (
                 <div className={styles.seriesNavRow}>
                   {prevEditionItem ? (
@@ -432,11 +706,12 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                 </div>
               )}
 
-              {/* 전체 역대 회차 타임라인 목록 */}
               {seriesTimeline.length > 0 && (
                 <div className={styles.seriesTimelineList}>
                   {seriesTimeline.map((item) => {
                     const isCurrent = item.id === event.id;
+                    const singleDay =
+                      !item.endDate || item.startDate === item.endDate;
                     return (
                       <div
                         key={item.id}
@@ -456,10 +731,18 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                           </span>
                           <span className={styles.seriesItemTitle}>{item.title}</span>
                           <span className={styles.seriesItemDate}>
-                            ({formatYmd(item.startDate)} ~ {formatYmd(item.endDate)})
+                            (
+                            {singleDay
+                              ? formatYmd(item.startDate)
+                              : `${formatYmd(item.startDate)} ~ ${formatYmd(
+                                  item.endDate
+                                )}`}
+                            )
                           </span>
                           {isCurrent && (
-                            <span className={styles.currentViewingTag}>현재 보고 있는 회차</span>
+                            <span className={styles.currentViewingTag}>
+                              현재 보고 있는 회차
+                            </span>
                           )}
                         </div>
                         <div className={styles.seriesItemActions}>
@@ -493,14 +776,12 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
             </div>
           )}
 
-          {/* 1. Firebase Firestore 7대 핵심 스키마 & 실시간 조합 패널 (연결 키는 숨김) */}
+          {/* 1. 세부정보 표준 표 (16개 항목 지정 순서) */}
           <div className={styles.firestoreBox}>
             <div className={styles.firestoreHeader}>
               <span className={styles.firestoreTitle}>
                 <Database size={17} color="#d97706" />
-                <span>
-                  행사 핵심 요약 &amp; 홍보 링크 안내
-                </span>
+                <span>행사 세부정보</span>
               </span>
               <button
                 type="button"
@@ -511,72 +792,260 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                   size={13}
                   style={{ marginRight: 4, display: 'inline', verticalAlign: 'middle' }}
                 />
-                {isEditingFirestore ? '편집 닫기' : '초댓말 · 홍보링크 편집'}
+                {isEditingFirestore ? '편집 닫기' : '세부정보 편집'}
               </button>
             </div>
 
             {saveNotice && <div className={styles.saveStatusMsg}>{saveNotice}</div>}
 
-            {/* 초댓말 (Invitation) 하이라이트 카드 */}
-            <div className={styles.invitationCard}>
-              <span className={styles.invitationLabel}>
-                💌 초댓말 (invitation · 지자체 홍보 페이지 요약 초대글)
-              </span>
-              <div>
-                {editInvitation ||
-                  '등록된 초댓말이 없습니다. 우측 상단 편집 버튼이나 홍보원문 실시간 파싱으로 초댓말을 저장할 수 있습니다.'}
+            {/* 초댓말 / 요약 안내 */}
+            {editInvitation && (
+              <div className={styles.invitationCard}>
+                <span className={styles.invitationLabel}>💌 행사 요약 안내</span>
+                <div>{editInvitation}</div>
               </div>
-            </div>
+            )}
 
-            {/* 7대 핵심 필드 요약 그리드 (비편집 시) */}
             {!isEditingFirestore ? (
-              <div className={styles.infoGrid}>
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>1. 행사명 (title)</span>
-                  <span className={styles.infoVal}>{editTitle}</span>
+              <>
+                <div className={styles.detailTableWrap}>
+                  <table className={styles.detailSpecTable}>
+                    <tbody>
+                      {/* 1. 행사명 */}
+                      <tr>
+                        <th scope="row">행사명</th>
+                        <td className={styles.detailTitleCell}>{editTitle}</td>
+                      </tr>
+
+                      {/* 2. 행사일 (하루인 경우 시작날짜만 노출, 대회 요강 참조 문구 미노출) */}
+                      <tr>
+                        <th scope="row">행사일</th>
+                        <td>
+                          {formatEventDateSingleOrRange(
+                            editStartDate,
+                            editEndDate,
+                            editScheduleNote
+                          )}
+                        </td>
+                      </tr>
+
+                      {/* 3. 행사시각 (부별 워밍업 및 경기시간 요강 참조 문구 미노출) */}
+                      <tr>
+                        <th scope="row">행사시각</th>
+                        <td>{cleanEventTimeDisplay(editEventTime)}</td>
+                      </tr>
+
+                      {/* 4. 행사지역 (행정구역) */}
+                      <tr>
+                        <th scope="row">행사지역</th>
+                        <td>{regionAdminText}</td>
+                      </tr>
+
+                      {/* 5. 행사위치 (수영장이 있다면 수영장 이름만 노출 + 네이버 지도 검색링크 아이콘 동봉) */}
+                      <tr>
+                        <th scope="row">행사위치</th>
+                        <td>
+                          <div className={styles.venueLocationRow}>
+                            <span className={styles.venueLocationName}>
+                              {venueInfo.displayName}
+                            </span>
+                            <a
+                              href={venueInfo.naverMapUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className={styles.venueMapIconLink}
+                              title={`${venueInfo.displayName} 네이버 지도 검색`}
+                              aria-label={`${venueInfo.displayName} 네이버 지도 검색`}
+                            >
+                              <MapPin size={13} />
+                              <span>네이버 지도</span>
+                              <ExternalLink size={12} />
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+
+                      {/* 6. 주최 (주최기관이 많으면 줄 바꿔서 표시, 공식 홈페이지 요강 참조 삭제) */}
+                      <tr>
+                        <th scope="row">주최</th>
+                        <td>
+                          {organizerLines.length === 0 ? (
+                            '-'
+                          ) : (
+                            <div className={styles.organizerMultiLineList}>
+                              {organizerLines.map((line, idx) => (
+                                <div key={idx} className={styles.organizerLineItem}>
+                                  {line}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+
+                      {/* 7. 행사 분류 (행사 코드는 노출하지 않음) */}
+                      <tr>
+                        <th scope="row">행사 분류</th>
+                        <td>
+                          {getMajorCategoryName(editCat2)} &gt;{' '}
+                          {getSubCategoryName(editCat3)}
+                        </td>
+                      </tr>
+
+                      {/* 8. 행사 범위 */}
+                      <tr>
+                        <th scope="row">행사 범위</th>
+                        <td>
+                          {editPromoLevel === 3
+                            ? '세계/대한연맹'
+                            : editPromoLevel === 2
+                              ? '광역시도'
+                              : editPromoLevel === 1
+                                ? '시군구'
+                                : '동네'}
+                        </td>
+                      </tr>
+
+                      {/* 9. 참가비 (일반 참가비 외 특별한 내용이 있다면 붉은색 * 표시 후 표 아래에 덧붙임) */}
+                      <tr>
+                        <th scope="row">참가비</th>
+                        <td>
+                          <span>{feeDisplayInfo.feeText}</span>
+                          {feeDisplayInfo.specialNote && (
+                            <span
+                              className={styles.feeAsterisk}
+                              title={feeDisplayInfo.specialNote}
+                            >
+                              *
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+
+                      {/* 10. 연락처 (별도 항목) */}
+                      <tr>
+                        <th scope="row">연락처</th>
+                        <td>{contactText}</td>
+                      </tr>
+
+                      {/* 11. 종목 (운영종목만 하이라이트, 비운영 음영) */}
+                      <tr>
+                        <th scope="row">종목</th>
+                        <td>
+                          <div className={styles.disciplineGroupWrap}>
+                            <div className={styles.disciplineChipList}>
+                              {disciplineInfo.catalog.map((disc) => {
+                                const isActive =
+                                  disciplineInfo.activeSet.has(disc);
+                                return (
+                                  <span
+                                    key={disc}
+                                    className={
+                                      isActive
+                                        ? styles.disciplineChipActive
+                                        : styles.disciplineChipInactive
+                                    }
+                                  >
+                                    {disc}
+                                  </span>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+
+                      {/* 12. 사전개방일 */}
+                      <tr>
+                        <th scope="row">사전개방일</th>
+                        <td>{preOpenDateText}</td>
+                      </tr>
+
+                      {/* 13. 수집일(크롤링) */}
+                      <tr>
+                        <th scope="row">수집일(크롤링)</th>
+                        <td>{crawledDateText}</td>
+                      </tr>
+
+                      {/* 14. 수집된 링크 (복수가능 · 대회 일정 원문은 실제 게시글 클릭 주소 표시) */}
+                      <tr>
+                        <th scope="row">수집된 링크</th>
+                        <td>
+                          {editLinks.length === 0 ? (
+                            '-'
+                          ) : (
+                            <div className={styles.collectedLinksList}>
+                              {editLinks.map((lnk, idx) => {
+                                const isAttachment =
+                                  lnk.type === 'ATTACHMENT' ||
+                                  /\.(pdf|hwp|hwpx|doc|docx|xls|xlsx|zip)(\?|$)/i.test(
+                                    lnk.url
+                                  );
+                                return (
+                                  <a
+                                    key={`${lnk.url}-${idx}`}
+                                    href={lnk.url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className={
+                                      isAttachment
+                                        ? styles.collectedLinkChipAttachment
+                                        : styles.collectedLinkChip
+                                    }
+                                    title={lnk.url}
+                                  >
+                                    <div className={styles.collectedLinkTopRow}>
+                                      {isAttachment ? (
+                                        <FileText size={13} />
+                                      ) : (
+                                        <Globe size={13} />
+                                      )}
+                                      <span className={styles.collectedLinkLabel}>
+                                        {lnk.label || lnk.url}
+                                      </span>
+                                      <ExternalLink size={12} />
+                                    </div>
+                                    {!isAttachment && lnk.url && (
+                                      <span className={styles.collectedLinkActualUrl}>
+                                        {lnk.url}
+                                      </span>
+                                    )}
+                                  </a>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+
+                      {/* 15. 최초공지일 */}
+                      <tr>
+                        <th scope="row">최초공지일</th>
+                        <td>{publishedDateText}</td>
+                      </tr>
+
+                      {/* 16. 모집일 */}
+                      <tr>
+                        <th scope="row">모집일</th>
+                        <td>{registrationPeriodText}</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>2. 행사일 (eventDate)</span>
-                  <span className={styles.infoVal}>
-                    {formatYmd(editStartDate)} ~ {formatYmd(editEndDate)}
-                    {editScheduleNote ? ` (${editScheduleNote})` : ''}
-                  </span>
-                </div>
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>3. 행사시각 (eventTime)</span>
-                  <span className={styles.infoVal}>{editEventTime}</span>
-                </div>
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>4. 주최 / 주관 / 문의 (organizer)</span>
-                  <span className={styles.infoVal}>
-                    {[editHost, editSupervise, editContact].filter(Boolean).join(' · ')}
-                  </span>
-                </div>
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>5. 행사분류 (category)</span>
-                  <span className={styles.infoVal}>
-                    {getMajorCategoryName(editCat2)} &gt; {getSubCategoryName(editCat3)} (
-                    {editCat3})
-                  </span>
-                </div>
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>6. 행사 범위</span>
-                  <span className={styles.infoVal}>
-                    {editPromoLevel === 3
-                      ? '세계/대한연맹'
-                      : editPromoLevel === 2
-                        ? '광역시도'
-                        : editPromoLevel === 1
-                          ? '시군구'
-                          : '동네'}
-                  </span>
-                </div>
-              </div>
+
+                {/* 참가비 특별 내용(할인·부별 요금·단체 규정 등) 문서(표) 하단 각주 표시 */}
+                {feeDisplayInfo.specialNote && (
+                  <div className={styles.feeFootnoteBox}>
+                    <span className={styles.feeAsterisk}>*</span>
+                    <span>{feeDisplayInfo.specialNote}</span>
+                  </div>
+                )}
+              </>
             ) : (
-              /* Firestore 7대 핵심 필드 직접 편집 폼 */
+              /* 편집 폼 (영문 병기 제거) */
               <form className={styles.editorForm} onSubmit={handleSaveToFirestore}>
                 <div className={styles.editorField}>
-                  <label>1. 행사명 (title)</label>
+                  <label>행사명</label>
                   <input
                     type="text"
                     className={styles.editorInput}
@@ -588,7 +1057,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
 
                 <div className={styles.editorRow2}>
                   <div className={styles.editorField}>
-                    <label>2-1. 시작일 (YYYYMMDD)</label>
+                    <label>시작일 (YYYYMMDD)</label>
                     <input
                       type="text"
                       className={styles.editorInput}
@@ -598,7 +1067,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                     />
                   </div>
                   <div className={styles.editorField}>
-                    <label>2-2. 종료일 (YYYYMMDD)</label>
+                    <label>종료일 (YYYYMMDD)</label>
                     <input
                       type="text"
                       className={styles.editorInput}
@@ -611,30 +1080,30 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
 
                 <div className={styles.editorRow2}>
                   <div className={styles.editorField}>
-                    <label>2-3. 행사 회차/요일 메모 (scheduleNote)</label>
+                    <label>행사 일정 메모</label>
                     <input
                       type="text"
                       className={styles.editorInput}
                       value={editScheduleNote}
                       onChange={(e) => setEditScheduleNote(e.target.value)}
-                      placeholder="예: 11.8 ~ 11.22 매주 일요일"
+                      placeholder="예: 매주 일요일 운영"
                     />
                   </div>
                   <div className={styles.editorField}>
-                    <label>3. 행사시각 (eventTime)</label>
+                    <label>행사시각</label>
                     <input
                       type="text"
                       className={styles.editorInput}
                       value={editEventTime}
                       onChange={(e) => setEditEventTime(e.target.value)}
-                      placeholder="예: 07:00 ~ 09:00"
+                      placeholder="예: 08:30 ~ 18:00"
                     />
                   </div>
                 </div>
 
                 <div className={styles.editorRow2}>
                   <div className={styles.editorField}>
-                    <label>4-1. 주최기관 (organizer.host - 홍보사이트 매칭 힌트)</label>
+                    <label>주최기관</label>
                     <input
                       type="text"
                       className={styles.editorInput}
@@ -643,20 +1112,47 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                     />
                   </div>
                   <div className={styles.editorField}>
-                    <label>4-2. 주관기관 / 문의처 (supervise / contact)</label>
+                    <label>주관기관</label>
                     <input
                       type="text"
                       className={styles.editorInput}
                       value={editSupervise}
                       onChange={(e) => setEditSupervise(e.target.value)}
-                      placeholder="예: 서울시 체육회"
                     />
                   </div>
                 </div>
 
                 <div className={styles.editorRow2}>
                   <div className={styles.editorField}>
-                    <label>5-1. 중분류 (category.lclsSystm2)</label>
+                    <label>연락처</label>
+                    <input
+                      type="text"
+                      className={styles.editorInput}
+                      value={editContact}
+                      onChange={(e) => setEditContact(e.target.value)}
+                      placeholder="예: 055-267-0019 / 공식 이메일"
+                    />
+                  </div>
+                  <div className={styles.editorField}>
+                    <label>행사 범위</label>
+                    <select
+                      className={styles.editorSelect}
+                      value={editPromoLevel}
+                      onChange={(e) =>
+                        setEditPromoLevel(Number(e.target.value) as PromoLevel)
+                      }
+                    >
+                      <option value={3}>세계/대한연맹</option>
+                      <option value={2}>광역시도</option>
+                      <option value={1}>시군구</option>
+                      <option value={0}>동네</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className={styles.editorRow2}>
+                  <div className={styles.editorField}>
+                    <label>중분류</label>
                     <select
                       className={styles.editorSelect}
                       value={editCat2}
@@ -673,14 +1169,14 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                         if (firstSub) setEditCat3(firstSub.code);
                       }}
                     >
-                      <option value="EV01">축제 (EV01)</option>
-                      <option value="EV02">공연 (EV02)</option>
-                      <option value="EV03">행사·전시 (EV03)</option>
-                      <option value="MUNICIPAL">지자체 행정·시민참여 (MUNICIPAL)</option>
+                      <option value="EV01">축제</option>
+                      <option value="EV02">공연</option>
+                      <option value="EV03">행사·전시</option>
+                      <option value="MUNICIPAL">지자체 행정·시민참여</option>
                     </select>
                   </div>
                   <div className={styles.editorField}>
-                    <label>5-2. 소분류 (category.lclsSystm3)</label>
+                    <label>소분류</label>
                     <select
                       className={styles.editorSelect}
                       value={editCat3}
@@ -688,27 +1184,11 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                     >
                       {subCategoriesForEdit.map((s) => (
                         <option key={s.code} value={s.code}>
-                          {s.name} ({s.code})
+                          {s.name}
                         </option>
                       ))}
                     </select>
                   </div>
-                </div>
-
-                <div className={styles.editorField}>
-                  <label>5-3. 특별 홍보관 범위</label>
-                  <select
-                    className={styles.editorSelect}
-                    value={editPromoLevel}
-                    onChange={(e) =>
-                      setEditPromoLevel(Number(e.target.value) as PromoLevel)
-                    }
-                  >
-                    <option value={3}>세계/대한연맹</option>
-                    <option value={2}>광역시도</option>
-                    <option value={1}>시군구</option>
-                    <option value={0}>동네</option>
-                  </select>
                 </div>
 
                 <div className={styles.editorField}>
@@ -719,13 +1199,13 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                       justifyContent: 'space-between',
                     }}
                   >
-                    <label>6. 링크 (1:N 다중 링크 배열 · links)</label>
+                    <label>수집된 링크</label>
                     <button
                       type="button"
                       className={styles.smallBtn}
                       onClick={handleAddLinkRow}
                     >
-                      <Plus size={12} style={{ verticalAlign: 'middle' }} /> 1:N 링크 추가
+                      <Plus size={12} style={{ verticalAlign: 'middle' }} /> 링크 추가
                     </button>
                   </div>
 
@@ -743,11 +1223,12 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                             )
                           }
                         >
-                          <option value="TIER1_PROMO">1단계 광역홍보</option>
-                          <option value="TIER2_PROMO">2단계 시군구홍보</option>
-                          <option value="OFFICIAL">공식 홈페이지</option>
-                          <option value="TICKET">사전예약/티켓</option>
-                          <option value="SNS">공식 SNS</option>
+                          <option value="OFFICIAL">공식 공지/홈페이지</option>
+                          <option value="ATTACHMENT">첨부문서(요강)</option>
+                          <option value="TICKET">사전접수/신청</option>
+                          <option value="SNS">공식 밴드/SNS</option>
+                          <option value="TIER1_PROMO">광역 홍보관</option>
+                          <option value="TIER2_PROMO">시군구 홍보관</option>
                         </select>
                         <input
                           type="text"
@@ -781,12 +1262,26 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                 </div>
 
                 <div className={styles.editorField}>
-                  <label>7. 초댓말 (invitation · 소비자 맞춤형 핵심 요약 및 초대 문구)</label>
+                  <label>포스터 이미지 링크 (URL)</label>
+                  <input
+                    type="text"
+                    className={styles.editorInput}
+                    value={editPosterUrl}
+                    onChange={(e) => {
+                      setEditPosterUrl(e.target.value);
+                      setPosterLoadFailed(false);
+                    }}
+                    placeholder="https://... (비워두면 '포스터가 등록되지 않았습니다.' 표시)"
+                  />
+                </div>
+
+                <div className={styles.editorField}>
+                  <label>행사 요약 안내</label>
                   <textarea
                     className={styles.editorTextarea}
                     value={editInvitation}
                     onChange={(e) => setEditInvitation(e.target.value)}
-                    placeholder="지자체 홍보 사이트에서 추출한 세부 코스, 프로그램, 교통 통제 안내, 초대글을 입력하세요."
+                    placeholder="행사 핵심 요약 안내를 입력하세요."
                   />
                 </div>
 
@@ -799,191 +1294,28 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                     size={14}
                     style={{ marginRight: 5, display: 'inline', verticalAlign: 'middle' }}
                   />
-                  {savingFirestore
-                    ? 'Firebase Firestore에 저장 중...'
-                    : 'Firebase Firestore에 저장 및 실시간 조합 반영'}
+                  {savingFirestore ? '저장 중...' : '저장하기'}
                 </button>
               </form>
             )}
-
-            {/* 1:N 링크 버튼 바로가기 렌더링 */}
-            <div className={styles.promoLinksRow}>
-              {editLinks.map((lnk, idx) => (
-                <a
-                  key={idx}
-                  href={lnk.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={idx === 0 ? styles.deepLinkBtn : styles.subPromoLinkBtn}
-                >
-                  {idx === 0 ? <Globe size={14} /> : <Building2 size={13} />}
-                  <span>
-                    [{lnk.type}] {lnk.label}
-                  </span>
-                  <ExternalLink size={12} />
-                </a>
-              ))}
-            </div>
           </div>
-
-          {/* 2. 공공데이터포털에서 실시간 조합된 위치·연락처 정보 */}
-          <div className={styles.infoGrid}>
-            <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>개최 주소 / 장소 (실시간 조합)</span>
-              <span className={styles.infoVal}>
-                {event.addr1} {event.addr2 || detail?.eventPlace || ''}
-              </span>
-            </div>
-
-            <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>GPS 좌표 (WGS84 실시간 조합)</span>
-              <span className={styles.infoVal}>
-                {event.mapY && event.mapX
-                  ? `위도 ${event.mapY.toFixed(5)}, 경도 ${event.mapX.toFixed(5)}`
-                  : '행정구역 중심점 매핑'}
-              </span>
-            </div>
-
-            <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>이용요금 / 연락처</span>
-              <span className={styles.infoVal}>
-                {detail?.useTimeFestival || event.feeInfo || '상세 안내 참조'}
-                {event.tel ? ` (${event.tel})` : ''}
-              </span>
-            </div>
-          </div>
-
-          {/* 3. 주최기관 힌트 기반 1·2단계 지자체 홍보 페이지 매칭·요약 및 실시간 파서 */}
-          <div className={styles.promoEnrichBox}>
-            <div className={styles.promoHeader}>
-              <span className={styles.promoTitle}>
-                <Sparkles size={17} color="#2563eb" />
-                <span>주최기관 힌트 기반 지자체 공식 홍보 페이지 탐색 & 실시간 요약기</span>
-              </span>
-              <span className={styles.tierBadge}>
-                {promoAnalysis.matchedTier === 'TIER1_PROVINCE'
-                  ? '1단계 광역지자체 홍보DB 매칭'
-                  : '2단계 기초지자체(시군구) 홍보DB 매칭'}
-              </span>
-            </div>
-
-            <div className={styles.hintExplain}>
-              💡 <strong>주최기관 라우팅 분석:</strong> {promoAnalysis.routingExplanation}
-            </div>
-
-            {deep && (
-              <div className={styles.deepCard}>
-                <div className={styles.deepTitle}>
-                  📌 [{deep.promoPortalName}] {deep.deepArticleTitle}
-                </div>
-
-                <ul className={styles.bulletList}>
-                  {deep.summaryPoints.map((pt, i) => (
-                    <li key={i}>{pt}</li>
-                  ))}
-                </ul>
-
-                {deep.trafficOrSafetyNotice && (
-                  <div className={styles.trafficAlert}>{deep.trafficOrSafetyNotice}</div>
-                )}
-
-                {deep.historySummary && deep.historySummary.length > 0 && (
-                  <div className={styles.historyBox}>
-                    <strong>📅 지자체 홍보 페이지 수록 회차별 히스토리:</strong>
-                    {deep.historySummary.map((h, idx) => (
-                      <span key={idx}>· {h}</span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* 실시간 지자체 홍보 페이지 파싱 결과 표시 */}
-            {liveScrapeResult && (
-              <div className={styles.deepCard} style={{ borderColor: '#0f766e' }}>
-                <div className={styles.deepTitle} style={{ color: '#0f766e' }}>
-                  ⚡ 실시간 홍보 사이트 파싱 요약 완료 (초댓말 자동 반영됨):{' '}
-                  {liveScrapeResult.pageTitle}
-                </div>
-                <ul className={styles.bulletList}>
-                  {liveScrapeResult.highlights.map((line, idx) => (
-                    <li key={idx}>{line}</li>
-                  ))}
-                </ul>
-                {liveScrapeResult.trafficNotice && (
-                  <div className={styles.trafficAlert}>
-                    {liveScrapeResult.trafficNotice}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* 실시간 지자체 홍보 URL 원문 수집·요약 실행 바 */}
-            <div className={styles.liveScraperBar}>
-              <input
-                type="text"
-                className={styles.liveUrlInput}
-                value={customTargetUrl}
-                onChange={(e) => setCustomTargetUrl(e.target.value)}
-                placeholder="지자체 홍보 상세 URL 입력 (예: https://festival.seoul.go.kr/festival/main/festivalView.do?festacode=974)"
-              />
-              <button
-                type="button"
-                className={styles.liveScrapeBtn}
-                onClick={handleLiveScrape}
-                disabled={liveScraping}
-              >
-                <RefreshCw
-                  size={12}
-                  style={{ marginRight: 4, display: 'inline', verticalAlign: 'middle' }}
-                />
-                {liveScraping ? '실시간 요약 중...' : '홍보원문 실시간 파싱·요약'}
-              </button>
-            </div>
-          </div>
-
-          {/* 4. 공공데이터포털 기본 개요 */}
-          <div className={styles.sectionBox}>
-            <h3 className={styles.sectionTitle}>
-              {isPortal
-                ? '공공데이터포털 (KorService2 detailCommon2) 실시간 조회 기본 개요'
-                : '지자체 행정 홈페이지 기본 안내'}
-            </h3>
-            <div className={styles.overviewText}>
-              {loading
-                ? 'KorService2 detailCommon2 / detailIntro2 상세 정보를 조회하는 중입니다...'
-                : detail?.overview ||
-                  event.summary ||
-                  '해당 행사의 기본 일정 및 위치 정보가 제공됩니다.'}
-            </div>
-          </div>
-
-          {detail?.program && (
-            <div className={styles.sectionBox}>
-              <h3 className={styles.sectionTitle}>
-                공공데이터포털 (KorService2 detailIntro2) 실시간 조회 프로그램 정보
-              </h3>
-              <div className={styles.overviewText}>{detail.program}</div>
-            </div>
-          )}
         </div>
 
         <div className={styles.footer}>
-          <span style={{ fontSize: '0.76rem', color: '#64748b' }}>
-            지역: <strong>{event.regionName} {event.sigunguName}</strong>
+          <span style={{ fontSize: '0.78rem', color: '#64748b' }}>
+            행사지: <strong>{regionAdminText} · {venueInfo.displayName}</strong>
           </span>
 
-          {externalUrl && (
-            <a
-              href={externalUrl}
-              target="_blank"
-              rel="noreferrer"
-              className={styles.linkBtn}
-            >
-              <span>행사 개별 공식 홈페이지 바로가기</span>
-              <ExternalLink size={14} />
-            </a>
-          )}
+          <a
+            href={venueInfo.naverMapUrl}
+            target="_blank"
+            rel="noreferrer"
+            className={styles.linkBtn}
+          >
+            <MapPin size={14} />
+            <span>네이버 지도에서 행사위치 보기</span>
+            <ExternalLink size={14} />
+          </a>
         </div>
       </div>
     </div>

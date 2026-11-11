@@ -258,6 +258,13 @@ function parseUrlInitialState(): {
 
   let menu: MainMenuView = 'MAP';
   if (
+    rawMenu === 'EVENT_NEWS' ||
+    rawMenu === 'NEWS' ||
+    rawMenu === '새소식' ||
+    (rawMenu === 'LIST' && specialViewMode === 'SWIM_NEWS')
+  ) {
+    menu = 'EVENT_NEWS';
+  } else if (
     rawMenu === 'SPECIAL_PROMO' ||
     rawMenu === 'SPECIAL' ||
     rawMenu === 'PROMO' ||
@@ -689,14 +696,14 @@ export const App: React.FC = () => {
     if (activeMenu === 'SPECIAL_PROMO') {
       if (
         (specialPromoViewMode === 'POOLS' ||
-          specialPromoViewMode === 'POOLS_MAP' ||
-          specialPromoViewMode === 'SWIM_NEWS') &&
+          specialPromoViewMode === 'POOLS_MAP') &&
         activeSport !== 'SWIMMING'
       ) {
         return 'CALENDAR';
       }
       return specialPromoViewMode;
     }
+    if (activeMenu === 'EVENT_NEWS') return 'SWIM_NEWS';
     if (activeMenu === 'CALENDAR') return 'CALENDAR';
     if (activeMenu === 'LIST') return 'LIST';
     return 'MAP';
@@ -706,11 +713,9 @@ export const App: React.FC = () => {
     (mode: ViewMode) => {
       if (activeMenu === 'SPECIAL_PROMO') {
         setSpecialPromoViewMode(mode);
-      } else if (
-        mode !== 'POOLS' &&
-        mode !== 'POOLS_MAP' &&
-        mode !== 'SWIM_NEWS'
-      ) {
+      } else if (mode === 'SWIM_NEWS') {
+        setActiveMenu('EVENT_NEWS');
+      } else if (mode !== 'POOLS' && mode !== 'POOLS_MAP') {
         setActiveMenu(mode);
       }
     },
@@ -1098,17 +1103,21 @@ export const App: React.FC = () => {
     }));
   }, [allCombinedEvents, abbrSettings]);
 
-  // 수영 새소식 배지 카운트 (현재 접수중 + 곧 접수 시작 수영 대회 수)
+  // 새소식 배지 카운트 (현재 선택된 특별홍보관 종목 또는 행사 리스트 기준 접수중 + 곧 접수 시작 대회 수)
   const swimNewsBadgeCount = useMemo(() => {
     const now = new Date();
     const todayYmd = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(
       2,
       '0'
     )}${String(now.getDate()).padStart(2, '0')}`;
+    const targetSport =
+      activeMenu === 'SPECIAL_PROMO' ? activeSport : 'ALL';
     let count = 0;
     allCombinedEvents.forEach((ev) => {
-      const hay = `${ev.title} ${ev.invitation || ''} ${ev.summary || ''} ${ev.organizer || ''}`;
-      if (!matchesSportCategory(hay, 'SWIMMING')) return;
+      if (targetSport !== 'ALL') {
+        const hay = `${ev.title} ${ev.invitation || ''} ${ev.summary || ''} ${ev.organizer || ''}`;
+        if (!matchesSportCategory(hay, targetSport)) return;
+      }
       const reg = ev.registrationPeriod || ev.firestoreDoc?.registrationPeriod;
       if (!reg || reg.closedEarly) return;
       if (reg.startDate && reg.startDate > todayYmd) {
@@ -1122,7 +1131,7 @@ export const App: React.FC = () => {
       }
     });
     return count;
-  }, [allCombinedEvents]);
+  }, [allCombinedEvents, activeMenu, activeSport]);
 
   return (
     <div className={styles.appShell}>
@@ -1219,6 +1228,20 @@ export const App: React.FC = () => {
           events={displayFilteredEvents}
           columns={listColumns}
           onSelectEvent={(ev) => setSelectedEventId(ev.id)}
+        />
+      )}
+
+      {/* 3-B. 행사 리스트 > 새소식 뷰 (크롤링 된 새 이벤트 그래프 · 지금 등록중 · 곧 등록 시작 · 새로 올라온 업데이트) */}
+      {activeMenu === 'EVENT_NEWS' && (
+        <SpecialPromoView
+          sport="ALL"
+          viewMode="SWIM_NEWS"
+          events={displayFilteredEvents}
+          allEvents={displayAllCombinedEvents}
+          calendarOptions={calendarOptions}
+          targetYear={activeCalendarTargetYear}
+          onSelectEvent={(ev) => setSelectedEventId(ev.id)}
+          onChangeCalendarOptions={setCalendarOptions}
         />
       )}
 

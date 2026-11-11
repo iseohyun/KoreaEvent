@@ -1,5 +1,13 @@
 import { initializeApp } from 'firebase/app';
 import {
+  getAuth,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithPopup,
+  signOut,
+  User,
+} from 'firebase/auth';
+import {
   collection,
   doc,
   getDocs,
@@ -14,6 +22,7 @@ import {
 } from '../constants/regions';
 import { resolveSigunguPortalInfo } from '../constants/municipalityPortals';
 import {
+  EventRegistrationRequestItem,
   FirestoreEventDoc,
   FirestorePromoLink,
   UnifiedEventItem,
@@ -37,8 +46,181 @@ export const firebaseConfig = {
 
 export const firebaseApp = initializeApp(firebaseConfig);
 export const firestoreDb = getFirestore(firebaseApp);
+export const firebaseAuth = getAuth(firebaseApp);
+export const googleAuthProvider = new GoogleAuthProvider();
+export const ADMIN_EMAIL = 'iseohyun@hanmail.net';
 
 export const EVENTS_COLLECTION = 'events';
+export const REGISTRATION_REQUESTS_COLLECTION = 'event_registration_requests';
+const LOCAL_REGISTRATION_REQUESTS_KEY = 'korea_event_list_reg_requests_v1';
+
+export { onAuthStateChanged, signInWithPopup, signOut };
+export type { User };
+
+export interface LoggedInGoogleUser {
+  email: string;
+  displayName: string;
+  photoURL?: string;
+}
+
+export const AUTH_FALLBACK_STORAGE_KEY = 'korea_event_google_user_v1';
+export const AUTH_CHANGE_EVENT = 'korea-event-auth-changed';
+export const GOOGLE_OAUTH_CLIENT_ID =
+  import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID ||
+  '466435157842-676midd1r6f7t6b5854m9n55so62tal3.apps.googleusercontent.com';
+
+interface GoogleTokenResponse {
+  access_token?: string;
+  error?: string;
+}
+
+interface GoogleGsiAccounts {
+  oauth2?: {
+    initTokenClient: (config: {
+      client_id: string;
+      scope: string;
+      callback: (response: GoogleTokenResponse) => void;
+      error_callback?: (err: unknown) => void;
+    }) => { requestAccessToken: (overrideConfig?: { prompt?: string }) => void };
+  };
+}
+
+function loadGoogleGsiScript(): Promise<GoogleGsiAccounts | null> {
+  return new Promise((resolve) => {
+    const win = window as Window & { google?: { accounts?: GoogleGsiAccounts } };
+    if (win.google?.accounts?.oauth2) {
+      resolve(win.google.accounts);
+      return;
+    }
+    const existing = document.querySelector<HTMLScriptElement>(
+      'script[src="https://accounts.google.com/gsi/client"]'
+    );
+    if (existing) {
+      existing.addEventListener('load', () =>
+        resolve(win.google?.accounts || null)
+      );
+      existing.addEventListener('error', () => resolve(null));
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => resolve(win.google?.accounts || null);
+    script.onerror = () => resolve(null);
+    document.head.appendChild(script);
+  });
+}
+
+export function getStoredGoogleUser(): LoggedInGoogleUser | null {
+  try {
+    const raw = localStorage.getItem(AUTH_FALLBACK_STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as LoggedInGoogleUser;
+  } catch {
+    return null;
+  }
+}
+
+export function setStoredGoogleUser(user: LoggedInGoogleUser | null): void {
+  try {
+    if (user) {
+      localStorage.setItem(AUTH_FALLBACK_STORAGE_KEY, JSON.stringify(user));
+    } else {
+      localStorage.removeItem(AUTH_FALLBACK_STORAGE_KEY);
+    }
+  } catch {
+    // ignore
+  }
+  window.dispatchEvent(new CustomEvent(AUTH_CHANGE_EVENT, { detail: user }));
+}
+
+export async function logoutGoogleUser(): Promise<void> {
+  try {
+    await signOut(firebaseAuth);
+  } catch {
+    // ignore
+  }
+  setStoredGoogleUser(null);
+}
+
+export async function triggerGoogleOAuthLogin(options?: {
+  onSuccess?: (user: LoggedInGoogleUser) => void;
+  onFallbackNeeded?: (reason: string) => void;
+}): Promise<void> {
+  const gsiAccounts = await loadGoogleGsiScript();
+  if (gsiAccounts?.oauth2 && GOOGLE_OAUTH_CLIENT_ID) {
+    try {
+      const tokenClient = gsiAccounts.oauth2.initTokenClient({
+        client_id: GOOGLE_OAUTH_CLIENT_ID,
+        scope: 'openid email profile',
+        callback: async (tokenResp) => {
+          if (tokenResp.error || !tokenResp.access_token) {
+            options?.onFallbackNeeded?.(
+              'Google 인증이 취소되었거나 도메인 허용 설정 확인이 필요합니다.'
+            );
+            return;
+          }
+          try {
+            const res = await fetch(
+              'https://www.googleapis.com/oauth2/v3/userinfo',
+              {
+                headers: {
+                  Authorization: `Bearer ${tokenResp.access_token}`,
+                },
+              }
+            );
+            if (res.ok) {
+              const profile = (await res.json()) as {
+                email?: string;
+                name?: string;
+                picture?: string;
+              };
+              if (profile.email) {
+                const u: LoggedInGoogleUser = {
+                  email: profile.email.toLowerCase(),
+                  displayName: profile.name || profile.email.split('@')[0],
+                  photoURL: profile.picture || undefined,
+                };
+                setStoredGoogleUser(u);
+                options?.onSuccess?.(u);
+                return;
+              }
+            }
+          } catch {
+            // ignore
+          }
+        },
+        error_callback: () => {
+          options?.onFallbackNeeded?.(
+            'Google Cloud Console의 [승인된 JavaScript 원본] 설정 확인 또는 이메일 직접 로그인을 이용해 주세요.'
+          );
+        },
+      });
+      tokenClient.requestAccessToken({ prompt: 'select_account' });
+      return;
+    } catch {
+      // fallback to Firebase Auth
+    }
+  }
+
+  try {
+    const cred = await signInWithPopup(firebaseAuth, googleAuthProvider);
+    if (cred.user?.email) {
+      const u: LoggedInGoogleUser = {
+        email: cred.user.email.toLowerCase(),
+        displayName: cred.user.displayName || cred.user.email.split('@')[0],
+        photoURL: cred.user.photoURL || undefined,
+      };
+      setStoredGoogleUser(u);
+      options?.onSuccess?.(u);
+    }
+  } catch {
+    options?.onFallbackNeeded?.(
+      '현재 브라우저에서 Google 팝업 인증이 제한되어 이메일 로그인 창을 열었습니다.'
+    );
+  }
+}
 // v3: 스포츠 대회 범위(세계/대한연맹·광역시도·시군구·동네) 및 지자체 코드 정규화 반영을 위해 구 캐시 무효화
 const LOCAL_FIRESTORE_CACHE_KEY = 'korea_event_list_firestore_docs_v3';
 const LEGACY_CACHE_KEYS = [
@@ -366,13 +548,14 @@ export function composeEventsWithFirestore(
     const l2 = matchedDoc.category?.lclsSystm2 || pEv.lclsSystm2;
     const l3 = matchedDoc.category?.lclsSystm3 || pEv.lclsSystm3;
 
-    const organizerStr = [
-      matchedDoc.organizer?.host,
-      matchedDoc.organizer?.supervise,
-      matchedDoc.organizer?.contact ? `문의: ${matchedDoc.organizer.contact}` : undefined,
-    ]
-      .filter(Boolean)
-      .join(' · ');
+    const cleanContact =
+      matchedDoc.organizer?.contact &&
+      !/공식\s*홈페이지\s*요강\s*참조/.test(matchedDoc.organizer.contact)
+        ? matchedDoc.organizer.contact
+        : undefined;
+    const organizerStr = Array.from(
+      new Set([matchedDoc.organizer?.host, matchedDoc.organizer?.supervise].filter(Boolean))
+    ).join(' · ');
 
     return {
       ...pEv,
@@ -408,6 +591,15 @@ export function composeEventsWithFirestore(
       publishedAt: matchedDoc.publishedAt,
       updateSummary: matchedDoc.updateSummary,
       registrationPeriod: matchedDoc.registrationPeriod,
+      sportDisciplineGroup: matchedDoc.sportDisciplineGroup,
+      operatingDisciplines: matchedDoc.operatingDisciplines,
+      feeText: matchedDoc.feeText,
+      feeSpecialNote: matchedDoc.feeSpecialNote,
+      preOpenDate: matchedDoc.preOpenDate,
+      venuePoolId: matchedDoc.venuePoolId,
+      venuePoolName: matchedDoc.venuePoolName,
+      posterUrl: matchedDoc.posterUrl || matchedDoc.imageUrl || pEv.posterUrl || pEv.imageUrl,
+      tel: cleanContact || pEv.tel,
       summary: matchedDoc.invitation || pEv.summary,
       seriesId: matchedDoc.seriesId,
       seriesName: matchedDoc.seriesName,
@@ -448,13 +640,14 @@ export function composeEventsWithFirestore(
     const isPortalLinked = Boolean(fDoc.portalContentId);
     const primaryLink = fDoc.links?.[0]?.url || regionObj.municipalPortalUrl;
 
-    const organizerStr = [
-      fDoc.organizer?.host,
-      fDoc.organizer?.supervise,
-      fDoc.organizer?.contact ? `문의: ${fDoc.organizer.contact}` : undefined,
-    ]
-      .filter(Boolean)
-      .join(' · ');
+    const cleanContact =
+      fDoc.organizer?.contact &&
+      !/공식\s*홈페이지\s*요강\s*참조/.test(fDoc.organizer.contact)
+        ? fDoc.organizer.contact
+        : undefined;
+    const organizerStr = Array.from(
+      new Set([fDoc.organizer?.host, fDoc.organizer?.supervise].filter(Boolean))
+    ).join(' · ');
 
     standaloneFirestoreEvents.push({
       id: fDoc.id,
@@ -483,10 +676,11 @@ export function composeEventsWithFirestore(
       eventTime: fDoc.eventTime,
       status: dateUnknown ? 'UNKNOWN' : computeEventStatus(startDate, endDate),
       addr1: fDoc.addr1 || `${regionObj.name} ${finalSigunguName}`,
-      tel: fDoc.organizer?.contact,
+      tel: cleanContact,
       mapX: fDoc.mapX ?? regionObj.centerLng,
       mapY: fDoc.mapY ?? regionObj.centerLat,
       imageUrl: fDoc.imageUrl,
+      posterUrl: fDoc.posterUrl || fDoc.imageUrl,
       organizer: organizerStr,
       summary: fDoc.invitation,
       invitation: fDoc.invitation,
@@ -506,6 +700,13 @@ export function composeEventsWithFirestore(
       publishedAt: fDoc.publishedAt,
       updateSummary: fDoc.updateSummary,
       registrationPeriod: fDoc.registrationPeriod,
+      sportDisciplineGroup: fDoc.sportDisciplineGroup,
+      operatingDisciplines: fDoc.operatingDisciplines,
+      feeText: fDoc.feeText,
+      feeSpecialNote: fDoc.feeSpecialNote,
+      preOpenDate: fDoc.preOpenDate,
+      venuePoolId: fDoc.venuePoolId,
+      venuePoolName: fDoc.venuePoolName,
       seriesId: fDoc.seriesId,
       seriesName: fDoc.seriesName,
       edition: fDoc.edition,
@@ -517,4 +718,106 @@ export function composeEventsWithFirestore(
   });
 
   return [...composedPortalEvents, ...standaloneFirestoreEvents];
+}
+
+function loadLocalRegistrationRequests(): EventRegistrationRequestItem[] {
+  try {
+    const raw = localStorage.getItem(LOCAL_REGISTRATION_REQUESTS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveLocalRegistrationRequests(items: EventRegistrationRequestItem[]) {
+  try {
+    localStorage.setItem(LOCAL_REGISTRATION_REQUESTS_KEY, JSON.stringify(items));
+  } catch {
+    // ignore storage errors
+  }
+}
+
+export async function loadEventRegistrationRequests(): Promise<
+  EventRegistrationRequestItem[]
+> {
+  const localItems = loadLocalRegistrationRequests();
+  const map = new Map<string, EventRegistrationRequestItem>();
+  localItems.forEach((item) => {
+    if (item && item.id) map.set(item.id, item);
+  });
+
+  try {
+    const colRef = collection(firestoreDb, REGISTRATION_REQUESTS_COLLECTION);
+    const snapshot = await Promise.race([
+      getDocs(colRef),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Firestore timeout')), FIRESTORE_TIMEOUT_MS)
+      ),
+    ]);
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data() as EventRegistrationRequestItem;
+      if (data && data.id) {
+        map.set(data.id, data);
+      }
+    });
+  } catch {
+    // 오프라인/권한 제한 시 로컬 스토리지 내역 사용
+  }
+
+  return Array.from(map.values()).sort((a, b) =>
+    (b.createdAt || '').localeCompare(a.createdAt || '')
+  );
+}
+
+export async function submitEventRegistrationRequest(
+  reqData: EventRegistrationRequestItem
+): Promise<{
+  savedRequest: EventRegistrationRequestItem;
+  syncedWithCloud: boolean;
+}> {
+  const existing = loadLocalRegistrationRequests();
+  const map = new Map<string, EventRegistrationRequestItem>();
+  existing.forEach((item) => map.set(item.id, item));
+  map.set(reqData.id, reqData);
+  saveLocalRegistrationRequests(Array.from(map.values()));
+
+  try {
+    const docRef = doc(firestoreDb, REGISTRATION_REQUESTS_COLLECTION, reqData.id);
+    await setDoc(docRef, stripUndefined(reqData), { merge: true });
+    return { savedRequest: reqData, syncedWithCloud: true };
+  } catch {
+    return { savedRequest: reqData, syncedWithCloud: false };
+  }
+}
+
+export async function updateEventRegistrationRequestStatus(
+  id: string,
+  updates: Partial<EventRegistrationRequestItem>
+): Promise<{
+  updatedRequest: EventRegistrationRequestItem | null;
+  syncedWithCloud: boolean;
+}> {
+  const all = await loadEventRegistrationRequests();
+  const target = all.find((x) => x.id === id);
+  if (!target) {
+    return { updatedRequest: null, syncedWithCloud: false };
+  }
+  const next: EventRegistrationRequestItem = {
+    ...target,
+    ...updates,
+  };
+  const map = new Map<string, EventRegistrationRequestItem>();
+  all.forEach((item) => map.set(item.id, item));
+  map.set(id, next);
+  saveLocalRegistrationRequests(Array.from(map.values()));
+
+  try {
+    const docRef = doc(firestoreDb, REGISTRATION_REQUESTS_COLLECTION, id);
+    await setDoc(docRef, stripUndefined(next), { merge: true });
+    return { updatedRequest: next, syncedWithCloud: true };
+  } catch {
+    return { updatedRequest: next, syncedWithCloud: false };
+  }
 }

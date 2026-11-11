@@ -74,6 +74,7 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '부산광역시 동래구 종합운동장로 29 부산 사직실내수영장',
     mapX: 129.0604,
     mapY: 35.1928,
+    homepage: 'https://www.busan.go.kr/stadium/index',
     notes: '부산광역시수영연맹 정기 대회·시장배·교육감배·체육회장배 주 경기장',
     matchRe: /사직\s*실내\s*수영장|사직수영장|종합운동장로\s*29/,
   },
@@ -90,6 +91,7 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '경상북도 김천시 운동장길 1 김천실내수영장',
     mapX: 128.0865,
     mapY: 36.1398,
+    homepage: 'https://www.gc.go.kr/',
     notes: '국가대표 선발전, 전국수영선수권대회, 김천전국수영대회·마스터즈 주 경기장',
     matchRe: /김천\s*실내\s*수영장|운동장길\s*1\s*김천/,
   },
@@ -106,6 +108,7 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '울산광역시 남구 문수로 44 울산 문수실내수영장',
     mapX: 129.2638,
     mapY: 35.5342,
+    homepage: 'https://www.ulsan.go.kr/',
     notes: '울산광역시장배·교육감배·MBC전국수영대회·전국체전 주 경기장',
     matchRe: /문수\s*실내\s*수영장|문수로\s*44/,
   },
@@ -122,6 +125,7 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '서울특별시 송파구 올림픽로 424 올림픽수영장 / 잠실제1수영장',
     mapX: 127.1219,
     mapY: 37.5178,
+    homepage: 'https://www.ksponco.or.kr/sports/olparkswim',
     notes: '서울특별시장기, 서울시연맹회장배, 서울오픈, 송파구청장기 등 개최',
     matchRe: /올림픽\s*수영장|잠실\s*제?1?\s*수영장|올림픽로\s*424/,
   },
@@ -138,9 +142,9 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '경기도 수원시 팔달구 월드컵로 310 수원월드컵경기장 스포츠센터 수영장',
     mapX: 127.0368,
     mapY: 37.2865,
-    homepage: 'https://www.uyoonsports.com/',
-    notes: '경기도수영연맹 회장배·교육감배·전국소년체전 경기도 선발전 주 경기장',
-    matchRe: /수원\s*월드컵\s*경기장|월드컵로\s*310/,
+    homepage: 'https://www.suwon.go.kr/',
+    notes: '경기도수영연맹 회장배·교육감배·전국소년체전 경기도 선발전 주 경기장 (다이빙풀 보유)',
+    matchRe: /수원\s*월드컵\s*(?:경기장|다이빙풀|스포츠센터)|월드컵로\s*310|창룡대로\s*210번길\s*41/,
   },
   {
     id: 'pool-jeju-complex',
@@ -155,6 +159,7 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '제주특별자치도 제주시 서광로2길 24 제주종합경기장 실내수영장',
     mapX: 126.5152,
     mapY: 33.4979,
+    homepage: 'https://www.jejusi.go.kr/',
     notes: '제주한라배 전국수영대회, 제주도연맹회장배, 수애기배 마스터즈 주 경기장',
     matchRe: /제주\s*종합\s*경기장\s*실내\s*수영장|서광로2길\s*24/,
   },
@@ -171,6 +176,7 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '경상남도 창원시 성산구 원이대로 450 창원실내수영장',
     mapX: 128.6644,
     mapY: 35.2325,
+    homepage: 'https://www.cwsisul.or.kr/',
     notes: '창원특례시장배 전국 마스터즈, 경상남도지사배, 창원시연맹회장배 주 경기장',
     matchRe: /창원\s*실내\s*수영장|원이대로\s*450/,
   },
@@ -187,6 +193,7 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '광주광역시 광산구 첨단중앙로 23 남부대시립국제수영장',
     mapX: 126.8435,
     mapY: 35.2179,
+    homepage: 'https://www.nambu.ac.kr/',
     notes: '광주 전국수영선수권대회, 대통령배, 마스터즈 전국대회 주 경기장',
     matchRe: /남부대\s*시립\s*국제\s*수영장|남부대|첨단중앙로\s*23/,
   },
@@ -203,6 +210,7 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '인천광역시 미추홀구 매소홀로 618 문학박태환수영장',
     mapX: 126.6908,
     mapY: 37.4351,
+    homepage: 'https://www.insiseol.or.kr/',
     notes: 'World Aquatics 경영 월드컵 인천, 아레나 코리아 마스터즈, 인천시연맹회장배 개최',
     matchRe: /문학\s*박태환\s*수영장|박태환\s*수영장|매소홀로\s*618/,
   },
@@ -219,6 +227,7 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '전라남도 광양시 성황길 46 광양성황스포츠센터 수영장',
     mapX: 127.6958,
     mapY: 34.9407,
+    homepage: 'https://gwangyang.go.kr/',
     notes: '광양만배 전국수영대회, 전라남도 수영대회 주요 경기장',
     matchRe: /광양\s*성황\s*스포츠\s*센터|광양수영장|성황길\s*46/,
   },
@@ -235,6 +244,7 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '전라남도 목포시 대양로 286 목포실내수영장',
     mapX: 126.4161,
     mapY: 34.8118,
+    homepage: 'https://www.mokpo.go.kr/',
     notes: '목포유달산배 전국마스터즈, 전라남도지사배, 전남학생종합체육대회 주 경기장',
     matchRe: /목포\s*실내\s*수영장|대양로\s*286/,
   },
@@ -251,6 +261,7 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '전북특별자치도 전주시 완산구 백제대로 310 전주완산수영장',
     mapX: 127.1197,
     mapY: 35.8124,
+    homepage: 'https://www.jjss.or.kr/',
     notes: '동아수영대회, 대통령배, 전북 수영대회 주 경기장',
     matchRe: /전주\s*완산\s*수영장|백제대로\s*310/,
   },
@@ -267,6 +278,7 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '대전광역시 동구 동부로 138 용운국제수영장',
     mapX: 127.4631,
     mapY: 36.3275,
+    homepage: 'https://www.djsiseol.or.kr/',
     notes: '전국마스터즈수영대회, 대전시장배 및 중부권 전국대회 경기장',
     matchRe: /용운\s*국제\s*수영장|동부로\s*138/,
   },
@@ -283,6 +295,7 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '충청남도 아산시 배미로 34 아산배미수영장',
     mapX: 126.9882,
     mapY: 36.7836,
+    homepage: 'https://www.asanfmc.or.kr/',
     notes: '전국수영대회 및 충남 권역 수영대회 개최지',
     matchRe: /아산\s*배미\s*수영장|배미로\s*34/,
   },
@@ -299,6 +312,7 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '충청북도 청주시 흥덕구 직지대로 755 청주실내수영장',
     mapX: 127.4701,
     mapY: 36.6424,
+    homepage: 'https://www.cjuc.or.kr/',
     notes: 'MBC배 전국수영대회 및 충북 수영연맹 대회 경기장',
     matchRe: /청주\s*실내\s*수영장|직지대로\s*755/,
   },
@@ -315,6 +329,7 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '대구광역시 달서구 공원순환로 36 대구 두류수영장',
     mapX: 128.5579,
     mapY: 35.8482,
+    homepage: 'https://www.dpfc.or.kr/',
     notes: '한라배·대구시장배 및 대구광역시 수영연맹 대회 경기장',
     matchRe: /두류\s*수영장|공원순환로\s*36/,
   },
@@ -331,6 +346,7 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '경상북도 포항시 남구 희망대로 810 포항실내수영장',
     mapX: 129.3591,
     mapY: 36.0052,
+    homepage: 'https://www.phsisul.org/',
     notes: '경북도민체전 및 포항시 수영대회 개최지',
     matchRe: /포항\s*실내\s*수영장|희망대로\s*810/,
   },
@@ -654,7 +670,7 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '경상북도 구미시 낙동강변로 680 구미올림픽기념관 수영장',
     mapX: 128.3541,
     mapY: 36.1195,
-    homepage: 'https://www.gumisiseol.or.kr/',
+    homepage: 'https://www.gmuc.or.kr/',
     notes: '경상북도수영연맹 회장배 마스터즈 및 구미시 수영대회 개최지',
     matchRe: /구미\s*올림픽\s*기념관|낙동강변로\s*680/,
   },
@@ -671,7 +687,7 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     address: '경상남도 거제시 동부면 거제중앙로 350 (거제 동부초등학교 내 동부학생수영장)',
     mapX: 128.5992,
     mapY: 34.8032,
-    homepage: 'https://dongbu-p.gne.go.kr/',
+    homepage: 'https://www.geoje.go.kr/',
     notes: '거제시장배 및 거제 학생·생활체육 수영대회 개최 경기장 (50m×5레인)',
     matchRe: /동부\s*학생\s*수영장|동부\s*초등학교\s*수영장/,
   },
@@ -740,6 +756,41 @@ export const SWIMMING_POOLS_CATALOG: SwimmingPoolSpec[] = [
     homepage: 'https://www.seogwipo.go.kr/',
     notes: '오픈워터스위밍 국가대표 선발전 및 전국 마스터즈 대회 개최지',
     matchRe: /서귀포\s*국민\s*체육\s*센터|동방파제/,
+  },
+  {
+    id: 'pool-jincheon-ntc',
+    name: '진천 국가대표선수촌 수영장',
+    courseLength: '50m',
+    lanes: '50m × 10레인 (다이빙풀·아티스틱 전용수조 보유)',
+    hasDivingPool: true,
+    certification: '대한체육회 국가대표선수촌 공인 경기장',
+    regionName: '충청북도',
+    sigunguName: '진천군',
+    lDongRegnCd: '43',
+    lDongSignguCd: '750',
+    address: '충청북도 진천군 광혜원면 선수촌로 105 진천 국가대표선수촌 수영장',
+    mapX: 127.4342,
+    mapY: 36.9854,
+    homepage: 'https://www.sports.or.kr/',
+    notes: '경영·다이빙·아티스틱스위밍·수구 국가대표 선발전 및 강화훈련 전용 수영장',
+    matchRe: /진천\s*(?:국가대표\s*)?선수촌\s*수영장|선수촌로\s*105/,
+  },
+  {
+    id: 'pool-haman-sports',
+    name: '함안체육회실내수영장 (함안국민체육센터)',
+    courseLength: '25m',
+    lanes: '25m × 6레인',
+    certification: '군 단위 수영·철인3종 수상구조 강습 경기장',
+    regionName: '경상남도',
+    sigunguName: '함안군',
+    lDongRegnCd: '48',
+    lDongSignguCd: '730',
+    address: '경상남도 함안군 가야읍 함안대로 619-4 함안체육회실내수영장',
+    mapX: 128.4065,
+    mapY: 35.2724,
+    homepage: 'https://www.gyeongnam.go.kr/',
+    notes: '철인3종 수상인명구조요원 강습회 및 함안군 생활체육 수영대회 개최지',
+    matchRe: /함안\s*체육회\s*실내\s*수영장|함안\s*국민\s*체육\s*센터|함안대로\s*619-4/,
   },
 ];
 
@@ -957,4 +1008,57 @@ export function buildSwimmingPoolsWithStats(
         a.regionName.localeCompare(b.regionName, 'ko') ||
         a.name.localeCompare(b.name, 'ko')
     );
+}
+
+/**
+ * 이벤트의 주소·제목·초댓말에서 매칭되는 수영장을 찾아 반환한다.
+ * (우선순위: 1. venuePoolId 명시 매칭 -> 2. SWIMMING_POOLS_CATALOG 큐레이션 경기장 -> 3. 전체 공공체육시설 수영장)
+ */
+export function findMatchingSwimmingPool(
+  ev: Pick<
+    UnifiedEventItem,
+    | 'addr1'
+    | 'title'
+    | 'rawTitle'
+    | 'invitation'
+    | 'scheduleNote'
+    | 'lDongRegnCd'
+    | 'venuePoolId'
+  >
+): SwimmingPoolSpec | null {
+  const catalog = getMergedSwimmingPoolsCatalog();
+
+  if (ev.venuePoolId) {
+    const byId = catalog.find((p) => p.id === ev.venuePoolId);
+    if (byId) return byId;
+  }
+
+  const text = `${ev.addr1 || ''} ${ev.rawTitle || ev.title || ''} ${ev.invitation || ''} ${ev.scheduleNote || ''}`;
+  // 1) 큐레이션 수영대회 경기장 우선 탐색
+  for (const pool of SWIMMING_POOLS_CATALOG) {
+    if (pool.matchRe.test(text)) {
+      return catalog.find((p) => p.id === pool.id) || pool;
+    }
+  }
+
+  // 2) 전체 병합 수영장 카탈로그 탐색
+  for (const pool of catalog) {
+    if (
+      ev.lDongRegnCd &&
+      pool.lDongRegnCd &&
+      ev.lDongRegnCd !== pool.lDongRegnCd
+    ) {
+      continue;
+    }
+    if (pool.matchRe.test(text)) {
+      return pool;
+    }
+  }
+
+  return null;
+}
+
+export function buildNaverMapSearchUrl(query: string): string {
+  const cleaned = (query || '').trim();
+  return `https://map.naver.com/p/search/${encodeURIComponent(cleaned || '대한민국')}`;
 }

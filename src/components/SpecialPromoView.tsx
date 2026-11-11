@@ -66,7 +66,7 @@ import styles from './SpecialPromoView.module.css';
 import { formatYmdRange } from '../shared/dateFormat';
 
 interface SpecialPromoViewProps {
-  sport: SpecialPromoSport;
+  sport: SpecialPromoSport | 'ALL';
   viewMode: ViewMode;
   events: UnifiedEventItem[];
   allEvents?: UnifiedEventItem[];
@@ -94,22 +94,19 @@ interface MapWeekRow {
   events: UnifiedEventItem[];
 }
 
-type WeekDiffOffset = -3 | -2 | -1 | 0 | 1 | 2 | 3;
+type WeekDiffOffset = 0 | 1 | 2 | 3;
 
 interface WeekLegendItemConfig {
   diff: WeekDiffOffset;
   label: string;
-  colorTone: 'blue' | 'red';
+  colorTone: 'red';
   enabled: boolean;
   opacityPct: number; // 0 ~ 100
 }
 
-const WEEK_DIFF_ORDER: WeekDiffOffset[] = [-3, -2, -1, 0, 1, 2, 3];
+const WEEK_DIFF_ORDER: WeekDiffOffset[] = [0, 1, 2, 3];
 
 const DEFAULT_WEEK_LEGEND_CONFIGS: Record<WeekDiffOffset, WeekLegendItemConfig> = {
-  [-3]: { diff: -3, label: '3주전', colorTone: 'blue', enabled: true, opacityPct: 10 },
-  [-2]: { diff: -2, label: '2주전', colorTone: 'blue', enabled: true, opacityPct: 25 },
-  [-1]: { diff: -1, label: '1주전', colorTone: 'blue', enabled: true, opacityPct: 50 },
   [0]: { diff: 0, label: '이번주', colorTone: 'red', enabled: true, opacityPct: 100 },
   [1]: { diff: 1, label: '1주후', colorTone: 'red', enabled: true, opacityPct: 50 },
   [2]: { diff: 2, label: '2주후', colorTone: 'red', enabled: true, opacityPct: 25 },
@@ -117,7 +114,7 @@ const DEFAULT_WEEK_LEGEND_CONFIGS: Record<WeekDiffOffset, WeekLegendItemConfig> 
 };
 
 interface MuniHighlightInfo {
-  diff: WeekDiffOffset; // -3 ~ +3
+  diff: WeekDiffOffset; // 0 ~ +3
   distanceDays: number;
   primaryEvent: UnifiedEventItem;
   allWindowEvents: Array<{ diff: WeekDiffOffset; event: UnifiedEventItem }>;
@@ -277,7 +274,7 @@ function doesFeatureMatchEvent(feat: GeoFeature, ev: UnifiedEventItem): boolean 
 }
 
 /**
- * 주차 차이(diff: -3 ~ +3) 및 사용자 범례 설정(표시여부·% 농도)에 따른 지도 지자체 폴리곤 색상 반환
+ * 주차 차이(diff: 0 ~ +3) 및 사용자 범례 설정(표시여부·% 농도)에 따른 지도 지자체 폴리곤 색상 반환
  */
 function getDiffFillColor(
   diff: WeekDiffOffset,
@@ -289,10 +286,7 @@ function getDiffFillColor(
   if (diff === 0) {
     return `rgba(220, 38, 38, ${alpha})`;
   }
-  if (diff > 0) {
-    return `rgba(239, 68, 68, ${alpha})`;
-  }
-  return `rgba(37, 99, 235, ${alpha})`;
+  return `rgba(239, 68, 68, ${alpha})`;
 }
 
 function getDiffBadgeText(
@@ -302,8 +296,7 @@ function getDiffBadgeText(
   const cfg = legendConfigs[diff];
   const pct = cfg ? cfg.opacityPct : 0;
   if (diff === 0) return `이번주 (빨강 ${pct}%)`;
-  if (diff > 0) return `${diff}주후 (빨강 ${pct}%)`;
-  return `${Math.abs(diff)}주전 (파랑 ${pct}%)`;
+  return `${diff}주후 (빨강 ${pct}%)`;
 }
 
 function buildPoolMapLinks(pool: SwimmingPoolWithStats) {
@@ -539,7 +532,9 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
   onSelectEvent,
   onChangeCalendarOptions,
 }) => {
-  const sportLabel = SPORT_LABELS[sport] || '수영';
+  const sportLabel = sport === 'ALL' ? '전체 행사' : SPORT_LABELS[sport] || '수영';
+  const sportNewsTitleLabel =
+    sport === 'ALL' ? '전체 행사·대회' : `${sportLabel} 대회`;
 
   const activePoolFilters: PoolFilterState = externalPoolFilters || {
     regionName: 'ALL',
@@ -634,6 +629,7 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
 
   // 현재 선택된 스포츠 종목 행사 필터링 (상단 필터의 지역·날짜·범위·상태·세부검색이 이미 반영된 events 기준)
   const sportEvents = useMemo(() => {
+    if (sport === 'ALL') return events;
     return events.filter((ev) =>
       matchesSportCategory(
         `${ev.rawTitle || ev.title} ${ev.title} ${ev.invitation || ''} ${ev.summary || ''} ${ev.organizer || ''}`,
@@ -652,6 +648,18 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
       )
     );
   }, [allEvents, events]);
+
+  // 현재 탭(수영/러닝/자전거/철인 또는 전체 행사 리스트)의 새소식 대시보드 집계 대상 전체 이벤트
+  const allTargetSportEvents = useMemo(() => {
+    const sourceList = allEvents && allEvents.length > 0 ? allEvents : events;
+    if (sport === 'ALL') return sourceList;
+    return sourceList.filter((ev) =>
+      matchesSportCategory(
+        `${ev.rawTitle || ev.title} ${ev.title} ${ev.invitation || ''} ${ev.summary || ''} ${ev.organizer || ''}`,
+        sport
+      )
+    );
+  }, [allEvents, events, sport]);
 
   const swimmingPoolsWithStats = useMemo(() => {
     return buildSwimmingPoolsWithStats(allSwimEvents, sportEvents);
@@ -1100,24 +1108,109 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
   const isSwimmingPoolsList = sport === 'SWIMMING' && viewMode === 'POOLS';
   const isSwimmingPoolsMap = sport === 'SWIMMING' && viewMode === 'POOLS_MAP';
   const isSwimmingPoolsMode = isSwimmingPoolsList || isSwimmingPoolsMap;
-  const isSwimNewsMode = sport === 'SWIMMING' && viewMode === 'SWIM_NEWS';
+  const isSwimNewsMode = viewMode === 'SWIM_NEWS';
   const isSpecialSwimSubView = isSwimmingPoolsMode || isSwimNewsMode;
 
-  // 새소식 대시보드 내부 빠른 필터 상태 (섹션 선택 + 업데이트 기간 필터)
+  // 새소식 대시보드 내부 빠른 필터 상태 (섹션 선택 + 업데이트 기간 필터: 기본보기 7일)
   const [newsSectionFilter, setNewsSectionFilter] = useState<
     'ALL' | 'OPEN' | 'UPCOMING' | 'UPDATES'
   >('ALL');
   const [newsUpdateRangeDays, setNewsUpdateRangeDays] = useState<'ALL' | 7 | 14 | 30>(
-    'ALL'
+    7
   );
 
-  // 수영 새소식: 전체 수영 대회(allSwimEvents) 기준 접수중 / 곧 접수 시작 / 업데이트 타임라인 산출
+  // 새소식: 현재 선택된 종목(또는 전체 행사) 기준 접수중 / 곧 접수 시작 / 업데이트 타임라인 / 일별 크롤링 그래프 산출
   const swimNewsData = useMemo(() => {
-    const annotated = allSwimEvents.map((ev) => ({
+    const extractCrawlYmd = (ev: UnifiedEventItem): string => {
+      const raw = (ev.firstSeenAt || ev.updatedAt || '').trim();
+      if (/^\d{4}-\d{2}-\d{2}/.test(raw)) {
+        if (raw.endsWith('Z')) {
+          const ms = Date.parse(raw);
+          if (!Number.isNaN(ms)) {
+            const kst = new Date(ms + 9 * 3600 * 1000);
+            return `${kst.getUTCFullYear()}${pad2(kst.getUTCMonth() + 1)}${pad2(
+              kst.getUTCDate()
+            )}`;
+          }
+        }
+        return raw.slice(0, 10).replace(/-/g, '');
+      }
+      if (/^\d{8}$/.test(raw)) return raw;
+      return '';
+    };
+
+    // 2026-11-08 초기 아카이브 시드 시 함께 적재된 과거(2010~2026.09) 종료 대회는 제외하고,
+    // 현재 시즌(2026.10 이후) 대회 및 2026-11-09 이후 일일 크롤링으로 신규 수집된 대회를 새소식 집계 대상으로 사용
+    const isNewsTargetSwimEvent = (ev: UnifiedEventItem, cYmd: string): boolean => {
+      if (!cYmd || cYmd < '20261108') return false;
+      if (cYmd >= '20261109') return true;
+      return (ev.startDate || '') >= '20261001';
+    };
+
+    const crawlCountByYmd = new Map<string, number>();
+    allTargetSportEvents.forEach((ev) => {
+      const cYmd = extractCrawlYmd(ev);
+      if (cYmd && isNewsTargetSwimEvent(ev, cYmd)) {
+        crawlCountByYmd.set(cYmd, (crawlCountByYmd.get(cYmd) || 0) + 1);
+      }
+    });
+
+    // 그래프 일수: 기본보기(7일)=7, 14일=14, 30일=30, 전체=42일(10/1 ~ 오늘 포함)
+    const chartDaysCount =
+      newsUpdateRangeDays === 'ALL' ? 42 : newsUpdateRangeDays;
+    const dailyCrawlSeries: Array<{
+      ymd: string;
+      month: number;
+      day: number;
+      count: number;
+      xLabel: string;
+      showTickLabel: boolean;
+      isToday: boolean;
+      isFirstOfMonth: boolean;
+    }> = [];
+
+    for (let i = 0; i < chartDaysCount; i++) {
+      const offsetFromToday = chartDaysCount - 1 - i;
+      const d = new Date(todayMs - offsetFromToday * 24 * 3600 * 1000);
+      const y = d.getFullYear();
+      const m = d.getMonth() + 1;
+      const day = d.getDate();
+      const ymd = `${y}${pad2(m)}${pad2(day)}`;
+      const isToday = offsetFromToday === 0;
+      const isFirstOfMonth = day === 1;
+      const xLabel = isToday ? '오늘' : isFirstOfMonth ? `${m}/1` : `${day}`;
+      const showTickLabel =
+        newsUpdateRangeDays === 7
+          ? true
+          : isToday || isFirstOfMonth || offsetFromToday % 7 === 0;
+
+      dailyCrawlSeries.push({
+        ymd,
+        month: m,
+        day,
+        count: crawlCountByYmd.get(ymd) || 0,
+        xLabel,
+        showTickLabel,
+        isToday,
+        isFirstOfMonth,
+      });
+    }
+
+    const maxDailyCrawlCount = Math.max(
+      4,
+      ...dailyCrawlSeries.map((pt) => pt.count)
+    );
+    const totalPeriodCrawled = dailyCrawlSeries.reduce(
+      (acc, pt) => acc + pt.count,
+      0
+    );
+
+    const annotated = allTargetSportEvents.map((ev) => ({
       ev,
       regInfo: computeSwimRegistrationInfo(ev, todayYmd, todayMs),
       effectiveUpdateIso: getEffectiveUpdateIso(ev),
       sortKey: getEffectiveUpdateSortableKey(ev),
+      crawlYmd: extractCrawlYmd(ev),
     }));
 
     // 1) 지금 등록(접수)중인 이벤트: 마감일이 빠른 순 정렬
@@ -1140,40 +1233,24 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
         return (a.ev.startDate || '').localeCompare(b.ev.startDate || '');
       });
 
-    // 3) 새로 올라온 업데이트 타임라인: 최신 업데이트/공지 순 정렬 + 최근 N일 필터
-    const sortedUpdates = [...annotated].sort((a, b) =>
-      b.sortKey.localeCompare(a.sortKey)
-    );
+    // 3) 새로 올라온 업데이트 타임라인: 실제 크롤링(firstSeenAt) 최신순 정렬 + 최근 N일 필터
+    const sortedUpdates = [...annotated]
+      .filter((item) => isNewsTargetSwimEvent(item.ev, item.crawlYmd))
+      .sort((a, b) => {
+        const crawlA = a.ev.firstSeenAt || a.ev.updatedAt || '';
+        const crawlB = b.ev.firstSeenAt || b.ev.updatedAt || '';
+        if (crawlA !== crawlB) return crawlB.localeCompare(crawlA);
+        return (b.ev.publishedAt || '').localeCompare(a.ev.publishedAt || '');
+      });
 
     const filteredUpdates = sortedUpdates.filter((item) => {
       if (newsUpdateRangeDays === 'ALL') return true;
-      const ev = item.ev;
-      const candidateYmds: string[] = [];
-      if (ev.publishedAt && ev.publishedAt.length >= 8) {
-        candidateYmds.push(ev.publishedAt.slice(0, 8));
-      }
-      if (ev.firstSeenAt) {
-        const d = new Date(ev.firstSeenAt);
-        if (!Number.isNaN(d.getTime())) {
-          candidateYmds.push(
-            `${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}`
-          );
-        }
-      }
-      if (ev.updatedAt) {
-        const d = new Date(ev.updatedAt);
-        if (!Number.isNaN(d.getTime())) {
-          candidateYmds.push(
-            `${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}`
-          );
-        }
-      }
-      const bestYmd = candidateYmds.sort().pop();
+      const bestYmd = item.crawlYmd;
       if (!bestYmd) return false;
       const diffDays = Math.round(
         (todayMs - ymdToMs(bestYmd)) / (1000 * 60 * 60 * 24)
       );
-      return diffDays <= newsUpdateRangeDays;
+      return diffDays >= 0 && diffDays < newsUpdateRangeDays;
     });
 
     // 가장 최근 업데이트 시각
@@ -1189,9 +1266,13 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
       upcomingEvents,
       allUpdatesCount: sortedUpdates.length,
       filteredUpdates,
-      latestUpdateFormatted: formatIsoTimestampKst(latestIso) || formatYmdDotShort(todayYmd),
+      dailyCrawlSeries,
+      maxDailyCrawlCount,
+      totalPeriodCrawled,
+      latestUpdateFormatted:
+        formatIsoTimestampKst(latestIso) || formatYmdDotShort(todayYmd),
     };
-  }, [allSwimEvents, todayYmd, todayMs, newsUpdateRangeDays]);
+  }, [allTargetSportEvents, todayYmd, todayMs, newsUpdateRangeDays]);
 
   const selectedPoolOnMap = useMemo(() => {
     if (!selectedPoolIdOnMap) return null;
@@ -1592,7 +1673,7 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                             <div className={styles.poolEventsDrawer}>
                               <div className={styles.poolEventsHeader}>
                                 <span>
-                                  📍 <strong>{pool.name}</strong> 상세주소 및 지도 바로가기
+                                  📍 <strong>{pool.name}</strong> 상세주소 및 네이버 지도 검색
                                 </span>
                               </div>
                               <div className={styles.poolAddrDetailBox}>
@@ -1607,23 +1688,8 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                                     rel="noreferrer"
                                     className={`${styles.mapLinkChip} ${styles.mapLinkNaver}`}
                                   >
-                                    네이버 지도에서 보기
-                                  </a>
-                                  <a
-                                    href={mapLinks.daum}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className={`${styles.mapLinkChip} ${styles.mapLinkDaum}`}
-                                  >
-                                    다음(카카오) 지도에서 보기
-                                  </a>
-                                  <a
-                                    href={mapLinks.google}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className={`${styles.mapLinkChip} ${styles.mapLinkGoogle}`}
-                                  >
-                                    구글 지도에서 보기
+                                    <ExternalLink size={12} />
+                                    <span>네이버 지도에서 보기</span>
                                   </a>
                                 </div>
                               </div>
@@ -1726,23 +1792,8 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                           rel="noreferrer"
                           className={`${styles.mapLinkChip} ${styles.mapLinkNaver}`}
                         >
-                          네이버지도
-                        </a>
-                        <a
-                          href={tLinks.daum}
-                          target="_blank"
-                          rel="noreferrer"
-                          className={`${styles.mapLinkChip} ${styles.mapLinkDaum}`}
-                        >
-                          다음지도
-                        </a>
-                        <a
-                          href={tLinks.google}
-                          target="_blank"
-                          rel="noreferrer"
-                          className={`${styles.mapLinkChip} ${styles.mapLinkGoogle}`}
-                        >
-                          구글지도
+                          <ExternalLink size={11} />
+                          <span>네이버 지도 검색</span>
                         </a>
                       </div>
                     </div>
@@ -1976,34 +2027,263 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
           className={styles.swimNewsDashboard}
           aria-label="수영 대회 새소식 및 참가접수 현황 대시보드"
         >
-          {/* 상단 새소식 배너 & 빠른 섹션 필터 */}
-          <div className={styles.swimNewsHeroBar}>
-            <div className={styles.swimNewsHeroLeft}>
-              <div className={styles.swimNewsTitleRow}>
+          {/* 상단 그래프 카드: 크롤링 된 새 이벤트 (막대 + 꺾은선 복합 그래프) */}
+          <div className={styles.swimCrawlChartCard}>
+            <div className={styles.swimCrawlChartHeader}>
+              <div className={styles.swimCrawlChartTitleWrap}>
                 <span className={styles.swimNewsBellChip}>
-                  <Bell size={15} />
-                  <span>수영 새소식</span>
+                  <Bell size={14} />
+                  <span>새소식 그래프</span>
                 </span>
-                <h2 className={styles.swimNewsHeading}>
-                  전국 수영대회 참가접수 현황 &amp; 신규 업데이트 알림판
+                <h2 className={styles.swimCrawlChartHeading}>
+                  크롤링 된 새 이벤트
                 </h2>
+                <span className={styles.swimCrawlChartSummaryBadge}>
+                  기간 내 신규 {swimNewsData.totalPeriodCrawled}건
+                </span>
               </div>
-              <p className={styles.swimNewsSubDesc}>
-                대한수영연맹 · 전국 17개 시도수영연맹 · 공식 밴드 · SFINDER · 50m 경기장 공지를 추적하여{' '}
-                <strong>지금 등록중인 대회</strong>, <strong>곧 등록을 시작하는 대회</strong>,{' '}
-                <strong>새로 올라온 업데이트 시각</strong>을 한눈에 안내합니다.
-              </p>
+
+              <div className={styles.swimCrawlChartRight}>
+                <div
+                  className={styles.updateRangeFilterGroup}
+                  role="group"
+                  aria-label="크롤링 된 새 이벤트 기간 선택"
+                >
+                  {(
+                    [
+                      { key: 7, label: '7일 (기본)' },
+                      { key: 14, label: '14일' },
+                      { key: 30, label: '30일' },
+                      { key: 'ALL', label: '전체' },
+                    ] as const
+                  ).map((opt) => (
+                    <button
+                      key={String(opt.key)}
+                      type="button"
+                      className={`${styles.updateRangeBtn} ${
+                        newsUpdateRangeDays === opt.key
+                          ? styles.updateRangeBtnActive
+                          : ''
+                      }`}
+                      onClick={() => setNewsUpdateRangeDays(opt.key)}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                <span className={styles.swimCrawlChartSyncInfo}>
+                  <Clock size={12} />
+                  최종 크롤링: {swimNewsData.latestUpdateFormatted}
+                </span>
+              </div>
             </div>
 
-            <div className={styles.swimNewsSyncBox}>
-              <span className={styles.swimNewsSyncLabel}>
-                <Clock size={13} />
-                최종 크롤링·업데이트 확인
-              </span>
-              <strong className={styles.swimNewsSyncTime}>
-                {swimNewsData.latestUpdateFormatted}
-              </strong>
-            </div>
+            {(() => {
+              const series = swimNewsData.dailyCrawlSeries;
+              const n = series.length;
+              const maxY = swimNewsData.maxDailyCrawlCount;
+              const svgW = 840;
+              const svgH = 215;
+              const padLeft = 52;
+              const padRight = 24;
+              const padTop = 28;
+              const padBottom = 42;
+              const plotW = svgW - padLeft - padRight;
+              const plotH = svgH - padTop - padBottom;
+              const stepX = n > 0 ? plotW / n : plotW;
+              const barW = Math.min(36, Math.max(8, stepX * 0.5));
+
+              const yTicks: number[] = [];
+              const tickStep = maxY <= 5 ? 1 : Math.ceil(maxY / 4);
+              for (let v = 0; v <= maxY; v += tickStep) {
+                yTicks.push(v);
+              }
+              if (yTicks[yTicks.length - 1] !== maxY) {
+                yTicks.push(maxY);
+              }
+
+              const points = series.map((pt, idx) => {
+                const cx = padLeft + (idx + 0.5) * stepX;
+                const ratio = maxY > 0 ? pt.count / maxY : 0;
+                const barH = ratio * plotH;
+                const cy = padTop + plotH - barH;
+                return {
+                  ...pt,
+                  cx,
+                  cy,
+                  barH,
+                };
+              });
+
+              const linePointsStr = points
+                .map((p) => `${p.cx.toFixed(1)},${p.cy.toFixed(1)}`)
+                .join(' ');
+
+              return (
+                <div className={styles.swimCrawlSvgWrap}>
+                  <svg
+                    viewBox={`0 0 ${svgW} ${svgH}`}
+                    className={styles.swimCrawlSvg}
+                    role="img"
+                    aria-label="크롤링 된 새 이벤트 일별 추이 그래프"
+                  >
+                    {/* Y축 단위 안내 */}
+                    <text
+                      x={10}
+                      y={16}
+                      fontSize="11"
+                      fontWeight="700"
+                      fill="#64748b"
+                    >
+                      업데이트된 이벤트 수(건)
+                    </text>
+
+                    {/* 가로 그리드 및 Y축 눈금 */}
+                    {yTicks.map((tickVal) => {
+                      const yPos =
+                        padTop + plotH - (maxY > 0 ? (tickVal / maxY) * plotH : 0);
+                      return (
+                        <g key={`ytick-${tickVal}`}>
+                          <line
+                            x1={padLeft}
+                            y1={yPos}
+                            x2={svgW - padRight}
+                            y2={yPos}
+                            stroke={tickVal === 0 ? '#94a3b8' : '#e2e8f0'}
+                            strokeWidth={tickVal === 0 ? 1.3 : 1}
+                            strokeDasharray={tickVal === 0 ? undefined : '4 3'}
+                          />
+                          <text
+                            x={padLeft - 10}
+                            y={yPos + 4}
+                            textAnchor="end"
+                            fontSize="11.5"
+                            fontWeight="700"
+                            fill="#475569"
+                          >
+                            {tickVal}
+                          </text>
+                        </g>
+                      );
+                    })}
+
+                    {/* 세로 기준축 (Y축) */}
+                    <line
+                      x1={padLeft}
+                      y1={padTop}
+                      x2={padLeft}
+                      y2={padTop + plotH}
+                      stroke="#94a3b8"
+                      strokeWidth={1.3}
+                    />
+
+                    {/* 막대(Bar) 시리즈 */}
+                    {points.map((p) => (
+                      <g key={`bar-${p.ymd}`}>
+                        {p.barH > 0 && (
+                          <rect
+                            x={p.cx - barW / 2}
+                            y={p.cy}
+                            width={barW}
+                            height={Math.max(2, p.barH)}
+                            rx={Math.min(5, barW / 3)}
+                            fill={
+                              p.isToday
+                                ? '#dc2626'
+                                : p.isFirstOfMonth
+                                  ? '#0284c7'
+                                  : '#3b82f6'
+                            }
+                            fillOpacity={p.isToday ? 0.88 : 0.72}
+                          >
+                            <title>{`${p.month}/${p.day}: 신규 크롤링 ${p.count}건`}</title>
+                          </rect>
+                        )}
+                      </g>
+                    ))}
+
+                    {/* 꺾은선(Line) 시리즈 */}
+                    {points.length > 1 && (
+                      <polyline
+                        fill="none"
+                        stroke="#1d4ed8"
+                        strokeWidth={2.2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        points={linePointsStr}
+                      />
+                    )}
+
+                    {/* 데이터 포인트 원 & 값 라벨 & X축 날짜 라벨 */}
+                    {points.map((p) => (
+                      <g key={`pt-${p.ymd}`}>
+                        <circle
+                          cx={p.cx}
+                          cy={p.cy}
+                          r={p.isToday ? 4.6 : p.count > 0 ? 3.8 : 2.5}
+                          fill={
+                            p.isToday
+                              ? '#dc2626'
+                              : p.count > 0
+                                ? '#1d4ed8'
+                                : '#cbd5e1'
+                          }
+                          stroke="#ffffff"
+                          strokeWidth={1.5}
+                        >
+                          <title>{`${p.month}/${p.day}: 신규 크롤링 ${p.count}건`}</title>
+                        </circle>
+
+                        {p.count > 0 && (
+                          <text
+                            x={p.cx}
+                            y={p.cy - 8}
+                            textAnchor="middle"
+                            fontSize="11"
+                            fontWeight="800"
+                            fill={p.isToday ? '#dc2626' : '#1e3a8a'}
+                          >
+                            {p.count}
+                          </text>
+                        )}
+
+                        {/* X축 눈금 표시: 기본(7일)은 매일 표시, 그 외에는 7일마다 + 매달 1일(M/1) + 오늘 */}
+                        {p.showTickLabel && (
+                          <>
+                            <line
+                              x1={p.cx}
+                              y1={padTop + plotH}
+                              x2={p.cx}
+                              y2={padTop + plotH + 5}
+                              stroke="#64748b"
+                              strokeWidth={1.2}
+                            />
+                            <text
+                              x={p.cx}
+                              y={padTop + plotH + 21}
+                              textAnchor="middle"
+                              fontSize="11.5"
+                              fontWeight={
+                                p.isToday || p.isFirstOfMonth ? '900' : '700'
+                              }
+                              fill={
+                                p.isToday
+                                  ? '#dc2626'
+                                  : p.isFirstOfMonth
+                                    ? '#0369a1'
+                                    : '#334155'
+                              }
+                            >
+                              {p.xLabel}
+                            </text>
+                          </>
+                        )}
+                      </g>
+                    ))}
+                  </svg>
+                </div>
+              );
+            })()}
           </div>
 
           {/* 상단 섹션 바로가기 & 카운트 요약 탭 */}
@@ -2071,14 +2351,14 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
             </div>
           </div>
 
-          {/* ① 지금 등록(접수)중인 수영 대회 섹션 */}
+          {/* ① 지금 등록(접수)중인 대회 섹션 */}
           {(newsSectionFilter === 'ALL' || newsSectionFilter === 'OPEN') && (
             <div className={styles.swimNewsSectionCard}>
               <div className={styles.swimNewsSectionHeader}>
                 <div className={styles.swimNewsSectionTitleWrap}>
                   <span className={styles.swimNewsSectionBadgeOpen}>LIVE 접수중</span>
                   <h3 className={styles.swimNewsSectionTitle}>
-                    지금 등록(참가접수)중인 수영 대회
+                    지금 등록(참가접수)중인 {sportNewsTitleLabel}
                   </h3>
                   <span className={styles.swimNewsSectionCount}>
                     {swimNewsData.openEvents.length}건
@@ -2091,7 +2371,7 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
 
               {swimNewsData.openEvents.length === 0 ? (
                 <div className={styles.swimNewsEmptyBox}>
-                  현재 참가접수가 진행중인 수영 대회가 없습니다.
+                  현재 참가접수가 진행중인 {sportNewsTitleLabel}가 없습니다.
                 </div>
               ) : (
                 <div className={styles.swimNewsGrid}>
@@ -2223,7 +2503,7 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
             </div>
           )}
 
-          {/* ② 곧 등록(접수)을 시작하는 수영 대회 섹션 */}
+          {/* ② 곧 등록(접수)을 시작하는 대회 섹션 */}
           {(newsSectionFilter === 'ALL' || newsSectionFilter === 'UPCOMING') && (
             <div className={styles.swimNewsSectionCard}>
               <div className={styles.swimNewsSectionHeader}>
@@ -2232,7 +2512,7 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                     오픈 예정
                   </span>
                   <h3 className={styles.swimNewsSectionTitle}>
-                    곧 등록(참가접수)을 시작하는 수영 대회
+                    곧 등록(참가접수)을 시작하는 {sportNewsTitleLabel}
                   </h3>
                   <span className={styles.swimNewsSectionCount}>
                     {swimNewsData.upcomingEvents.length}건
@@ -2245,7 +2525,7 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
 
               {swimNewsData.upcomingEvents.length === 0 ? (
                 <div className={styles.swimNewsEmptyBox}>
-                  현재 접수 시작 예정인 수영 대회가 없습니다.
+                  현재 접수 시작 예정인 {sportNewsTitleLabel}가 없습니다.
                 </div>
               ) : (
                 <div className={styles.swimNewsGrid}>
@@ -2392,14 +2672,14 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                     NEW 업데이트 기록
                   </span>
                   <h3 className={styles.swimNewsSectionTitle}>
-                    새로 올라온 수영 대회 업데이트 · 공지 타임라인
+                    새로 올라온 {sportNewsTitleLabel} 업데이트 · 공지 타임라인
                   </h3>
                   <span className={styles.swimNewsSectionCount}>
                     {swimNewsData.filteredUpdates.length}건
                   </span>
                 </div>
 
-                {/* 기간 필터 버튼: 전체 최신순 | 최근 7일 | 최근 14일 | 최근 30일 */}
+                {/* 기간 필터 버튼: 7일(기본) | 14일 | 30일 | 전체 */}
                 <div
                   className={styles.updateRangeFilterGroup}
                   role="group"
@@ -2407,10 +2687,10 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                 >
                   {(
                     [
-                      { key: 'ALL', label: '전체 최신순' },
-                      { key: 7, label: '최근 7일' },
-                      { key: 14, label: '최근 14일' },
-                      { key: 30, label: '최근 30일' },
+                      { key: 7, label: '7일 (기본)' },
+                      { key: 14, label: '14일' },
+                      { key: 30, label: '30일' },
+                      { key: 'ALL', label: '전체' },
                     ] as const
                   ).map((opt) => (
                     <button
@@ -2431,7 +2711,7 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
 
               {swimNewsData.filteredUpdates.length === 0 ? (
                 <div className={styles.swimNewsEmptyBox}>
-                  선택한 기간(최근 {newsUpdateRangeDays}일) 내에 새로 업데이트된 수영 대회가 없습니다.{' '}
+                  선택한 기간(최근 {newsUpdateRangeDays}일) 내에 새로 업데이트된 {sportNewsTitleLabel}가 없습니다.{' '}
                   <button
                     type="button"
                     className={styles.inlineResetLinkBtn}
@@ -2625,20 +2905,19 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                             const specificLinks = (ev.links || []).filter((lnk) =>
                               isSpecificEventLink(lnk.url, lnk.label)
                             );
-                            const formatLabels = getSpecialPromoFormatShortLabels(
-                              sport,
-                              ev
+                            const formatLabels =
+                              sport === 'ALL'
+                                ? []
+                                : getSpecialPromoFormatShortLabels(sport, ev);
+                            const swimRegInfo = computeSwimRegistrationInfo(
+                              ev,
+                              todayYmd,
+                              todayMs
                             );
-                            const swimRegInfo =
-                              sport === 'SWIMMING'
-                                ? computeSwimRegistrationInfo(ev, todayYmd, todayMs)
-                                : null;
                             const swimUpdatedStr =
-                              sport === 'SWIMMING'
-                                ? formatIsoTimestampKst(
-                                    ev.updatedAt || ev.firstSeenAt
-                                  ) || formatYmdDotShort(ev.publishedAt)
-                                : '';
+                              formatIsoTimestampKst(
+                                ev.updatedAt || ev.firstSeenAt
+                              ) || formatYmdDotShort(ev.publishedAt);
 
                             return (
                               <article
@@ -2848,7 +3127,7 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                       hoveredFeature.properties.kostatCode
                     );
                     if (!info) {
-                      return <span>표시 설정된 전후 3주 내 {sportLabel} 대회 없음</span>;
+                      return <span>표시 설정된 향후 3주 내 {sportLabel} 대회 없음</span>;
                     }
                     return (
                       <>
@@ -3144,7 +3423,7 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                 {mapWeekRows.map((row) => {
                   const diff = row.weekIdx - activeWeekIdx;
                   const isSelected = diff === 0;
-                  const isWithin3Weeks = Math.abs(diff) <= 3 && diff !== 0;
+                  const isWithin3Weeks = diff > 0 && diff <= 3;
 
                   return (
                     <tr
@@ -3174,17 +3453,9 @@ export const SpecialPromoView: React.FC<SpecialPromoViewProps> = ({
                                 이번주 (빨강 {legendConfigs[0].opacityPct}%)
                               </span>
                             )}
-                            {!isSelected && Math.abs(diff) <= 3 && (
-                              <span
-                                className={
-                                  diff > 0
-                                    ? styles.diffFutureBadge
-                                    : styles.diffPastBadge
-                                }
-                              >
-                                {diff > 0
-                                  ? `${diff}주후 (${legendConfigs[diff as WeekDiffOffset]?.opacityPct ?? 0}%)`
-                                  : `${Math.abs(diff)}주전 (${legendConfigs[diff as WeekDiffOffset]?.opacityPct ?? 0}%)`}
+                            {diff > 0 && diff <= 3 && (
+                              <span className={styles.diffFutureBadge}>
+                                {`${diff}주후 (${legendConfigs[diff as WeekDiffOffset]?.opacityPct ?? 0}%)`}
                               </span>
                             )}
                           </div>

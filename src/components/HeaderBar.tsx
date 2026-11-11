@@ -7,15 +7,28 @@ import {
   Columns,
   Database,
   List,
+  LogOut,
   Map as MapIcon,
   Menu,
   Search,
   Settings,
   Share2,
+  ShieldCheck,
   SlidersHorizontal,
   Waves,
   X,
 } from 'lucide-react';
+import {
+  ADMIN_EMAIL,
+  AUTH_CHANGE_EVENT,
+  firebaseAuth,
+  getStoredGoogleUser,
+  LoggedInGoogleUser,
+  logoutGoogleUser,
+  onAuthStateChanged,
+  setStoredGoogleUser,
+  triggerGoogleOAuthLogin,
+} from '../services/firebase';
 import { ADMIN_REGIONS } from '../constants/regions';
 import {
   buildDefaultSpecialPromoFormats,
@@ -89,6 +102,7 @@ const MENU_PAGE_TITLES: Record<MainMenuView, string> = {
   MAP: '지도로 보기',
   CALENDAR: '달력으로 보기',
   LIST: '행사 리스트',
+  EVENT_NEWS: '행사 리스트 · 새소식',
   EVENT_REGISTER: '행사 등록',
   PROMO_DIRECTORY: 'DB',
   SPECIAL_PROMO: '특별 홍보관',
@@ -181,10 +195,39 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
 }) => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [displayMenuOpen, setDisplayMenuOpen] = useState(false);
+  const [googleAuthMenuOpen, setGoogleAuthMenuOpen] = useState(false);
+  const [googleUser, setGoogleUser] = useState<LoggedInGoogleUser | null>(() =>
+    getStoredGoogleUser()
+  );
+  const [manualEmail, setManualEmail] = useState('');
+  const [authNotice, setAuthNotice] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
   const shareTimerRef = useRef<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const googleAuthDropdownRef = useRef<HTMLDivElement | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(firebaseAuth, (fbUser) => {
+      if (fbUser && fbUser.email) {
+        const u: LoggedInGoogleUser = {
+          email: fbUser.email.toLowerCase(),
+          displayName: fbUser.displayName || fbUser.email.split('@')[0],
+          photoURL: fbUser.photoURL || undefined,
+        };
+        setGoogleUser(u);
+        setStoredGoogleUser(u);
+      }
+    });
+    const onCustomAuth = () => {
+      setGoogleUser(getStoredGoogleUser());
+    };
+    window.addEventListener(AUTH_CHANGE_EVENT, onCustomAuth);
+    return () => {
+      unsub();
+      window.removeEventListener(AUTH_CHANGE_EVENT, onCustomAuth);
+    };
+  }, []);
 
   const handleShareCurrentUrl = async () => {
     const shareUrl = window.location.href;
@@ -239,6 +282,12 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setDisplayMenuOpen(false);
       }
+      if (
+        googleAuthDropdownRef.current &&
+        !googleAuthDropdownRef.current.contains(e.target as Node)
+      ) {
+        setGoogleAuthMenuOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleOutside);
     return () => document.removeEventListener('mousedown', handleOutside);
@@ -252,12 +301,17 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
     activeMenu === 'SPECIAL_PROMO' ||
     activeMenu === 'MAP' ||
     activeMenu === 'CALENDAR' ||
-    activeMenu === 'LIST';
+    activeMenu === 'LIST' ||
+    activeMenu === 'EVENT_NEWS';
+  const showNewsBtn =
+    activeMenu === 'SPECIAL_PROMO' ||
+    activeMenu === 'LIST' ||
+    activeMenu === 'EVENT_NEWS';
 
   const isCalendarDisplayActive =
     activeMenu === 'CALENDAR' ||
     (activeMenu === 'SPECIAL_PROMO' && viewMode === 'CALENDAR');
-  const isListDisplayActive = activeMenu === 'LIST';
+  const isListDisplayActive = activeMenu === 'LIST' && viewMode === 'LIST';
   const showDisplayOptionsBtn = isCalendarDisplayActive || isListDisplayActive;
 
   const safeScopeLevels = filters.scopeLevels || {
@@ -483,63 +537,66 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
               </div>
             )}
 
-            {/* 특별 홍보관 > 수영 전용: 기존 수영 이벤트 보기 아이콘과 분리된 「수영장 보기(일람 · 지도)」 아이콘 그룹 및 「🔔 새소식」 독립 버튼 */}
+            {/* 특별 홍보관 > 수영 전용: 기존 수영 이벤트 보기 아이콘과 분리된 「수영장 보기(일람 · 지도)」 아이콘 그룹 */}
             {activeMenu === 'SPECIAL_PROMO' && activeSport === 'SWIMMING' && (
-              <>
-                <div
-                  className={`${styles.poolModeIconGroup} ${
-                    isPoolViewActive ? styles.poolModeIconGroupActive : ''
+              <div
+                className={`${styles.poolModeIconGroup} ${
+                  isPoolViewActive ? styles.poolModeIconGroupActive : ''
+                }`}
+                role="group"
+                aria-label="수영장 보기 방식 선택 (수영장 일람 표, 수영장 위치 지도)"
+              >
+                <span className={styles.poolGroupLabel}>수영장</span>
+                <button
+                  type="button"
+                  className={`${styles.iconOnlyBtn} ${
+                    viewMode === 'POOLS' ? styles.iconOnlyBtnActive : ''
                   }`}
-                  role="group"
-                  aria-label="수영장 보기 방식 선택 (수영장 일람 표, 수영장 위치 지도)"
+                  onClick={() => onChangeViewMode('POOLS')}
+                  title="수영장 일람(표) 보기"
+                  aria-label="수영장 일람 보기"
+                  aria-pressed={viewMode === 'POOLS'}
                 >
-                  <span className={styles.poolGroupLabel}>수영장</span>
-                  <button
-                    type="button"
-                    className={`${styles.iconOnlyBtn} ${
-                      viewMode === 'POOLS' ? styles.iconOnlyBtnActive : ''
-                    }`}
-                    onClick={() => onChangeViewMode('POOLS')}
-                    title="수영장 일람(표) 보기"
-                    aria-label="수영장 일람 보기"
-                    aria-pressed={viewMode === 'POOLS'}
-                  >
-                    <Waves size={17} />
-                  </button>
-
-                  <button
-                    type="button"
-                    className={`${styles.iconOnlyBtn} ${
-                      viewMode === 'POOLS_MAP' ? styles.iconOnlyBtnActive : ''
-                    }`}
-                    onClick={() => onChangeViewMode('POOLS_MAP')}
-                    title="수영장 지도에서 보기 (점 표시)"
-                    aria-label="수영장 지도 보기"
-                    aria-pressed={viewMode === 'POOLS_MAP'}
-                  >
-                    <MapIcon size={17} />
-                  </button>
-                </div>
+                  <Waves size={17} />
+                </button>
 
                 <button
                   type="button"
-                  className={`${styles.swimNewsBtn} ${
-                    viewMode === 'SWIM_NEWS' ? styles.swimNewsBtnActive : ''
+                  className={`${styles.iconOnlyBtn} ${
+                    viewMode === 'POOLS_MAP' ? styles.iconOnlyBtnActive : ''
                   }`}
-                  onClick={() => onChangeViewMode('SWIM_NEWS')}
-                  title="수영 대회 새소식 (지금 등록중 · 곧 등록 시작 · 새로 올라온 업데이트)"
-                  aria-label="수영 대회 새소식"
-                  aria-pressed={viewMode === 'SWIM_NEWS'}
+                  onClick={() => onChangeViewMode('POOLS_MAP')}
+                  title="수영장 지도에서 보기 (점 표시)"
+                  aria-label="수영장 지도 보기"
+                  aria-pressed={viewMode === 'POOLS_MAP'}
                 >
-                  <Bell size={15} />
-                  <span className={styles.swimNewsBtnLabel}>새소식</span>
-                  {swimNewsBadgeCount > 0 && (
-                    <span className={styles.swimNewsCountBadge}>
-                      {swimNewsBadgeCount}
-                    </span>
-                  )}
+                  <MapIcon size={17} />
                 </button>
-              </>
+              </div>
+            )}
+
+            {/* 특별 홍보관(수영·러닝·자전거·철인) 및 행사 리스트/새소식 공통: 「🔔 새소식」 독립 버튼 */}
+            {showNewsBtn && (
+              <button
+                type="button"
+                className={`${styles.swimNewsBtn} ${
+                  viewMode === 'SWIM_NEWS' || activeMenu === 'EVENT_NEWS'
+                    ? styles.swimNewsBtnActive
+                    : ''
+                }`}
+                onClick={() => onChangeViewMode('SWIM_NEWS')}
+                title="새소식 (크롤링 된 새 이벤트 그래프 · 지금 등록중 · 곧 등록 시작 · 새로 올라온 업데이트)"
+                aria-label="새소식"
+                aria-pressed={viewMode === 'SWIM_NEWS' || activeMenu === 'EVENT_NEWS'}
+              >
+                <Bell size={15} />
+                <span className={styles.swimNewsBtnLabel}>새소식</span>
+                {swimNewsBadgeCount > 0 && (
+                  <span className={styles.swimNewsCountBadge}>
+                    {swimNewsBadgeCount}
+                  </span>
+                )}
+              </button>
             )}
 
             {/* 필터 아이콘 버튼 */}
@@ -726,6 +783,190 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
               </div>
             )}
             </>
+          )}
+
+          {/* 행사 등록 메뉴 전용: 상단 메뉴바에서 구글 로그인 아이콘 제공 */}
+          {activeMenu === 'EVENT_REGISTER' && (
+            <div className={styles.iconBtnWrap} ref={googleAuthDropdownRef}>
+              <button
+                type="button"
+                className={`${styles.iconOnlyBtn} ${
+                  googleUser ? styles.iconOnlyBtnActive : ''
+                }`}
+                onClick={() => {
+                  if (!googleUser) {
+                    setAuthNotice(null);
+                    triggerGoogleOAuthLogin({
+                      onSuccess: () => setGoogleAuthMenuOpen(false),
+                      onFallbackNeeded: (reason) => {
+                        setAuthNotice(reason);
+                        setManualEmail(ADMIN_EMAIL);
+                        setGoogleAuthMenuOpen(true);
+                      },
+                    });
+                  } else {
+                    setGoogleAuthMenuOpen((prev) => !prev);
+                  }
+                }}
+                title={
+                  googleUser
+                    ? `Google 로그인됨: ${googleUser.email}`
+                    : 'Google 계정으로 로그인'
+                }
+                aria-label="Google 로그인"
+              >
+                <svg
+                  width="17"
+                  height="17"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill={googleUser ? '#ffffff' : '#4285F4'}
+                    d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"
+                  />
+                  <path
+                    fill={googleUser ? '#dbeafe' : '#34A853'}
+                    d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"
+                  />
+                  <path
+                    fill={googleUser ? '#bfdbfe' : '#FBBC05'}
+                    d="M5.27 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.98-3.09z"
+                  />
+                  <path
+                    fill={googleUser ? '#eff6ff' : '#EA4335'}
+                    d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"
+                  />
+                </svg>
+                {googleUser && <span className={styles.filterBadgeDot} />}
+              </button>
+
+              {googleAuthMenuOpen && (
+                <div className={styles.displayDropdown} style={{ minWidth: '250px' }}>
+                  <div className={styles.dropdownHeader}>
+                    <span>Google 계정 인증</span>
+                    <button
+                      type="button"
+                      style={{
+                        border: 'none',
+                        background: 'transparent',
+                        cursor: 'pointer',
+                        color: '#64748b',
+                      }}
+                      onClick={() => setGoogleAuthMenuOpen(false)}
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+
+                  {googleUser ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '6px 4px' }}>
+                      <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#0f172a', wordBreak: 'break-all' }}>
+                        {googleUser.email}
+                      </div>
+                      {googleUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase() && (
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.74rem', fontWeight: 800, color: '#dc2626' }}>
+                          <ShieldCheck size={13} />
+                          <span>관리자 승인 권한 활성화됨</span>
+                        </div>
+                      )}
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          await logoutGoogleUser();
+                          setGoogleAuthMenuOpen(false);
+                        }}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '5px',
+                          padding: '6px 10px',
+                          borderRadius: '7px',
+                          border: '1px solid #cbd5e1',
+                          background: '#f8fafc',
+                          fontSize: '0.78rem',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <LogOut size={13} />
+                        <span>로그아웃</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '4px' }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAuthNotice(null);
+                          triggerGoogleOAuthLogin({
+                            onSuccess: () => setGoogleAuthMenuOpen(false),
+                            onFallbackNeeded: (reason) => setAuthNotice(reason),
+                          });
+                        }}
+                        style={{
+                          padding: '7px 10px',
+                          borderRadius: '7px',
+                          border: '1px solid #2563eb',
+                          background: '#2563eb',
+                          color: '#ffffff',
+                          fontSize: '0.78rem',
+                          fontWeight: 800,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Google 팝업 로그인
+                      </button>
+                      <div style={{ display: 'flex', gap: '4px' }}>
+                        <input
+                          type="email"
+                          value={manualEmail}
+                          onChange={(e) => setManualEmail(e.target.value)}
+                          placeholder="계정 이메일 입력"
+                          style={{
+                            flex: 1,
+                            padding: '5px 8px',
+                            border: '1px solid #cbd5e1',
+                            borderRadius: '6px',
+                            fontSize: '0.76rem',
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const target = manualEmail.trim().toLowerCase();
+                            if (!target.includes('@')) return;
+                            setStoredGoogleUser({
+                              email: target,
+                              displayName: target.split('@')[0],
+                            });
+                            setGoogleAuthMenuOpen(false);
+                          }}
+                          style={{
+                            padding: '5px 9px',
+                            borderRadius: '6px',
+                            border: '1px solid #0f172a',
+                            background: '#0f172a',
+                            color: '#ffffff',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          확인
+                        </button>
+                      </div>
+                      {authNotice && (
+                        <div style={{ fontSize: '0.72rem', color: '#b45309', lineHeight: 1.35 }}>
+                          {authNotice}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           )}
 
           {/* 가장 오른쪽 배치: 현재 페이지 및 필터 파라미터 공유하기 버튼 */}

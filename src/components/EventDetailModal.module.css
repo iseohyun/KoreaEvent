@@ -731,9 +731,329 @@
   gap: 6px;
   padding: 8px 14px;
   border-radius: 8px;
-  background: var(--brand-primary);
+  background: #15803d;
   color: #ffffff;
   font-size: 0.82rem;
   font-weight: 700;
   text-decoration: none;
+}
+
+.linkBtn:hover {
+  background: #166534;
+}
+
+/* === 16개 표준 항목 세부정보 표 === */
+.detailTableWrap {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.detailSpecTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+}
+
+.detailSpecTable tr {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.detailSpecTable tr:last-child {
+  border-bottom: none;
+}
+
+.detailSpecTable th {
+  width: 148px;
+  padding: 10px 14px;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-align: left;
+  vertical-align: top;
+  border-right: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.detailSpecTable td {
+  padding: 10px 14px;
+  color: #0f172a;
+  font-weight: 600;
+  line-height: 1.5;
+  vertical-align: middle;
+  word-break: keep-all;
+}
+
+.detailTitleCell {
+  font-size: 0.92rem;
+  font-weight: 800 !important;
+  color: #0f172a;
+}
+
+.venueLocationRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.venueLocationName {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.venueMapIconLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  color: #15803d;
+  font-size: 0.73rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: all 0.14s ease;
+}
+
+.venueMapIconLink:hover {
+  background: #bbf7d0;
+  border-color: #4ade80;
+}
+
+.organizerMultiLineList {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.organizerLineItem {
+  line-height: 1.45;
+  color: #0f172a;
+}
+
+.feeAsterisk {
+  color: #dc2626;
+  font-weight: 900;
+  font-size: 0.95rem;
+  margin-left: 3px;
+  margin-right: 4px;
+}
+
+.feeFootnoteBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.79rem;
+  font-weight: 700;
+  color: #9f1239;
+  line-height: 1.5;
+}
+
+.disciplineGroupWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.disciplineChipList {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* 운영종목 하이라이트 */
+.disciplineChipActive {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: #dbeafe;
+  border: 1.5px solid #2563eb;
+  color: #1e40af;
+  font-size: 0.76rem;
+  font-weight: 800;
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.12);
+}
+
+/* 비운영종목 음영 */
+.disciplineChipInactive {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.72;
+}
+
+.collectedLinksList {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.collectedLinkChip,
+.collectedLinkChipAttachment {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 6px 11px;
+  border-radius: 7px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: all 0.14s ease;
+  max-width: 100%;
+}
+
+.collectedLinkTopRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.collectedLinkLabel {
+  font-weight: 800;
+}
+
+.collectedLinkActualUrl {
+  font-size: 0.71rem;
+  font-weight: 600;
+  color: #475569;
+  word-break: break-all;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.collectedLinkChip {
+  background: #eff6ff;
+  border: 1px solid #93c5fd;
+  color: #1d4ed8;
+}
+
+.collectedLinkChip:hover {
+  background: #dbeafe;
+  border-color: #3b82f6;
+}
+
+.collectedLinkChipAttachment {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+}
+
+.collectedLinkChipAttachment:hover {
+  background: #fee2e2;
+  border-color: #ef4444;
+}
+
+/* 행사 배포 포스터 섹션 */
+.posterSectionBox {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.posterSectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.posterSectionLabel {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.posterOriginalLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #1d4ed8;
+  text-decoration: none;
+}
+
+.posterOriginalLink:hover {
+  text-decoration: underline;
+}
+
+.posterMissingPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 18px 14px;
+  border-radius: 10px;
+  border: 1px dashed #cbd5e1;
+  background: #f8fafc;
+  color: #64748b;
+}
+
+.posterPlaceholderTitle {
+  font-size: 0.81rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.posterDeletedGraphic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 20px 14px;
+  border-radius: 10px;
+  border: 1px dashed #fca5a5;
+  background: #fff1f2;
+  text-align: center;
+}
+
+.posterDeletedTitle {
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #b91c1c;
+}
+
+.posterDeletedSub {
+  font-size: 0.74rem;
+  color: #9f1239;
+  word-break: break-all;
+}
+
+.posterPreviewWrap {
+  display: flex;
+  justify-content: center;
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.posterPreviewImg {
+  max-width: 100%;
+  max-height: 460px;
+  object-fit: contain;
+  border-radius: 8px;
 }
