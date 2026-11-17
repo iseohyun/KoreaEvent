@@ -1,5 +1,5 @@
 {
-  "auditedAt": "2026-11-16T23:43:33.404Z",
+  "auditedAt": "2026-11-17T22:51:51.652Z",
   "totalMunicipalSitesScanned": 267,
   "reachableMunicipalSitesCount": 2,
   "festivalKeywordDetectedSitesCount": 2,
@@ -48,7 +48,7 @@
       "usedUrl": "https://itour.incheon.go.kr",
       "reachable": true,
       "statusCode": 200,
-      "elapsedMs": 2547,
+      "elapsedMs": 3253,
       "extractedPostCount": 4,
       "festivalMentionCount": 3,
       "swimMentionCount": 0
@@ -63,9 +63,69 @@
       "usedUrl": "https://www.sejong.go.kr/tour/index.do",
       "reachable": true,
       "statusCode": 200,
-      "elapsedMs": 3812,
+      "elapsedMs": 4820,
       "extractedPostCount": 3,
       "festivalMentionCount": 6,
+      "swimMentionCount": 0
+    },
+    {
+      "key": "busan",
+      "tier": "TIER1_PROVINCE",
+      "name": "부산광역시",
+      "lDongRegnCd": "26",
+      "lDongSignguCd": "000",
+      "url": "https://dabom.busan.go.kr",
+      "usedUrl": "https://dabom.busan.go.kr",
+      "reachable": false,
+      "statusCode": 0,
+      "elapsedMs": 9724,
+      "extractedPostCount": 0,
+      "festivalMentionCount": 0,
+      "swimMentionCount": 0
+    },
+    {
+      "key": "gangwon",
+      "tier": "TIER1_PROVINCE",
+      "name": "강원특별자치도",
+      "lDongRegnCd": "51",
+      "lDongSignguCd": "000",
+      "url": "https://www.gangwon.to",
+      "usedUrl": "https://www.gangwon.to",
+      "reachable": false,
+      "statusCode": 0,
+      "elapsedMs": 13503,
+      "extractedPostCount": 0,
+      "festivalMentionCount": 0,
+      "swimMentionCount": 0
+    },
+    {
+      "key": "chungbuk",
+      "tier": "TIER1_PROVINCE",
+      "name": "충청북도",
+      "lDongRegnCd": "43",
+      "lDongSignguCd": "000",
+      "url": "https://tour.chungbuk.go.kr",
+      "usedUrl": "https://tour.chungbuk.go.kr",
+      "reachable": false,
+      "statusCode": 0,
+      "elapsedMs": 13503,
+      "extractedPostCount": 0,
+      "festivalMentionCount": 0,
+      "swimMentionCount": 0
+    },
+    {
+      "key": "chungnam",
+      "tier": "TIER1_PROVINCE",
+      "name": "충청남도",
+      "lDongRegnCd": "44",
+      "lDongSignguCd": "000",
+      "url": "https://tour.chungnam.go.kr",
+      "usedUrl": "https://tour.chungnam.go.kr",
+      "reachable": false,
+      "statusCode": 0,
+      "elapsedMs": 13503,
+      "extractedPostCount": 0,
+      "festivalMentionCount": 0,
       "swimMentionCount": 0
     },
     {
@@ -78,7 +138,7 @@
       "usedUrl": "https://tour.jb.go.kr",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -93,7 +153,7 @@
       "usedUrl": "https://www.namdokorea.com",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -108,7 +168,7 @@
       "usedUrl": "https://tour.gb.go.kr",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -183,7 +243,7 @@
       "usedUrl": "https://www.yongsan.go.kr/portal/main/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13505,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -213,7 +273,7 @@
       "usedUrl": "https://www.gwangjin.go.kr/portal/main/main.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13506,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -228,7 +288,7 @@
       "usedUrl": "https://www.ddm.go.kr/tour/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13506,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -243,7 +303,7 @@
       "usedUrl": "https://www.jungnang.go.kr/portal/main/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13506,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -258,22 +318,7 @@
       "usedUrl": "https://www.sb.go.kr/tour/mainPage.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13506,
-      "extractedPostCount": 0,
-      "festivalMentionCount": 0,
-      "swimMentionCount": 0
-    },
-    {
-      "key": "busan",
-      "tier": "TIER1_PROVINCE",
-      "name": "부산광역시",
-      "lDongRegnCd": "26",
-      "lDongSignguCd": "000",
-      "url": "https://dabom.busan.go.kr",
-      "usedUrl": "https://dabom.busan.go.kr",
-      "reachable": false,
-      "statusCode": 0,
-      "elapsedMs": 13841,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -288,7 +333,7 @@
       "usedUrl": "https://festival.seoul.go.kr",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 14813,
+      "elapsedMs": 15207,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -303,7 +348,7 @@
       "usedUrl": "https://tour.gwangju.go.kr",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 15900,
+      "elapsedMs": 16623,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -318,22 +363,7 @@
       "usedUrl": "https://www.gangbuk.go.kr/tour/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
-      "extractedPostCount": 0,
-      "festivalMentionCount": 0,
-      "swimMentionCount": 0
-    },
-    {
-      "key": "daegu",
-      "tier": "TIER1_PROVINCE",
-      "name": "대구광역시",
-      "lDongRegnCd": "27",
-      "lDongSignguCd": "000",
-      "url": "https://tour.daegu.go.kr",
-      "usedUrl": "https://tour.daegu.go.kr",
-      "reachable": false,
-      "statusCode": 0,
-      "elapsedMs": 16240,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -348,7 +378,22 @@
       "usedUrl": "https://www.daejeon.go.kr/tou/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 16436,
+      "elapsedMs": 16844,
+      "extractedPostCount": 0,
+      "festivalMentionCount": 0,
+      "swimMentionCount": 0
+    },
+    {
+      "key": "daegu",
+      "tier": "TIER1_PROVINCE",
+      "name": "대구광역시",
+      "lDongRegnCd": "27",
+      "lDongSignguCd": "000",
+      "url": "https://tour.daegu.go.kr",
+      "usedUrl": "https://tour.daegu.go.kr",
+      "reachable": false,
+      "statusCode": 0,
+      "elapsedMs": 17214,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -363,7 +408,7 @@
       "usedUrl": "https://tour.ulsan.go.kr",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 16784,
+      "elapsedMs": 17244,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -378,7 +423,7 @@
       "usedUrl": "https://ggtour.or.kr",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 17068,
+      "elapsedMs": 18127,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -393,52 +438,7 @@
       "usedUrl": "https://www.dobong.go.kr/tour/",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
-      "extractedPostCount": 0,
-      "festivalMentionCount": 0,
-      "swimMentionCount": 0
-    },
-    {
-      "key": "chungbuk",
-      "tier": "TIER1_PROVINCE",
-      "name": "충청북도",
-      "lDongRegnCd": "43",
-      "lDongSignguCd": "000",
-      "url": "https://tour.chungbuk.go.kr",
-      "usedUrl": "https://tour.chungbuk.go.kr",
-      "reachable": false,
-      "statusCode": 0,
-      "elapsedMs": 17691,
-      "extractedPostCount": 0,
-      "festivalMentionCount": 0,
-      "swimMentionCount": 0
-    },
-    {
-      "key": "gangwon",
-      "tier": "TIER1_PROVINCE",
-      "name": "강원특별자치도",
-      "lDongRegnCd": "51",
-      "lDongSignguCd": "000",
-      "url": "https://www.gangwon.to",
-      "usedUrl": "https://www.gangwon.to",
-      "reachable": false,
-      "statusCode": 0,
-      "elapsedMs": 18262,
-      "extractedPostCount": 0,
-      "festivalMentionCount": 0,
-      "swimMentionCount": 0
-    },
-    {
-      "key": "chungnam",
-      "tier": "TIER1_PROVINCE",
-      "name": "충청남도",
-      "lDongRegnCd": "44",
-      "lDongSignguCd": "000",
-      "url": "https://tour.chungnam.go.kr",
-      "usedUrl": "https://tour.chungnam.go.kr",
-      "reachable": false,
-      "statusCode": 0,
-      "elapsedMs": 18391,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -453,7 +453,7 @@
       "usedUrl": "https://www.nowon.kr/www/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -468,7 +468,7 @@
       "usedUrl": "https://www.ep.go.kr/www/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -498,7 +498,7 @@
       "usedUrl": "https://www.mapo.go.kr/site/culture/home",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -528,7 +528,7 @@
       "usedUrl": "https://www.gangseo.seoul.kr/munhwa/index",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -543,7 +543,7 @@
       "usedUrl": "https://www.guro.go.kr/www/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13505,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -588,7 +588,7 @@
       "usedUrl": "https://www.dongjak.go.kr/portal/main/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -618,7 +618,7 @@
       "usedUrl": "https://www.seocho.go.kr/site/seocho/main.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13506,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -633,7 +633,7 @@
       "usedUrl": "https://visitgangnam.net",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13505,
+      "elapsedMs": 13506,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -648,7 +648,7 @@
       "usedUrl": "https://www.songpa.go.kr/culture/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13506,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -663,7 +663,7 @@
       "usedUrl": "https://www.gangdong.go.kr/web/culture",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13507,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -678,7 +678,7 @@
       "usedUrl": "https://www.bsjunggu.go.kr/tour/index.bsjunggu",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13508,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -693,7 +693,7 @@
       "usedUrl": "https://www.bsseogu.go.kr/tour/index.bsseogu",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13508,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -723,7 +723,7 @@
       "usedUrl": "https://www.yeongdo.go.kr/tour.web",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -738,7 +738,7 @@
       "usedUrl": "https://www.busanjin.go.kr/tour/index.busanjin",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -753,7 +753,7 @@
       "usedUrl": "https://www.dongnae.go.kr/tour/index.dongnae",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13501,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -768,7 +768,7 @@
       "usedUrl": "https://www.bsnamgu.go.kr/tour/index.namgu",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -783,7 +783,7 @@
       "usedUrl": "https://www.bsbukgu.go.kr/tour/index.bsbukgu",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -828,7 +828,7 @@
       "usedUrl": "https://www.geumjeong.go.kr/tour/index.geumjeong",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -843,7 +843,7 @@
       "usedUrl": "https://www.bsgangseo.go.kr/tour/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -858,7 +858,7 @@
       "usedUrl": "https://www.yeonje.go.kr/tour/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -918,7 +918,7 @@
       "usedUrl": "https://www.jung.daegu.kr/new/culture/pages/main/",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -963,7 +963,7 @@
       "usedUrl": "https://www.nam.daegu.kr/tour/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -978,7 +978,7 @@
       "usedUrl": "https://www.buk.daegu.kr/tour/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -993,7 +993,7 @@
       "usedUrl": "https://www.suseong.kr/tour/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1008,7 +1008,7 @@
       "usedUrl": "https://www.dalseo.daegu.kr/tour/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1038,7 +1038,7 @@
       "usedUrl": "https://www.icjg.go.kr/tour/index",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1068,7 +1068,7 @@
       "usedUrl": "https://www.michuhol.go.kr/main/",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13505,
+      "elapsedMs": 13501,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1098,7 +1098,7 @@
       "usedUrl": "https://www.namdong.go.kr/main/",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1113,7 +1113,7 @@
       "usedUrl": "https://www.icbp.go.kr/tour/",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1173,7 +1173,7 @@
       "usedUrl": "https://www.ongjin.go.kr/open_content/tour/",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1233,7 +1233,7 @@
       "usedUrl": "https://www.bukgu.gwangju.kr/index.es?sid=a5",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1248,7 +1248,7 @@
       "usedUrl": "https://www.gwangsan.go.kr/tour/",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13500,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1263,7 +1263,7 @@
       "usedUrl": "https://www.donggu.go.kr/dg/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1278,7 +1278,7 @@
       "usedUrl": "https://www.djjunggu.go.kr/tour/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1293,7 +1293,7 @@
       "usedUrl": "https://www.seogu.go.kr/tour/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13506,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1308,7 +1308,7 @@
       "usedUrl": "https://www.yuseong.go.kr/tour/",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1323,7 +1323,7 @@
       "usedUrl": "https://www.daedeok.go.kr/tour/",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13506,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1338,7 +1338,7 @@
       "usedUrl": "https://www.junggu.ulsan.kr/tour/",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1353,7 +1353,7 @@
       "usedUrl": "https://www.ulsannamgu.go.kr/tour/main.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13506,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1368,7 +1368,7 @@
       "usedUrl": "https://www.donggu.ulsan.kr/tour/",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1383,7 +1383,7 @@
       "usedUrl": "https://www.bukgu.ulsan.kr/tour/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13506,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1398,7 +1398,7 @@
       "usedUrl": "https://www.ulju.ulsan.kr/tour/",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1413,7 +1413,7 @@
       "usedUrl": "https://www.sejong.go.kr/tour/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1428,7 +1428,7 @@
       "usedUrl": "https://www.suwon.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1443,7 +1443,7 @@
       "usedUrl": "https://www.suwon.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13506,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1473,7 +1473,7 @@
       "usedUrl": "https://www.suwon.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1488,7 +1488,7 @@
       "usedUrl": "https://www.seongnam.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1503,7 +1503,7 @@
       "usedUrl": "https://www.seongnam.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1518,7 +1518,7 @@
       "usedUrl": "https://www.seongnam.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1533,7 +1533,7 @@
       "usedUrl": "https://www.ui4u.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1548,7 +1548,7 @@
       "usedUrl": "https://www.anyang.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1563,7 +1563,7 @@
       "usedUrl": "https://www.anyang.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13500,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1593,7 +1593,7 @@
       "usedUrl": "https://www.gm.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13505,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1608,7 +1608,7 @@
       "usedUrl": "https://www.pyeongtaek.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13505,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1623,7 +1623,7 @@
       "usedUrl": "https://www.ddc.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1638,7 +1638,7 @@
       "usedUrl": "https://www.ansan.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1653,7 +1653,7 @@
       "usedUrl": "https://www.ansan.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1668,7 +1668,7 @@
       "usedUrl": "https://www.goyang.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1683,7 +1683,7 @@
       "usedUrl": "https://www.goyang.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1698,7 +1698,7 @@
       "usedUrl": "https://www.goyang.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1713,7 +1713,7 @@
       "usedUrl": "https://www.gccity.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1743,7 +1743,7 @@
       "usedUrl": "https://www.nyj.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1803,7 +1803,7 @@
       "usedUrl": "https://www.uiwang.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1818,7 +1818,7 @@
       "usedUrl": "https://www.hanam.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13505,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1833,7 +1833,7 @@
       "usedUrl": "https://www.yongin.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1848,7 +1848,7 @@
       "usedUrl": "https://www.yongin.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1863,7 +1863,7 @@
       "usedUrl": "https://www.yongin.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1878,7 +1878,7 @@
       "usedUrl": "https://www.paju.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1893,7 +1893,7 @@
       "usedUrl": "https://www.icheon.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1908,7 +1908,7 @@
       "usedUrl": "https://www.anseong.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1923,7 +1923,7 @@
       "usedUrl": "https://www.gimpo.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1953,7 +1953,7 @@
       "usedUrl": "https://www.gjcity.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -1998,7 +1998,7 @@
       "usedUrl": "https://www.yeoju.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13505,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2013,7 +2013,7 @@
       "usedUrl": "https://www.yeoncheon.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13505,
+      "elapsedMs": 13501,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2028,7 +2028,7 @@
       "usedUrl": "https://www.gp.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13505,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2043,7 +2043,7 @@
       "usedUrl": "https://www.yp21.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13505,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2058,7 +2058,7 @@
       "usedUrl": "https://www.chuncheon.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13501,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2073,7 +2073,7 @@
       "usedUrl": "https://www.wonju.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13500,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2088,7 +2088,7 @@
       "usedUrl": "https://www.gn.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13500,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2103,7 +2103,7 @@
       "usedUrl": "https://www.dh.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13501,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2118,7 +2118,7 @@
       "usedUrl": "https://www.taebaek.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13501,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2163,7 +2163,7 @@
       "usedUrl": "https://www.hongcheon.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2178,7 +2178,7 @@
       "usedUrl": "https://www.hsg.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2208,7 +2208,7 @@
       "usedUrl": "https://www.pc.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13505,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2223,7 +2223,7 @@
       "usedUrl": "https://www.jeongseon.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2238,7 +2238,7 @@
       "usedUrl": "https://www.cwg.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2253,7 +2253,7 @@
       "usedUrl": "https://www.ihc.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2268,7 +2268,7 @@
       "usedUrl": "https://www.yanggu.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2283,7 +2283,7 @@
       "usedUrl": "https://www.inje.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2298,7 +2298,7 @@
       "usedUrl": "https://www.gwgs.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13505,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2328,7 +2328,7 @@
       "usedUrl": "https://www.chungju.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2358,7 +2358,7 @@
       "usedUrl": "https://www.cheongju.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2373,7 +2373,7 @@
       "usedUrl": "https://www.cheongju.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2388,7 +2388,7 @@
       "usedUrl": "https://www.cheongju.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2403,7 +2403,7 @@
       "usedUrl": "https://www.cheongju.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2433,7 +2433,7 @@
       "usedUrl": "https://www.oc.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2448,7 +2448,7 @@
       "usedUrl": "https://www.yd21.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2478,7 +2478,7 @@
       "usedUrl": "https://www.goesan.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13505,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2508,7 +2508,7 @@
       "usedUrl": "https://www.danyang.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2523,7 +2523,7 @@
       "usedUrl": "https://www.jp.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2538,7 +2538,7 @@
       "usedUrl": "https://www.cheonan.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2553,7 +2553,7 @@
       "usedUrl": "https://www.cheonan.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2583,7 +2583,7 @@
       "usedUrl": "https://www.brcn.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2598,7 +2598,7 @@
       "usedUrl": "https://www.asan.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2613,7 +2613,7 @@
       "usedUrl": "https://www.seosan.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2628,7 +2628,7 @@
       "usedUrl": "https://www.nonsan.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2658,7 +2658,7 @@
       "usedUrl": "https://www.dangjin.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2688,7 +2688,7 @@
       "usedUrl": "https://www.buyeo.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2703,7 +2703,7 @@
       "usedUrl": "https://www.seocheon.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2733,7 +2733,7 @@
       "usedUrl": "https://www.hongseong.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2748,7 +2748,7 @@
       "usedUrl": "https://www.yesan.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2763,7 +2763,7 @@
       "usedUrl": "https://www.taean.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2778,7 +2778,7 @@
       "usedUrl": "https://www.jeonju.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13501,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2793,7 +2793,7 @@
       "usedUrl": "https://www.jeonju.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2838,7 +2838,7 @@
       "usedUrl": "https://www.jeongeup.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2868,7 +2868,7 @@
       "usedUrl": "https://www.gimje.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2898,7 +2898,7 @@
       "usedUrl": "https://www.jinan.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2913,7 +2913,7 @@
       "usedUrl": "https://www.muju.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2928,7 +2928,7 @@
       "usedUrl": "https://www.jangsu.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13506,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2943,7 +2943,7 @@
       "usedUrl": "https://www.imsil.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -2958,7 +2958,7 @@
       "usedUrl": "https://www.sunchang.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3018,7 +3018,7 @@
       "usedUrl": "https://www.yeosu.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3033,7 +3033,7 @@
       "usedUrl": "https://www.suncheon.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3048,7 +3048,7 @@
       "usedUrl": "https://www.naju.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3063,7 +3063,7 @@
       "usedUrl": "https://www.gwangyang.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3093,7 +3093,7 @@
       "usedUrl": "https://www.gokseong.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3123,7 +3123,7 @@
       "usedUrl": "https://www.goheung.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3138,7 +3138,7 @@
       "usedUrl": "https://www.boseong.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3213,7 +3213,7 @@
       "usedUrl": "https://www.yeongam.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3243,7 +3243,7 @@
       "usedUrl": "https://www.hampyeong.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13501,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3258,7 +3258,7 @@
       "usedUrl": "https://www.yeonggwang.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3273,7 +3273,7 @@
       "usedUrl": "https://www.jangseong.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3288,7 +3288,7 @@
       "usedUrl": "https://www.wando.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13501,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3303,7 +3303,7 @@
       "usedUrl": "https://www.jindo.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3318,7 +3318,7 @@
       "usedUrl": "https://www.shinan.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13501,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3333,7 +3333,7 @@
       "usedUrl": "https://www.pohang.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3348,7 +3348,7 @@
       "usedUrl": "https://www.pohang.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3363,7 +3363,7 @@
       "usedUrl": "https://www.gyeongju.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3378,7 +3378,7 @@
       "usedUrl": "https://www.gc.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3393,7 +3393,7 @@
       "usedUrl": "https://www.andong.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3408,7 +3408,7 @@
       "usedUrl": "https://www.gumi.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3438,7 +3438,7 @@
       "usedUrl": "https://www.yc.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3453,7 +3453,7 @@
       "usedUrl": "https://www.sangju.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3468,7 +3468,7 @@
       "usedUrl": "https://www.gbmg.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3483,7 +3483,7 @@
       "usedUrl": "https://www.gbgs.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3498,7 +3498,7 @@
       "usedUrl": "https://www.gunwi.go.kr/tour/main.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3513,7 +3513,7 @@
       "usedUrl": "https://www.usc.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13506,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3528,7 +3528,7 @@
       "usedUrl": "https://www.cs.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3543,7 +3543,7 @@
       "usedUrl": "https://www.yyg.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3573,7 +3573,7 @@
       "usedUrl": "https://www.cd.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3588,7 +3588,7 @@
       "usedUrl": "https://www.goryeong.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13505,
+      "elapsedMs": 13506,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3603,7 +3603,7 @@
       "usedUrl": "https://www.sj.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3618,7 +3618,7 @@
       "usedUrl": "https://www.chilgok.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3663,7 +3663,7 @@
       "usedUrl": "https://www.uljin.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13504,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3678,7 +3678,7 @@
       "usedUrl": "https://www.ulleung.go.kr/tour",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3693,7 +3693,7 @@
       "usedUrl": "https://www.jinju.go.kr/02793/02258.web",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3708,7 +3708,7 @@
       "usedUrl": "https://www.utour.go.kr",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3738,7 +3738,7 @@
       "usedUrl": "https://www.gimhae.go.kr/tour.web",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13500,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3753,7 +3753,7 @@
       "usedUrl": "https://www.miryang.go.kr/tur/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3768,7 +3768,7 @@
       "usedUrl": "https://tour.geoje.go.kr",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3783,7 +3783,7 @@
       "usedUrl": "https://www.yangsan.go.kr/tour/main.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13503,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3798,7 +3798,7 @@
       "usedUrl": "https://culture.changwon.go.kr",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3813,7 +3813,7 @@
       "usedUrl": "https://culture.changwon.go.kr",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3828,7 +3828,7 @@
       "usedUrl": "https://culture.changwon.go.kr",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3843,7 +3843,7 @@
       "usedUrl": "https://culture.changwon.go.kr",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3858,7 +3858,7 @@
       "usedUrl": "https://culture.changwon.go.kr",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3873,7 +3873,7 @@
       "usedUrl": "https://www.uiryeong.go.kr/tour.web",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3888,7 +3888,7 @@
       "usedUrl": "https://www.haman.go.kr/tour.web",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3903,7 +3903,7 @@
       "usedUrl": "https://www.cng.go.kr/tour.web",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3918,7 +3918,7 @@
       "usedUrl": "https://visit.goseong.go.kr",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13500,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3933,7 +3933,7 @@
       "usedUrl": "https://www.namhae.go.kr/tour/main.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3948,7 +3948,7 @@
       "usedUrl": "https://www.hadong.go.kr/tour.web",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3963,7 +3963,7 @@
       "usedUrl": "https://www.sancheong.go.kr/tour/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13502,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3978,7 +3978,7 @@
       "usedUrl": "https://www.hygn.go.kr/tour.web",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -3993,7 +3993,7 @@
       "usedUrl": "https://www.geochang.go.kr/tour/index.do",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -4008,7 +4008,7 @@
       "usedUrl": "https://www.hc.go.kr/tour.web",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13505,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -4023,7 +4023,7 @@
       "usedUrl": "https://www.visitjeju.net",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13502,
+      "elapsedMs": 13504,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
@@ -4038,7 +4038,7 @@
       "usedUrl": "https://www.visitjeju.net",
       "reachable": false,
       "statusCode": 0,
-      "elapsedMs": 13501,
+      "elapsedMs": 13503,
       "extractedPostCount": 0,
       "festivalMentionCount": 0,
       "swimMentionCount": 0
